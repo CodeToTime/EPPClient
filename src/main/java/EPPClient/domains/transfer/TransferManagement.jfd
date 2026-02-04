@@ -1,0 +1,31 @@
+JFDML JFormDesigner: "7.0.0.6.255" Java: "11.0.5" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq l {space :::x, comp transferActionPanel:::p::p, space :::p}, seq l {space :::p, comp transferTab:::p:457:p, space :::x}}"
+			"$verticalGroup": "par l {seq l {space :::p, comp transferTab:::p:288:p, space ::46:x, comp transferActionPanel:::p::p, space :::p}}"
+		} ) {
+			name: "this"
+			add( new FormComponent( "EPPClient.domains.transfer.TransferActionPanel" ) {
+				name: "transferActionPanel"
+			} )
+			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+				name: "transferTab"
+				add( new FormComponent( "EPPClient.domains.transfer.TransferPanel" ) {
+					name: "domainTransferPanel"
+				}, new FormLayoutConstraints( null ) {
+					"title": "Single transfer/transferTrade"
+				} )
+				add( new FormComponent( "EPPClient.domains.transfer.BulkTransferPanel" ) {
+					name: "bulkTransferPanel"
+				}, new FormLayoutConstraints( null ) {
+					"title": "Bulk transfer"
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 400, 300 )
+		} )
+	}
+}

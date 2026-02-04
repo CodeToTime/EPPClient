@@ -1,0 +1,28 @@
+JFDML JFormDesigner: "7.0.0.6.255" Java: "11.0.5" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq l {space :p::p, comp addressListPanel:::p:247:p, par l {seq {space :p:34:p, comp addressPanel:::p::p}, seq l {space :p:57:p, comp addressActionPanel::::0:x, space :226:226:226}}, space :p::p}}"
+			"$verticalGroup": "par l {seq {space :::p, par l {seq {comp addressPanel:::p::p, space :::x, comp addressActionPanel:::p::p}, comp addressListPanel::t:::x}, space :::p}}"
+		} ) {
+			name: "this"
+			"title": "Gestione CONTATTI"
+			add( new FormComponent( "EPPClient.contacts.AddressActionPanel" ) {
+				name: "addressActionPanel"
+			} )
+			add( new FormComponent( "EPPClient.contacts.AddressPanel" ) {
+				name: "addressPanel"
+			} )
+			add( new FormComponent( "EPPClient.contacts.AddressListPanel" ) {
+				name: "addressListPanel"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 790, 635 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+	}
+}
+
+

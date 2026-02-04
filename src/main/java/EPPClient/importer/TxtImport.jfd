@@ -1,0 +1,27 @@
+JFDML JFormDesigner: "7.0.0.6.255" Java: "11.0.5" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq t {space :p::p, par t {comp textArea1::l::723:x, comp jFileChooser1::l::723:x}, space :p::p}}"
+			"$verticalGroup": "par l {seq t {comp textArea1:::p::p, space :p:20:p, comp jFileChooser1::::338:x, space :p::p}}"
+		} ) {
+			name: "this"
+			"title": "Importazione Domini da file"
+			"minimumSize": new java.awt.Dimension( 600, 500 )
+			add( new FormComponent( "javax.swing.JFileChooser" ) {
+				name: "jFileChooser1"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "jFileChooser1ActionPerformed", true ) )
+			} )
+			add( new FormComponent( "java.awt.TextArea" ) {
+				name: "textArea1"
+				"editable": false
+				"text": "Questa procedura permette di acquisire nel database locale eventuali domini già presenti sul server EPP del Registro.\nPer poter procedere occorre predisporre un file .txt contenente l'elenco dei domini, uno per riga.\n"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 745, 560 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+	}
+}

@@ -1,0 +1,393 @@
+JFDML JFormDesigner: "8.3" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.GridBagLayout ) {
+			"$columnSpecs": "0, 0, 0, 0"
+			"$rowSpecs": "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0"
+		} ) {
+			name: "this"
+			"defaultCloseOperation": 2
+			"title": "Gestione CONFIGURAZIONE"
+			"locationByPlatform": true
+			"minimumSize": new java.awt.Dimension( 480, 400 )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel1"
+				"text": "eppUserName"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"hAlign": 4
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "defaultUser"
+				"minimumSize": new java.awt.Dimension( 150, 20 )
+				"preferredSize": new java.awt.Dimension( 150, 20 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 1
+				"hAlign": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "defaultPassword"
+				"minimumSize": new java.awt.Dimension( 150, 20 )
+				"preferredSize": new java.awt.Dimension( 150, 20 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 1
+				"gridy": 1
+				"hAlign": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel2"
+				"text": "eppPassword"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 1
+				"hAlign": 4
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "serverURI"
+				"minimumSize": new java.awt.Dimension( 250, 20 )
+				"preferredSize": new java.awt.Dimension( 250, 20 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 1
+				"gridy": 2
+				"hAlign": 0
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel3"
+				"text": "proxyHost"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 3
+				"hAlign": 4
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "saveButton"
+				"text": "Save"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "saveButtonActionPerformed", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 1
+				"gridy": 14
+				"hAlign": 4
+				"vAlign": 0
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "cancelButton"
+				"text": "Cancel"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "cancelButtonActionPerformed", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 3
+				"gridy": 14
+				"hAlign": 2
+				"vAlign": 0
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnChangePwd"
+				"font": new java.awt.Font( "Tahoma", 0, 10 )
+				"text": "Cambio Password"
+				"border": new javax.swing.border.EtchedBorder( 1, null, null )
+				"maximumSize": new java.awt.Dimension( 100, 19 )
+				"minimumSize": new java.awt.Dimension( 100, 19 )
+				"preferredSize": new java.awt.Dimension( 100, 19 )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnChangePwdActionPerformed", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 2
+				"gridy": 1
+				"hAlign": 0
+				"vAlign": 0
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "saveCloseButton"
+				"text": "Save & Close"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "saveCloseButtonActionPerformed", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 2
+				"gridy": 14
+				"hAlign": 0
+				"vAlign": 0
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "dbhost"
+				"minimumSize": new java.awt.Dimension( 150, 20 )
+				"preferredSize": new java.awt.Dimension( 150, 20 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 1
+				"gridy": 10
+				"hAlign": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblDbHostname"
+				"text": "dbHostname"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 10
+				"hAlign": 4
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel5"
+				"text": "dbEngine"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 8
+				"hAlign": 4
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JComboBox" ) {
+				name: "dbengine"
+				"model": new javax.swing.DefaultComboBoxModel {
+					selectedItem: "Internal DB"
+					addElement( "Internal DB" )
+					addElement( "MySQL" )
+				}
+				"preferredSize": new java.awt.Dimension( 150, 20 )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "dbengineActionPerformed", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 1
+				"gridy": 8
+				"hAlign": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "dbname"
+				"preferredSize": new java.awt.Dimension( 150, 20 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 1
+				"gridy": 9
+				"hAlign": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblDbName"
+				"text": "dbName"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 9
+				"hAlign": 4
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "dbuid"
+				"preferredSize": new java.awt.Dimension( 150, 20 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 1
+				"gridy": 11
+				"hAlign": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "dbpwd"
+				"preferredSize": new java.awt.Dimension( 150, 20 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 1
+				"gridy": 12
+				"hAlign": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblDbUid"
+				"text": "dbUID"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 11
+				"hAlign": 4
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblDbPwd"
+				"text": "dbPWD"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 12
+				"hAlign": 4
+				"vAlign": 0
+				"insets": &Insets0 new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "refreshInterval"
+				"preferredSize": new java.awt.Dimension( 50, 20 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 1
+				"gridy": 4
+				"hAlign": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel4"
+				"text": "refreshInterval (s)"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 4
+				"hAlign": 4
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "emptyDb"
+				"text": "Azzera DB"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "emptyDbActionPerformed", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 2
+				"gridy": 8
+				"hAlign": 0
+				"vAlign": 0
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel6"
+				"text": "eppServerURI"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 2
+				"hAlign": 4
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel7"
+				"text": "proxyPort"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 2
+				"gridy": 3
+				"hAlign": 0
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "proxyHost"
+				"minimumSize": new java.awt.Dimension( 250, 20 )
+				"preferredSize": new java.awt.Dimension( 250, 20 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 1
+				"gridy": 3
+				"hAlign": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "proxyPort"
+				"preferredSize": new java.awt.Dimension( 50, 20 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 3
+				"gridy": 3
+				"hAlign": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "contactPrefix"
+				"preferredSize": new java.awt.Dimension( 150, 20 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 1
+				"gridy": 5
+				"hAlign": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel8"
+				"text": "contactPrefix"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 5
+				"hAlign": 4
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "defaultTech"
+				"minimumSize": new java.awt.Dimension( 250, 20 )
+				"preferredSize": new java.awt.Dimension( 250, 20 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 1
+				"gridy": 6
+				"hAlign": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "defaultNS"
+				"minimumSize": new java.awt.Dimension( 250, 20 )
+				"preferredSize": new java.awt.Dimension( 250, 20 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 1
+				"gridy": 7
+				"hAlign": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel9"
+				"text": "defaultTech"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 6
+				"hAlign": 4
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel10"
+				"text": "defaultNS"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 7
+				"hAlign": 4
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel11"
+				"font": new java.awt.Font( "Dialog", 0, 10 )
+				"text": "(es.: TECH1;TECH2;TECH3)"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 2
+				"gridy": 6
+				"gridwidth": 2
+				"hAlign": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel12"
+				"font": new java.awt.Font( "Dialog", 0, 10 )
+				"text": "(es.: dns1.example.it;dns2.example.it)"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 2
+				"gridy": 7
+				"gridwidth": 2
+				"hAlign": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblDNSSEC"
+				"text": "DNSSEC"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 13
+				"hAlign": 4
+				"vAlign": 0
+				"insets": #Insets0
+			} )
+			add( new FormComponent( "javax.swing.JCheckBox" ) {
+				name: "chkDNSSEC"
+				"text": "Abilita supporto a DNSSEC"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 1
+				"gridy": 13
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 675, 505 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+	}
+}

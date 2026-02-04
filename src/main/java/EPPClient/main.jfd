@@ -1,0 +1,255 @@
+JFDML JFormDesigner: "8.3" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.GridBagLayout ) {
+			"$columnSpecs": "0, 0, 0"
+			"$rowSpecs": "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0"
+		} ) {
+			name: "this"
+			"defaultCloseOperation": 0
+			"title": "EPP Client"
+			"minimumSize": new java.awt.Dimension( 500, 400 )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblTitle"
+				"font": new java.awt.Font( "Tahoma", 0, 14 )
+				"horizontalAlignment": 0
+				"text": "EPP Client"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridwidth": 3
+				"hAlign": 0
+				"vAlign": 0
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblCopy"
+				"font": new java.awt.Font( "Tahoma", 0, 14 )
+				"text": ""
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 2
+				"gridwidth": 3
+				"hAlign": 0
+				"vAlign": 0
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "resCredit"
+				"editable": false
+				"preferredSize": new java.awt.Dimension( 100, 20 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 2
+				"gridy": 6
+				"hAlign": 4
+				"vAlign": 1
+				"insets": new java.awt.Insets( 0, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblResCredit"
+				"font": new java.awt.Font( "Tahoma", 0, 10 )
+				"text": "Credito disponibile (€):"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 2
+				"gridy": 5
+				"hAlign": 4
+				"vAlign": 3
+				"insets": new java.awt.Insets( 5, 5, 0, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "msgQ"
+				"editable": false
+				"preferredSize": new java.awt.Dimension( 100, 20 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 2
+				"gridy": 8
+				"hAlign": 4
+				"vAlign": 1
+				"insets": new java.awt.Insets( 0, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblMsgQ"
+				"font": new java.awt.Font( "Tahoma", 0, 10 )
+				"text": "Nr. messaggi in coda:"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 2
+				"gridy": 7
+				"hAlign": 4
+				"vAlign": 3
+				"insets": new java.awt.Insets( 5, 5, 0, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblSoci"
+				"horizontalAlignment": 0
+				"text": ""
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 3
+				"gridwidth": 3
+				"hAlign": 0
+				"vAlign": 0
+				"insets": new java.awt.Insets( 0, 0, 50, 0 )
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "nextMsg"
+				"editable": false
+				"font": new java.awt.Font( "Tahoma", 0, 10 )
+				"maximumSize": new java.awt.Dimension( 300, 20 )
+				"minimumSize": new java.awt.Dimension( 300, 20 )
+				"preferredSize": new java.awt.Dimension( 300, 20 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 15
+				"gridwidth": 3
+				"hAlign": 0
+				"vAlign": 0
+				"insets": new java.awt.Insets( 0, 5, 0, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblNextMsg"
+				"font": new java.awt.Font( "Tahoma", 0, 10 )
+				"text": "Prossimo messaggio"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 14
+				"gridwidth": 3
+				"hAlign": 4
+				"vAlign": 3
+				"insets": new java.awt.Insets( 5, 5, 0, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblEPPworking"
+				"font": new java.awt.Font( "Tahoma", 0, 10 )
+				"horizontalAlignment": 11
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/gear.gif" )
+				"text": "sessione EPP non attiva"
+				"horizontalTextPosition": 10
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 1
+				"gridy": 16
+				"gridwidth": 2
+				"vAlign": 1
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "EPPonoff"
+				"text": "Attiva Sessione"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "EPPonoffActionPerformed", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 16
+				"hAlign": 0
+				"vAlign": 0
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblVersion"
+				"font": new java.awt.Font( "Tahoma", 0, 14 )
+				"text": " "
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 1
+				"gridwidth": 3
+				"hAlign": 0
+				"vAlign": 0
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnContact"
+				"text": "Contatti"
+				"maximumSize": &Dimension0 new java.awt.Dimension( 150, 25 )
+				"minimumSize": &Dimension1 new java.awt.Dimension( 150, 25 )
+				"preferredSize": &Dimension2 new java.awt.Dimension( 150, 25 )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnContactActionPerformed", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 6
+				"hAlign": 2
+				"vAlign": 1
+				"insets": &Insets0 new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnDomain"
+				"text": "Domini"
+				"maximumSize": new java.awt.Dimension( 150, 25 )
+				"minimumSize": new java.awt.Dimension( 150, 25 )
+				"preferredSize": new java.awt.Dimension( 150, 25 )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnDomainActionPerformed", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 7
+				"hAlign": 2
+				"vAlign": 1
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnMsg"
+				"text": "Messaggi"
+				"maximumSize": new java.awt.Dimension( 150, 25 )
+				"minimumSize": new java.awt.Dimension( 150, 25 )
+				"preferredSize": new java.awt.Dimension( 150, 25 )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnMsgActionPerformed", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 8
+				"hAlign": 2
+				"vAlign": 1
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnConfig"
+				"text": "Configurazione"
+				"maximumSize": new java.awt.Dimension( 150, 25 )
+				"minimumSize": new java.awt.Dimension( 150, 25 )
+				"preferredSize": new java.awt.Dimension( 150, 25 )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnConfigActionPerformed", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 9
+				"hAlign": 2
+				"vAlign": 1
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnInformazioni"
+				"maximumSize": #Dimension0
+				"minimumSize": #Dimension1
+				"preferredSize": #Dimension2
+				"action": sfield com.jformdesigner.model.FormObject NULL_VALUE
+				"text": "Informazioni"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnInformazioni", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 9
+				"hAlign": 2
+				"vAlign": 1
+				"insets": #Insets0
+				"gridx": 2
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnDoTest"
+				"text": "Test"
+				"maximumSize": new java.awt.Dimension( 150, 25 )
+				"minimumSize": new java.awt.Dimension( 150, 25 )
+				"preferredSize": new java.awt.Dimension( 150, 25 )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnDoTestActionPerformed", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 10
+				"hAlign": 2
+				"vAlign": 1
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnImportFromTxt"
+				"text": "Importa da txt"
+				"maximumSize": new java.awt.Dimension( 150, 25 )
+				"minimumSize": new java.awt.Dimension( 150, 25 )
+				"preferredSize": new java.awt.Dimension( 150, 25 )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnImportFromTxtActionPerformed", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 10
+				"hAlign": 2
+				"vAlign": 1
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+				"gridx": 2
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 615, 495 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+		add( new FormNonVisual( "javax.swing.AbstractAction" ) {
+			name: "action1"
+			"$action.Name": "Gestione Contatti"
+			auxiliary() {
+				"JavaCodeGenerator.className": "btnInformazioni"
+			}
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 511 )
+		} )
+	}
+}

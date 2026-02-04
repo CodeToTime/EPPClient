@@ -1,0 +1,35 @@
+JFDML JFormDesigner: "7.0.0.6.255" Java: "11.0.5" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq {space :::p, par l {comp jScrollPane1::l::580:x, seq t {comp refresh1:::p::p, space :::p, comp refresh:::p::p}}, space :::p}}"
+			"$verticalGroup": "par l {seq t {space :p::p, par b {comp refresh::b:p::p, comp refresh1::b:p::p}, space :::p, comp jScrollPane1::::257:x, space :p::p}}"
+		} ) {
+			name: "this"
+			"title": "Gestione MESSAGGI"
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "jScrollPane1"
+				add( new FormComponent( "javax.swing.JTable" ) {
+					name: "messagesTable"
+					auxiliary() {
+						"JavaCodeGenerator.preInitCode": "${field}.setModel(model);"
+					}
+				} )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "refresh"
+				"text": "refresh list"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "refreshActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "refresh1"
+				"text": "ACK ALL"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "ACKALLActionPerformed", true ) )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 400, 300 )
+		} )
+	}
+}

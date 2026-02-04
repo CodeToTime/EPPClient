@@ -1,0 +1,38 @@
+JFDML JFormDesigner: "7.0.0.6.255" Java: "11.0.5" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq l {space :p:14:p, comp lblAuthInfo:::p::p, space u:::p, par l {comp jScrollPane2:::p:369:p, comp jScrollPane1:::p:369:p}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :p:37:p, par l {comp lblAuthInfo:::p::p, comp jScrollPane1:::p:201:p}, space u:::p, comp jScrollPane2:::p:201:p, space :::p}}"
+		} ) {
+			name: "this"
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblAuthInfo"
+				"text": "domain;authinfo"
+			} )
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "jScrollPane1"
+				add( new FormComponent( "javax.swing.JTextArea" ) {
+					name: "bulkRequestField"
+					"columns": 30
+					"rows": 10
+					"minimumSize": new java.awt.Dimension( 484, 274 )
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "jScrollPane2"
+				add( new FormComponent( "javax.swing.JTextArea" ) {
+					name: "bulkResultField"
+					"editable": false
+					"columns": 30
+					"rows": 10
+					"minimumSize": new java.awt.Dimension( 484, 274 )
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 400, 300 )
+		} )
+	}
+}

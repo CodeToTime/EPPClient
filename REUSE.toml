@@ -1,0 +1,41 @@
+version = 1
+
+# Annotate all jfd source files
+[[annotations]]
+path = "src/**/*.jfd"
+SPDX-FileCopyrightText = [
+    "2009-2025 AssoTLD <reg@assotld.it>",
+    "2026 Riccardo Bertelli"
+]
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+# Annotate all Gradle build files
+[[annotations]]
+path = ["build.gradle", "build.gradle.kts", "settings.gradle", "settings.gradle.kts"]
+SPDX-FileCopyrightText = [
+    "2026 Riccardo Bertelli"
+]
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+# Annotate resources
+[[annotations]]
+path = "src/main/resources/**"
+SPDX-FileCopyrightText = [
+    "2009-2025 AssoTLD <reg@assotld.it>",
+    "2026 Riccardo Bertelli"
+]
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+# Annotate test resources
+[[annotations]]
+path = "src/test/resources/**"
+SPDX-FileCopyrightText = [
+    "2009-2025 AssoTLD <reg@assotld.it>",
+    "2026 Riccardo Bertelli"
+]
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = ["gradle/wrapper/**", "gradlew", "gradlew.bat"]
+SPDX-FileCopyrightText = "2015 Gradle Inc."
+SPDX-License-Identifier = "Apache-2.0"

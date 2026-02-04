@@ -1,0 +1,25 @@
+JFDML JFormDesigner: "7.0.0.6.255" Java: "11.0.5" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) {
+			"axis": 1
+		} ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "scrollPane"
+				"verticalScrollBarPolicy": 22
+				add( new FormComponent( "javax.swing.JList" ) {
+					name: "addressList"
+					"selectionMode": 0
+					auxiliary() {
+						"JavaCodeGenerator.preInitCode": "${field}.setModel(model);\n${field}.setCellRenderer(renderer);"
+					}
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 134, 266 )
+		} )
+	}
+}

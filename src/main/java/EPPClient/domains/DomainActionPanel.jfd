@@ -1,0 +1,95 @@
+JFDML JFormDesigner: "7.0.0.6.255" Java: "11.0.5" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
+			"columns": 0
+			"rows": 1
+		} ) {
+			name: "this"
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnNewAddress"
+				"font": new java.awt.Font( "Tahoma", 0, 10 )
+				"text": "New"
+				"actionCommand": "NEW_ADDRESS"
+				"margin": new java.awt.Insets( 2, 2, 2, 2 )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "newAddressActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnTransferAddress"
+				"font": new java.awt.Font( "Tahoma", 0, 10 )
+				"text": "Transfer\nTrade"
+				"actionCommand": "TRANSFER_ADDRESS"
+				"margin": new java.awt.Insets( 2, 2, 2, 2 )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "transferAddressActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnCheckDomain"
+				"font": new java.awt.Font( "Tahoma", 0, 10 )
+				"text": "Check"
+				"actionCommand": "CHECK_DOMAIN"
+				"margin": new java.awt.Insets( 2, 2, 2, 2 )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnCheckDomainActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnEditAddress"
+				"font": new java.awt.Font( "Tahoma", 0, 10 )
+				"text": "Edit"
+				"actionCommand": "EDIT_ADDRESS"
+				"margin": new java.awt.Insets( 2, 2, 2, 2 )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "editAddressActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnDeleteAddress"
+				"font": new java.awt.Font( "Tahoma", 0, 10 )
+				"text": "Delete"
+				"actionCommand": "DELETE_ADDRESS"
+				"margin": new java.awt.Insets( 2, 2, 2, 2 )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "deleteAddressActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnCancelAddress"
+				"font": new java.awt.Font( "Tahoma", 0, 10 )
+				"text": "Cancel"
+				"actionCommand": "CANCEL_ADDRESS"
+				"margin": new java.awt.Insets( 2, 2, 2, 2 )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "cancelAddressActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnSaveAddress"
+				"font": new java.awt.Font( "Tahoma", 0, 10 )
+				"text": "Save"
+				"actionCommand": "SAVE_ADDRESS"
+				"margin": new java.awt.Insets( 2, 2, 2, 2 )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "saveAddressActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnSyncInfo"
+				"font": new java.awt.Font( "Tahoma", 0, 10 )
+				"text": "Sync"
+				"actionCommand": "SYNC_DOMAIN"
+				"margin": new java.awt.Insets( 2, 2, 2, 2 )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnSyncDomainActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnRestoreDomain"
+				"font": new java.awt.Font( "Tahoma", 0, 10 )
+				"text": "Restore"
+				"actionCommand": "RESTORE_DOMAIN"
+				"margin": new java.awt.Insets( 2, 2, 2, 2 )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnRestoreDomainActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnInfo"
+				"font": new java.awt.Font( "Tahoma", 0, 10 )
+				"text": "Info"
+				"actionCommand": "INFO_DOMAIN"
+				"margin": new java.awt.Insets( 2, 2, 2, 2 )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnInfoActionPerformed", true ) )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 503, 100 )
+		} )
+	}
+}

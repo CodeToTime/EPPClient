@@ -1,0 +1,129 @@
+JFDML JFormDesigner: "7.0.0.6.255" Java: "11.0.5" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+			"$columnSpecs": "0, 0, 0, 0, 0, 0"
+			"$rowSpecs": "0, 0, 0, 0, 0"
+		} ) {
+			name: "this"
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblRegistrant"
+				"text": "registrant"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 3
+				"hAlign": 4
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "txtRegistrant"
+				"editable": false
+				"preferredSize": new java.awt.Dimension( 200, 20 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 1
+				"gridy": 3
+				"hAlign": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblAuthInfo"
+				"text": "authInfo"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 1
+				"hAlign": 4
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "txtAuthInfo"
+				"minimumSize": new java.awt.Dimension( 100, 21 )
+				"preferredSize": new java.awt.Dimension( 200, 20 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 1
+				"gridy": 1
+				"gridwidth": 3
+				"hAlign": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblDomainName"
+				"text": "domainName"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"hAlign": 4
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "txtDomainName"
+				"minimumSize": new java.awt.Dimension( 150, 20 )
+				"preferredSize": new java.awt.Dimension( 150, 20 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 1
+				"hAlign": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "setRegistrant"
+				"text": "Selezione Registrant"
+				"border": new javax.swing.border.SoftBevelBorder( 0, null, null, null, null )
+				"preferredSize": new java.awt.Dimension( 120, 20 )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "setRegistrantActionPerformed", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 2
+				"gridy": 3
+				"gridwidth": 4
+				"hAlign": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JCheckBox" ) {
+				name: "txtIsTrade"
+				"text": "isTrade"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "txtIsTradeActionPerformed", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 1
+				"gridy": 2
+				"hAlign": 2
+				"vAlign": 0
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "txtNewAuthInfo"
+				"minimumSize": new java.awt.Dimension( 100, 21 )
+				"preferredSize": new java.awt.Dimension( 200, 20 )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 1
+				"gridy": 4
+				"gridwidth": 3
+				"hAlign": 2
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblNewAuthInfo"
+				"text": "newAuthInfo"
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridy": 4
+				"hAlign": 4
+				"vAlign": 0
+				"insets": new java.awt.Insets( 5, 5, 5, 5 )
+			} )
+			add( new FormComponent( "javax.swing.JCheckBox" ) {
+				name: "txtIsCancel"
+				"text": "cancelTransfer"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "txtIsCancelActionPerformed", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+				"gridx": 3
+				"gridy": 2
+				"hAlign": 2
+				"vAlign": 0
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 604, 474 )
+		} )
+	}
+}

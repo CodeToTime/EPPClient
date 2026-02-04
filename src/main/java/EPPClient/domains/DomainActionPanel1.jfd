@@ -1,0 +1,57 @@
+JFDML JFormDesigner: "7.0.0.6.255" Java: "11.0.5" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
+			"columns": 0
+			"rows": 1
+		} ) {
+			name: "this"
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnNewAddress"
+				"text": "New"
+				"actionCommand": "NEW_ADDRESS"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "newAddressActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnTransferAddress"
+				"text": "Transfer/Trade"
+				"actionCommand": "TRANSFER_ADDRESS"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "transferAddressActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnDeleteAddress"
+				"text": "Delete"
+				"actionCommand": "DELETE_ADDRESS"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "deleteAddressActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnEditAddress"
+				"text": "Edit"
+				"actionCommand": "EDIT_ADDRESS"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "editAddressActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnSaveAddress"
+				"text": "Save"
+				"actionCommand": "SAVE_ADDRESS"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "saveAddressActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnCancelAddress"
+				"text": "Cancel"
+				"actionCommand": "CANCEL_ADDRESS"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "cancelAddressActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnSyncInfo"
+				"text": "Sync"
+				"actionCommand": "SYNC_DOMAIN"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnSyncDomainActionPerformed", true ) )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 503, 100 )
+		} )
+	}
+}

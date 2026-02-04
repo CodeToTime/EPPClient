@@ -1,0 +1,28 @@
+JFDML JFormDesigner: "8.3" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq l {space :p::p, comp addressListPanel:::p:247:p, par l {seq {space :p:57:p, comp addressActionPanel:::::x}, seq t {space :::x, comp domainPanel:::p:1310:p}}, space :::p}}"
+			"$verticalGroup": "par l {seq {space :::p, par l {seq {comp domainPanel:::p::p, space ::33:x, comp addressActionPanel:::p::p}, comp addressListPanel::::783:x}, space :::p}}"
+		} ) {
+			name: "this"
+			"title": "Gestione DOMINI"
+			add( new FormComponent( "EPPClient.domains.DomainActionPanel" ) {
+				name: "addressActionPanel"
+				"minimumSize": new java.awt.Dimension( 50, 23 )
+			} )
+			add( new FormComponent( "EPPClient.domains.DomainPanel" ) {
+				name: "domainPanel"
+				"border": new javax.swing.border.LineBorder( sfield java.awt.Color black, 1, false )
+			} )
+			add( new FormComponent( "EPPClient.domains.DomainListPanel" ) {
+				name: "addressListPanel"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 1055, 575 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+	}
+}

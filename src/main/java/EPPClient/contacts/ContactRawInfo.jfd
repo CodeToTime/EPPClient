@@ -1,0 +1,39 @@
+JFDML JFormDesigner: "7.0.0.6.255" Java: "11.0.5" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq t {space :p::p, comp jLabel1:::p::p, space u:::p, comp contactIDTxt:::p::p, space ::352:x}, comp jLabel2::l::483:x, seq l {space :::p, comp jScrollPane1::::463:x, space :::p}}"
+			"$verticalGroup": "par l {seq t {comp jLabel2:::p::p, space :p:8:p, par b {comp jLabel1::b:p::p, comp contactIDTxt::b:p::p}, space s:p::p, comp jScrollPane1::::203:x, space :p::p}}"
+		} ) {
+			name: "this"
+			"title": "Contact INFO Output"
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel1"
+				"text": "Contact ID"
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "contactIDTxt"
+				"editable": false
+				"text": "jTextField1"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel2"
+				"font": new java.awt.Font( "Tahoma", 1, 11 )
+				"horizontalAlignment": 0
+				"text": "CONTACT INFO OUTPUT"
+			} )
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "jScrollPane1"
+				add( new FormComponent( "javax.swing.JTextArea" ) {
+					name: "contactRawInfoTxt"
+					"columns": 20
+					"rows": 5
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 400, 300 )
+		} )
+	}
+}

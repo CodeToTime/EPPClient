@@ -1,0 +1,144 @@
+JFDML JFormDesigner: "7.0.0.6.255" Java: "11.0.5" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq t {par t {seq l {space :::p, comp actionTab::::506:x}, seq l {space :p:30:p, par t {comp jLabel1:::p::p, comp jLabel2:::p::p}, space :::p, comp msgIdTxt:::p::p, space s:::p, comp jLabel4:::p::p, space :::p, comp datetimeTxt:::p:188:p}, seq l {space :p:20:p, comp jLabel3:::p::p, space :::p, par l {comp jScrollPane4::l::390:x, comp jScrollPane1::l::390:x}}, seq t {space ::478:x, comp btnAck:::p::p}}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :p::p, par b {comp jLabel1::b:p::p, comp msgIdTxt::b:p::p, comp jLabel4::b:p::p, comp datetimeTxt::b:p::p}, space :p::p, par l {comp jLabel2:::p::p, comp jScrollPane4:::p:50:p:1}, space :p::p, par l {comp jLabel3:::p::p, comp jScrollPane1::::113:x}, space :::p, comp btnAck:::p::p, space :p:11:p, comp actionTab:::p:198:p, space :p::p}}"
+		} ) {
+			name: "this"
+			"title": "Dettaglio MESSAGGIO"
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel1"
+				"text": "Message ID:"
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "msgIdTxt"
+				"editable": false
+				"text": "jTextField1"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel2"
+				"text": "Message:"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel3"
+				"text": "Raw Message:"
+			} )
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "jScrollPane1"
+				add( new FormComponent( "javax.swing.JTextArea" ) {
+					name: "rawMessageTxt"
+					"columns": 20
+					"editable": false
+					"rows": 5
+				} )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel4"
+				"text": "Date/Time:"
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "datetimeTxt"
+				"editable": false
+				"text": "jTextField2"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnAck"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnAckActionPerformed", true ) )
+			} )
+			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+				name: "actionTab"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq l {space :::p, comp jScrollPane3::::489:x, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, comp jScrollPane3:::p::p, space ::57:x}}"
+				} ) {
+					name: "jPanel4"
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "jScrollPane3"
+						add( new FormComponent( "javax.swing.JTextArea" ) {
+							name: "txtGeneric"
+							"columns": 20
+							"editable": false
+							"lineWrap": true
+							"rows": 7
+							"text": "This is a generic message, therefore no specific action panel has been enabled."
+							"wrapStyleWord": true
+						} )
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Generic"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq {space :::p, par l {comp jScrollPane2::::489:x, comp btnTransfer::t:p::p}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, comp jScrollPane2:::p::p, space :::p, comp btnTransfer:::p::p, space ::41:x}}"
+				} ) {
+					name: "jPanel1"
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btnTransfer"
+						addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "btnTransferMouseReleased", true ) )
+					} )
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "jScrollPane2"
+						add( new FormComponent( "javax.swing.JTextArea" ) {
+							name: "txtTransfer"
+							"columns": 20
+							"editable": false
+							"lineWrap": true
+							"rows": 7
+							"wrapStyleWord": true
+						} )
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Transfer"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq l {space :::p, par l {comp jScrollPane5::l::489:x, comp btnOther::t:p::p}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, comp jScrollPane5:::p::p, space :::p, comp btnOther:::p::p, space ::41:x}}"
+				} ) {
+					name: "jPanel3"
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "jScrollPane5"
+						add( new FormComponent( "javax.swing.JTextArea" ) {
+							name: "txtOther"
+							"columns": 20
+							"editable": false
+							"lineWrap": true
+							"rows": 7
+							"wrapStyleWord": true
+						} )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btnOther"
+						addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseReleased", "btnOtherMouseReleased", true ) )
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "other..."
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "jScrollPane4"
+				add( new FormComponent( "javax.swing.JTextArea" ) {
+					name: "messageTxt"
+					"columns": 20
+					"editable": false
+					"lineWrap": true
+					"rows": 2
+					"wrapStyleWord": true
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 520, 460 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {space :0:100:x}"
+			"$verticalGroup": "par l {space :0:100:x}"
+		} ) {
+			name: "jPanel2"
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 316 )
+		} )
+	}
+}

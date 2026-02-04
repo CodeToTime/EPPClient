@@ -1,0 +1,101 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import java.text.SimpleDateFormat
+
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
+group = 'com.codetotime'
+version = '2.3.1-SNAPSHOT'
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 21
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation('org.apache.xmlbeans:xmlbeans:3.1.0')
+    implementation('org.apache.httpcomponents:httpclient:4.5.14')
+    implementation('org.apache.httpcomponents:httpcore:4.4.16')
+    implementation(files('libs/epp-client-cmd-line-1.19.1.jar'))
+    implementation('org.apache.derby:derby:10.17.1.0')
+    implementation('org.apache.derby:derbytools:10.17.1.0')
+    implementation('org.slf4j:slf4j-api:2.0.17')
+    implementation('org.slf4j:slf4j-simple:2.0.17')
+    implementation('com.google.code.gson:gson:2.13.2')
+
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+application {
+    mainClass = 'EPPClient.main'
+}
+
+// ShadowJar configuration (fat jar)
+tasks.named('shadowJar', ShadowJar) {
+    archiveBaseName.set('eppclient')
+    manifest {
+        attributes('Main-Class': application.mainClass.get())
+    }
+}
+// Generate BuildInfo class
+tasks.register('generateBuildInfo') {
+    doLast {
+        def buildVersion = System.getProperty('buildVersion', project.version.toString())
+        def date = new SimpleDateFormat('yyyy-MM-dd').format(new Date())
+        def buildCompany = System.getProperty('buildCompany', '')
+        def buildPIVA = System.getProperty('buildPIVA', '')
+        def buildRegistrarTag = System.getProperty('buildRegistrarTag', '')
+        def buildOrder = System.getProperty('buildOrder', '')
+
+        def outputDir = layout.buildDirectory.dir("generated/source/buildinfo").get().asFile
+        def buildLabel
+        if (!buildCompany.isEmpty() && !buildPIVA.isEmpty()) {
+            buildLabel = buildPIVA + ": " + buildCompany
+        } else {
+            buildLabel = ''
+        }
+
+        outputDir.mkdirs()
+
+        def outputFile = file("$outputDir/BuildInfo.java")
+        outputFile.text = """package EPPClient;
+
+public class BuildInfo {
+    public static final String BUILD_VERSION = "$buildVersion";
+    public static final String BUILD_DATE = "$date";
+    public static final String BUILD_COMPANY = "$buildCompany";
+    public static final String BUILD_PIVA = "$buildPIVA";
+    public static final String BUILD_REGISTRAR_TAG = "$buildRegistrarTag";
+    public static final String BUILD_ORDER = "$buildOrder";
+    public static final String BUILD_LABEL = "$buildLabel";
+}
+"""
+    }
+}
+
+compileJava.dependsOn generateBuildInfo
+
+sourceSets {
+    main {
+        java {
+            srcDir "$buildDir/generated/source/buildinfo"
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes('Main-Class': application.mainClass)
+    }
+}
