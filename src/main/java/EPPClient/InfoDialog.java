@@ -71,10 +71,10 @@ public class InfoDialog {
                         "Data di compilazione: " + BuildInfo.BUILD_DATE + "\n" +
 
                         "----------------------------------------\n" +
-                        "L’azienda ha certificato quanto segue:\n\n" +
+                        "Il richiedente ha certificato quanto segue:\n\n" +
 
                         "1) Di essere un Registrar accreditato presso il Registro .it (NIC.it).\n" +
-                        "2) Di essere autorizzata all’utilizzo della libreria EPP del Registro .it.\n" +
+                        "2) Di essere autorizzato all'utilizzo della libreria EPP del Registro .it.\n" +
                         "3) Di aver verificato il codice del software EPP Client e di accettarlo nello stato in cui viene fornito (\"AS IS\").\n" +
 
                         "----------------------------------------\n" +
