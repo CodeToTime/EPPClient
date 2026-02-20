@@ -150,6 +150,7 @@ new FormModel {
 					selectedItem: "Internal DB"
 					addElement( "Internal DB" )
 					addElement( "MySQL" )
+					addElement( "MariaDB" )
 				}
 				"preferredSize": new java.awt.Dimension( 150, 20 )
 				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "dbengineActionPerformed", true ) )

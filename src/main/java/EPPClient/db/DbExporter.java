@@ -99,7 +99,7 @@ public class DbExporter {
 
         // For Derby, DAOs use separate DB names: contacts/domains/messages. Infer from properties file name.
         String dbNameForDerby = null;
-        if (baseUrl != null && !baseUrl.toLowerCase().contains("mysql")) {
+        if (baseUrl != null && !baseUrl.toLowerCase().contains("mysql") && !baseUrl.toLowerCase().contains("mariadb")) {
             dbNameForDerby = propertiesResourceName;
             if (dbNameForDerby != null && dbNameForDerby.endsWith(".properties")) {
                 dbNameForDerby = dbNameForDerby.substring(0, dbNameForDerby.length() - ".properties".length());
@@ -188,12 +188,15 @@ public class DbExporter {
             // Prefer modern MySQL driver if present
             return "com.mysql.cj.jdbc.Driver";
         }
+        if (url != null && url.toLowerCase().contains("mariadb")) {
+            return "org.mariadb.jdbc.Driver";
+        }
         return "org.apache.derby.jdbc.EmbeddedDriver";
     }
 
     private static String buildJdbcUrl(String baseUrl, String dbName) {
         if (baseUrl == null) return null;
-        if (baseUrl.toLowerCase().contains("mysql")) {
+        if (baseUrl.toLowerCase().contains("mysql") || baseUrl.toLowerCase().contains("mariadb")) {
             return baseUrl; // full URL already configured for MySQL
         }
         // Derby: append database name (contacts/domains/messages). If dbName is null, return baseUrl as-is.

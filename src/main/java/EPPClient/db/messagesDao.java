@@ -112,7 +112,7 @@ public class messagesDao
 
     String driverName = dbProperties.getProperty("derby.driver");
     loadDatabaseDriver(driverName);
-    if (!dbExists() && !dbProperties.getProperty("derby.url").contains("mysql"))
+    if (!dbExists() && !dbProperties.getProperty("derby.url").contains("mysql") && !dbProperties.getProperty("derby.url").contains("mariadb"))
     {
       createDatabase();
     }
@@ -245,7 +245,7 @@ public class messagesDao
     try
     {
       statement = dbConnection.createStatement();
-      if (dbProperties.getProperty("derby.url").contains("mysql"))
+      if (dbProperties.getProperty("derby.url").contains("mysql") || dbProperties.getProperty("derby.url").contains("mariadb"))
       {
         statement.execute(strCreateAddressTableMYSQL);
       }
@@ -363,7 +363,7 @@ public class messagesDao
   public String getDatabaseUrl()
   {
     String dbUrl = dbProperties.getProperty("derby.url");
-    if (!dbUrl.contains("mysql"))
+    if (!dbUrl.contains("mysql") && !dbUrl.contains("mariadb"))
       dbUrl += dbName;
     return dbUrl;
   }
