@@ -17,6 +17,7 @@ package EPPClient.domains;
 
 import EPPClient.db.domainsDao;
 
+import EPPClient.Debug;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -187,7 +188,7 @@ public class DomainFrame
   public void actionPerformed(ActionEvent e)
   {
     String actionCommand = e.getActionCommand();
-    System.out.println("ActionEvent: " + actionCommand);
+    Debug.log("DomainFrame", "ActionEvent: " + actionCommand);
     if (actionCommand.equalsIgnoreCase("CANCEL_ADDRESS"))
     {
       cancelAddress();

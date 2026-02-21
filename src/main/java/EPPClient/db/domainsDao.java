@@ -16,6 +16,7 @@
 package EPPClient.db;
 
 import EPPClient.config.EPPparams;
+import EPPClient.Debug;
 import EPPClient.domains.Domain;
 import EPPClient.domains.ListEntry;
 
@@ -198,7 +199,7 @@ public class domainsDao
     {
       statement = conn.createStatement();
       statement.execute("ALTER TABLE " + fullTableName + " ADD COLUMN " + columnName + " " + columnType);
-      System.out.println("Aggiunta colonna " + columnName + " alla tabella " + fullTableName);
+      Debug.log("domainsDao", "Aggiunta colonna " + columnName + " alla tabella " + fullTableName);
     }
     catch (SQLException ex)
     {
@@ -280,7 +281,7 @@ public class domainsDao
         }
         catch (ClassNotFoundException e)
         {
-          ex.printStackTrace();
+          Debug.printStackTrace(e);
         }
       }
       else
@@ -395,8 +396,7 @@ public class domainsDao
     catch (SQLException ex)
     {
       isConnected = false;
-      System.out.println("errore!!");
-      ex.printStackTrace();
+      Debug.printStackTrace(ex);
     }
     return isConnected;
   }

@@ -16,6 +16,7 @@
 package EPPClient.importer;
 
 import EPPClient.main;
+import EPPClient.Debug;
 import EPPClient.uplink.EPPuplink;
 
 import javax.swing.*;
@@ -122,7 +123,7 @@ public class TxtImport extends JFrame
       }
       else
       {
-        System.out.println("non è stato selezionato alcun file...");
+        Debug.log("TxtImport", "non è stato selezionato alcun file...");
       }
     }
     else
