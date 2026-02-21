@@ -127,23 +127,6 @@ public class messagesDao
       {
 
       }
-
-      if (false)
-      {
-        // Upgrade database
-        connect();
-        Statement statement = null;
-        try
-        {
-          statement = dbConnection.createStatement();
-          statement.execute("ALTER TABLE " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " ADD COLUMN STATUS VARCHAR(255)");
-        }
-        catch (SQLException ex)
-        {
-          ex.printStackTrace();
-        }
-        disconnect();
-      }
     }
   }
 
