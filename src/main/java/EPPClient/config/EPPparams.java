@@ -67,7 +67,21 @@ public class EPPparams
       {
         if (parameterValue.length() > 0)
         {
-          parameterValue = CryptoUtils.decrypt(parameterValue);
+          String decryptedValue = CryptoUtils.decrypt(parameterValue);
+          
+          // Check if decrypted with old key and needs migration
+          if (CryptoUtils.needsMigration() && decryptedValue != null && !decryptedValue.isEmpty()) {
+            // Migration: re-encrypt with new key
+            String reEncrypted = CryptoUtils.encrypt(decryptedValue);
+            prefs.putByteArray(paramPrefix + key, reEncrypted.getBytes());
+            try {
+              prefs.sync();
+            } catch (java.util.prefs.BackingStoreException ex) {
+              ex.printStackTrace();
+            }
+          }
+          
+          return decryptedValue;
         }
         else
         {
@@ -92,7 +106,17 @@ public class EPPparams
       }
       catch (Exception e)
       {
-        e.printStackTrace();
+        // If decryption fails, try reading as plain text (for non-encrypted values)
+        // or return default from properties
+        try
+        {
+          parameterValue = RESOURCE_BUNDLE.getString(key);
+        }
+        catch (MissingResourceException e2)
+        {
+          parameterValue = "";
+        }
+        setParameter(key, parameterValue);
       }
 
       return parameterValue;
