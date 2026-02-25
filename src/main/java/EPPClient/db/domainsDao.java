@@ -129,121 +129,87 @@ public class domainsDao
       }
       else
       {
+        // Aggiorna lo schema: aggiunge le colonne mancanti se non esistono
+        String tableName = dbProperties.getProperty("db.table");
 
+        addColumnIfNotExists(dbConnection, tableName, "EXPIRE", "DATE");
+        addColumnIfNotExists(dbConnection, tableName, "VALIDATIONCODE", "VARCHAR(255)");
+        addColumnIfNotExists(dbConnection, tableName, "ISDNSSEC", "SMALLINT");
+        addColumnIfNotExists(dbConnection, tableName, "DNSSECKEYTAG", "VARCHAR(255)");
+        addColumnIfNotExists(dbConnection, tableName, "DNSSECALG", "INTEGER");
+        addColumnIfNotExists(dbConnection, tableName, "DNSSECDIGESTTYPE", "INTEGER");
+        addColumnIfNotExists(dbConnection, tableName, "DNSSECDIGEST", "VARCHAR(255)");
       }
+    }
+  }
 
-
-      if (EPPparams.getParameter("EppClient.dblevel").equalsIgnoreCase(""))
+  /**
+   * Verifica se una colonna esiste nella tabella specificata.
+   * Gestisce le differenze di case-sensitivity tra Derby (maiuscolo) e MySQL (minuscolo).
+   */
+  private boolean columnExists(Connection conn, String tableName, String columnName)
+  {
+    try
+    {
+      // Prova prima con il nome tabella originale (funziona per MySQL con nomi minuscoli)
+      ResultSet columns = conn.getMetaData().getColumns(null, null, tableName, null);
+      while (columns.next())
       {
-        EPPparams.setParameter("EppClient.dblevel", "0");
-      }
-
-      if (EPPparams.getParameter("EppClient.dblevel").equalsIgnoreCase("0"))
-      {
-        System.err.println("Updating database to level 1");
-        // Upgrade database
-        connect();
-        Statement statement = null;
-        try
+        if (columns.getString("COLUMN_NAME").equalsIgnoreCase(columnName))
         {
-          statement = dbConnection.createStatement();
-          statement.execute("ALTER TABLE " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " ADD COLUMN EXPIRE DATE");
+          columns.close();
+          return true;
         }
-        catch (SQLException ex)
-        {
-          ex.printStackTrace();
-        }
-        disconnect();
-        EPPparams.setParameter("EppClient.dblevel", "1");
       }
+      columns.close();
 
-      if (EPPparams.getParameter("EppClient.dblevel").equalsIgnoreCase("1"))
+      // Prova con il nome tabella in maiuscolo (funziona per Derby)
+      columns = conn.getMetaData().getColumns(null, null, tableName.toUpperCase(), null);
+      while (columns.next())
       {
-        System.err.println("Updating database to level 2");
-        // Upgrade database
-        connect();
-        Statement statement = null;
-        try
+        if (columns.getString("COLUMN_NAME").equalsIgnoreCase(columnName))
         {
-          statement = dbConnection.createStatement();
-          statement.execute("ALTER TABLE " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci");
+          columns.close();
+          return true;
         }
-        catch (SQLException ex)
-        {
-          ex.printStackTrace();
-        }
-        disconnect();
-        EPPparams.setParameter("EppClient.dblevel", "2");
       }
+      columns.close();
+    }
+    catch (SQLException ex)
+    {
+      ex.printStackTrace();
+    }
+    return false;
+  }
 
-      if (EPPparams.getParameter("EppClient.dblevel").equalsIgnoreCase("2"))
+  /**
+   * Aggiunge una colonna alla tabella se non esiste già.
+   */
+  private void addColumnIfNotExists(Connection conn, String tableName, String columnName, String columnType)
+  {
+    if (columnExists(conn, tableName, columnName))
+    {
+      return; // La colonna esiste già, niente da fare
+    }
+
+    String fullTableName = dbProperties.getProperty("db.schema") + "." + tableName;
+    Statement statement = null;
+    try
+    {
+      statement = conn.createStatement();
+      statement.execute("ALTER TABLE " + fullTableName + " ADD COLUMN " + columnName + " " + columnType);
+      System.out.println("Aggiunta colonna " + columnName + " alla tabella " + fullTableName);
+    }
+    catch (SQLException ex)
+    {
+      // La colonna potrebbe già esistere (race condition) o altro errore
+      ex.printStackTrace();
+    }
+    finally
+    {
+      if (statement != null)
       {
-        // Upgrade database - add VALIDATIONCODE column
-
-        // First check if column already exists
-        boolean needToCreateValidationCode = true;
-        try {
-          connect();
-          ResultSet columns = dbConnection.getMetaData().getColumns(null, null, dbProperties.getProperty("db.table").toUpperCase(), null);
-          while (columns.next()) {
-            if (columns.getString("COLUMN_NAME").equalsIgnoreCase("VALIDATIONCODE"))
-              needToCreateValidationCode = false;
-          }
-        } catch (SQLException ex) {
-          ex.printStackTrace();
-        }
-
-        if (needToCreateValidationCode) {
-          Statement statement = null;
-          try {
-            if (dbConnection == null || dbConnection.isClosed()) {
-              connect();
-            }
-            statement = dbConnection.createStatement();
-            statement.execute("ALTER TABLE " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " ADD COLUMN VALIDATIONCODE VARCHAR(255)");
-          } catch (SQLException ex) {
-            ex.printStackTrace();
-          } finally {
-            if (statement != null) try { statement.close(); } catch (SQLException e) {}
-          }
-          disconnect();
-        }
-
-        EPPparams.setParameter("EppClient.dblevel", "3");
-      }
-      if (EPPparams.getParameter("EppClient.dblevel").equalsIgnoreCase("3"))
-      {
-        boolean needDnssec = true;
-        try {
-          connect();
-          ResultSet columns = dbConnection.getMetaData().getColumns(null, null, dbProperties.getProperty("db.table").toUpperCase(), null);
-          while (columns.next()) {
-            if (columns.getString("COLUMN_NAME").equalsIgnoreCase("ISDNSSEC"))
-              needDnssec = false;
-          }
-        } catch (SQLException ex) {
-          ex.printStackTrace();
-        }
-        if (needDnssec) {
-          Statement statement = null;
-          try {
-            if (dbConnection == null || dbConnection.isClosed()) {
-              connect();
-            }
-            statement = dbConnection.createStatement();
-            statement.execute("ALTER TABLE " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " ADD COLUMN ISDNSSEC SMALLINT");
-            statement.execute("ALTER TABLE " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " ADD COLUMN DNSSECKEYTAG VARCHAR(255)");
-            statement.execute("ALTER TABLE " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " ADD COLUMN DNSSECALG INTEGER");
-            statement.execute("ALTER TABLE " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " ADD COLUMN DNSSECDIGESTTYPE INTEGER");
-            statement.execute("ALTER TABLE " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " ADD COLUMN DNSSECDIGEST VARCHAR(255)");
-          } catch (SQLException ex) {
-            ex.printStackTrace();
-          } finally {
-            if (statement != null) try { statement.close(); } catch (SQLException e) {}
-          }
-          disconnect();
-        }
-        EPPparams.setParameter("EppClient.dblevel", "4");
+        try { statement.close(); } catch (SQLException e) { /* ignore */ }
       }
     }
   }
@@ -300,14 +266,27 @@ public class domainsDao
 
   private void loadDatabaseDriver(String driverName)
   {
-    // load Derby driver
     try
     {
       Class.forName(driverName);
     }
     catch (ClassNotFoundException ex)
     {
-      ex.printStackTrace();
+      if ("com.mysql.cj.jdbc.Driver".equals(driverName))
+      {
+        try
+        {
+          Class.forName("com.mysql.jdbc.Driver");
+        }
+        catch (ClassNotFoundException e)
+        {
+          ex.printStackTrace();
+        }
+      }
+      else
+      {
+        ex.printStackTrace();
+      }
     }
 
   }
@@ -321,8 +300,16 @@ public class domainsDao
     {
       dbProperties.load(dbPropInputStream);
 
-      dbProperties.put("derby.driver", "org.apache.derby.jdbc.EmbeddedDriver");
-      dbProperties.put("derby.url", EPPparams.getParameter("EppClient.dburl"));
+      String dbUrl = EPPparams.getParameter("EppClient.dburl");
+      if (dbUrl.contains("mysql"))
+      {
+        dbProperties.put("derby.driver", "com.mysql.cj.jdbc.Driver");
+      }
+      else
+      {
+        dbProperties.put("derby.driver", "org.apache.derby.jdbc.EmbeddedDriver");
+      }
+      dbProperties.put("derby.url", dbUrl);
       dbProperties.put("db.schema", EPPparams.getParameter("EppClient.dbname"));
 
       dbProperties.put("user", EPPparams.getParameter("EppClient.dbuid"));

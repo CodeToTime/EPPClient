@@ -148,86 +148,84 @@ public class contactsDao
       }
       else
       {
-        boolean needToCreateSchoolCode=true;
-        try
+        // Aggiorna lo schema: aggiunge le colonne mancanti se non esistono
+        String tableName = dbProperties.getProperty("db.table");
+        String fullTableName = dbProperties.getProperty("db.schema") + "." + tableName;
+
+        addColumnIfNotExists(dbConnection, tableName, "SCHOOLCODE", "VARCHAR(64)");
+        addColumnIfNotExists(dbConnection, tableName, "UOCODE", "VARCHAR(64)");
+        addColumnIfNotExists(dbConnection, tableName, "IPACODE", "VARCHAR(64)");
+      }
+    }
+  }
+
+  /**
+   * Verifica se una colonna esiste nella tabella specificata.
+   * Gestisce le differenze di case-sensitivity tra Derby (maiuscolo) e MySQL (minuscolo).
+   */
+  private boolean columnExists(Connection conn, String tableName, String columnName)
+  {
+    try
+    {
+      // Prova prima con il nome tabella originale (funziona per MySQL con nomi minuscoli)
+      ResultSet columns = conn.getMetaData().getColumns(null, null, tableName, null);
+      while (columns.next())
+      {
+        if (columns.getString("COLUMN_NAME").equalsIgnoreCase(columnName))
         {
-          ResultSet columns = dbConnection.getMetaData().getColumns(null, null, dbProperties.getProperty("db.table").toUpperCase(), null);
-          while (columns.next())
-          {
-            if (columns.getString("COLUMN_NAME").equalsIgnoreCase("SCHOOLCODE"))
-              needToCreateSchoolCode = false;
-          }
+          columns.close();
+          return true;
         }
-        catch (SQLException ex)
+      }
+      columns.close();
+
+      // Prova con il nome tabella in maiuscolo (funziona per Derby)
+      columns = conn.getMetaData().getColumns(null, null, tableName.toUpperCase(), null);
+      while (columns.next())
+      {
+        if (columns.getString("COLUMN_NAME").equalsIgnoreCase(columnName))
         {
-          ex.printStackTrace();
+          columns.close();
+          return true;
         }
-        if(needToCreateSchoolCode)
-        {
-          // Upgrade database
-          connect();
-          Statement statement = null;
-          try
-          {
-            statement = dbConnection.createStatement();
-            statement.execute("ALTER TABLE " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " ADD COLUMN SCHOOLCODE VARCHAR(64)");
-          }
-          catch (SQLException ex)
-          {
-            ex.printStackTrace();
-          }
-          disconnect();
-        }
+      }
+      columns.close();
+    }
+    catch (SQLException ex)
+    {
+      ex.printStackTrace();
+    }
+    return false;
+  }
 
-        // Check and add UOCODE column
-        boolean needToCreateUoCode = true;
-        try {
-          ResultSet columns = dbConnection.getMetaData().getColumns(null, null, dbProperties.getProperty("db.table").toUpperCase(), null);
-          while (columns.next()) {
-            if (columns.getString("COLUMN_NAME").equalsIgnoreCase("UOCODE"))
-              needToCreateUoCode = false;
-          }
-        } catch (SQLException ex) {
-          ex.printStackTrace();
-        }
+  /**
+   * Aggiunge una colonna alla tabella se non esiste già.
+   */
+  private void addColumnIfNotExists(Connection conn, String tableName, String columnName, String columnType)
+  {
+    if (columnExists(conn, tableName, columnName))
+    {
+      return; // La colonna esiste già, niente da fare
+    }
 
-        if (needToCreateUoCode) {
-          Statement statement = null;
-          try {
-            statement = dbConnection.createStatement();
-            statement.execute("ALTER TABLE " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " ADD COLUMN UOCODE VARCHAR(64)");
-          } catch (SQLException ex) {
-            ex.printStackTrace();
-          } finally {
-            if (statement != null) try { statement.close(); } catch (SQLException e) {}
-          }
-        }
-
-// Check and add IPACODE column
-        boolean needToCreateIpaCode = true;
-        try {
-          ResultSet columns = dbConnection.getMetaData().getColumns(null, null, dbProperties.getProperty("db.table").toUpperCase(), null);
-          while (columns.next()) {
-            if (columns.getString("COLUMN_NAME").equalsIgnoreCase("IPACODE"))
-              needToCreateIpaCode = false;
-          }
-        } catch (SQLException ex) {
-          ex.printStackTrace();
-        }
-
-        if (needToCreateIpaCode) {
-          Statement statement = null;
-          try {
-            statement = dbConnection.createStatement();
-            statement.execute("ALTER TABLE " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " ADD COLUMN IPACODE VARCHAR(64)");
-          } catch (SQLException ex) {
-            ex.printStackTrace();
-          } finally {
-            if (statement != null) try { statement.close(); } catch (SQLException e) {}
-          }
-        }
-
-
+    String fullTableName = dbProperties.getProperty("db.schema") + "." + tableName;
+    Statement statement = null;
+    try
+    {
+      statement = conn.createStatement();
+      statement.execute("ALTER TABLE " + fullTableName + " ADD COLUMN " + columnName + " " + columnType);
+      System.out.println("Aggiunta colonna " + columnName + " alla tabella " + fullTableName);
+    }
+    catch (SQLException ex)
+    {
+      // La colonna potrebbe già esistere (race condition) o altro errore
+      ex.printStackTrace();
+    }
+    finally
+    {
+      if (statement != null)
+      {
+        try { statement.close(); } catch (SQLException e) { /* ignore */ }
       }
     }
   }
@@ -284,14 +282,27 @@ public class contactsDao
 
   private void loadDatabaseDriver(String driverName)
   {
-    // load Derby driver
     try
     {
       Class.forName(driverName);
     }
     catch (ClassNotFoundException ex)
     {
-      ex.printStackTrace();
+      if ("com.mysql.cj.jdbc.Driver".equals(driverName))
+      {
+        try
+        {
+          Class.forName("com.mysql.jdbc.Driver");
+        }
+        catch (ClassNotFoundException e)
+        {
+          ex.printStackTrace();
+        }
+      }
+      else
+      {
+        ex.printStackTrace();
+      }
     }
 
   }
@@ -305,8 +316,16 @@ public class contactsDao
     {
       dbProperties.load(dbPropInputStream);
 
-      dbProperties.put("derby.driver", "org.apache.derby.jdbc.EmbeddedDriver");
-      dbProperties.put("derby.url", EPPparams.getParameter("EppClient.dburl"));
+      String dbUrl = EPPparams.getParameter("EppClient.dburl");
+      if (dbUrl.contains("mysql"))
+      {
+        dbProperties.put("derby.driver", "com.mysql.cj.jdbc.Driver");
+      }
+      else
+      {
+        dbProperties.put("derby.driver", "org.apache.derby.jdbc.EmbeddedDriver");
+      }
+      dbProperties.put("derby.url", dbUrl);
       dbProperties.put("db.schema", EPPparams.getParameter("EppClient.dbname"));
       dbProperties.put("user", EPPparams.getParameter("EppClient.dbuid"));
       dbProperties.put("password", EPPparams.getParameter("EppClient.dbpwd"));
