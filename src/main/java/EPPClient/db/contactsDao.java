@@ -135,7 +135,7 @@ public class contactsDao
 
     String driverName = dbProperties.getProperty("derby.driver");
     loadDatabaseDriver(driverName);
-    if (!dbExists() && !dbProperties.getProperty("derby.url").contains("mysql"))
+    if (!dbExists() && !dbProperties.getProperty("derby.url").contains("mariadb"))
     {
       createDatabase();
     }
@@ -161,13 +161,13 @@ public class contactsDao
 
   /**
    * Verifica se una colonna esiste nella tabella specificata.
-   * Gestisce le differenze di case-sensitivity tra Derby (maiuscolo) e MySQL (minuscolo).
+   * Gestisce le differenze di case-sensitivity tra Derby (maiuscolo) e MySQL/MariaDB (minuscolo).
    */
   private boolean columnExists(Connection conn, String tableName, String columnName)
   {
     try
     {
-      // Prova prima con il nome tabella originale (funziona per MySQL con nomi minuscoli)
+      // Prova prima con il nome tabella originale (funziona per MySQL/MariaDB con nomi minuscoli)
       ResultSet columns = conn.getMetaData().getColumns(null, null, tableName, null);
       while (columns.next())
       {
@@ -288,11 +288,11 @@ public class contactsDao
     }
     catch (ClassNotFoundException ex)
     {
-      if ("com.mysql.cj.jdbc.Driver".equals(driverName))
+      if ("org.mariadb.jdbc.Driver".equals(driverName))
       {
         try
         {
-          Class.forName("com.mysql.jdbc.Driver");
+          Class.forName("org.mariadb.jdbc.Driver");
         }
         catch (ClassNotFoundException e)
         {
@@ -317,9 +317,9 @@ public class contactsDao
       dbProperties.load(dbPropInputStream);
 
       String dbUrl = EPPparams.getParameter("EppClient.dburl");
-      if (dbUrl.contains("mysql"))
+      if (dbUrl.contains("mariadb"))
       {
-        dbProperties.put("derby.driver", "com.mysql.cj.jdbc.Driver");
+        dbProperties.put("derby.driver", "org.mariadb.jdbc.Driver");
       }
       else
       {
@@ -450,7 +450,7 @@ public class contactsDao
   public String getDatabaseUrl()
   {
     String dbUrl = dbProperties.getProperty("derby.url");
-    if (!dbUrl.contains("mysql"))
+    if (!dbUrl.contains("mariadb"))
       dbUrl += dbName;
     return dbUrl;
   }

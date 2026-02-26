@@ -201,7 +201,7 @@ public class manageParameters extends JFrame implements WindowListener
       //---- dbengine ----
       dbengine.setModel(new DefaultComboBoxModel<>(new String[] {
           "Internal DB",
-          "MySQL"
+          "MySQL/MariaDB"
       }));
       dbengine.setPreferredSize(new Dimension(150, 20));
       dbengine.addActionListener(e -> dbengineActionPerformed(e));
@@ -548,14 +548,14 @@ public class manageParameters extends JFrame implements WindowListener
     EPPparams.setParameter("EppClient.implement.DNSSEC", Boolean.toString(chkDNSSEC.isSelected()));
 
     switch (dbengine.getSelectedIndex())
-    { //0: derby, 1: mysql
+    { //0: derby, 1: mysql/mariadb
       case 0:
         EPPparams.setParameter("EppClient.dburl", "jdbc:derby:");
         EPPparams.setParameter("EppClient.dbuid", "eppclient");
         EPPparams.setParameter("EppClient.dbpwd", "clientepp");
         break;
       case 1:
-        EPPparams.setParameter("EppClient.dburl", "jdbc:mysql://" + dbhost.getText() + "/" + dbname.getText());
+        EPPparams.setParameter("EppClient.dburl", "jdbc:mariadb://" + dbhost.getText() + "/" + dbname.getText());
         break;
       default:
         break;
@@ -588,7 +588,7 @@ public class manageParameters extends JFrame implements WindowListener
   private void setVisibleOnDbEngine()
   {
     switch (dbengine.getSelectedIndex())
-    { //0: derby, 1: mysql
+    { //0: derby, 1: mysql/mariadb
       case 0:
         dbhost.setEditable(false);
         dbname.setEditable(false);

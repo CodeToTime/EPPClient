@@ -149,7 +149,7 @@ new FormModel {
 				"model": new javax.swing.DefaultComboBoxModel {
 					selectedItem: "Internal DB"
 					addElement( "Internal DB" )
-					addElement( "MySQL" )
+					addElement( "MySQL/MariaDB" )
 				}
 				"preferredSize": new java.awt.Dimension( 150, 20 )
 				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "dbengineActionPerformed", true ) )

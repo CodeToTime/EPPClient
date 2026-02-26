@@ -28,7 +28,7 @@ dependencies {
     implementation('org.slf4j:slf4j-api:2.0.17')
     implementation('org.slf4j:slf4j-simple:2.0.17')
     implementation('com.google.code.gson:gson:2.13.2')
-    implementation('com.mysql:mysql-connector-j:9.6.0')
+    implementation('org.mariadb.jdbc:mariadb-java-client:3.5.7')
 
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
