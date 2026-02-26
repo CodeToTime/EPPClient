@@ -199,14 +199,27 @@ public class messagesDao
 
   private void loadDatabaseDriver(String driverName)
   {
-    // load Derby driver
     try
     {
       Class.forName(driverName);
     }
     catch (ClassNotFoundException ex)
     {
-      ex.printStackTrace();
+      if ("com.mysql.cj.jdbc.Driver".equals(driverName))
+      {
+        try
+        {
+          Class.forName("com.mysql.jdbc.Driver");
+        }
+        catch (ClassNotFoundException e)
+        {
+          ex.printStackTrace();
+        }
+      }
+      else
+      {
+        ex.printStackTrace();
+      }
     }
 
   }
@@ -222,8 +235,16 @@ public class messagesDao
       dbProperties.put("derby.locks.monitor", "true");
       dbProperties.put("derby.locks.deadlockTrace", "true");
       dbProperties.put("derby.language.logStatementText", "true");
-      dbProperties.put("derby.driver", "org.apache.derby.jdbc.EmbeddedDriver");
-      dbProperties.put("derby.url", EPPparams.getParameter("EppClient.dburl"));
+      String dbUrl = EPPparams.getParameter("EppClient.dburl");
+      if (dbUrl.contains("mysql"))
+      {
+        dbProperties.put("derby.driver", "com.mysql.cj.jdbc.Driver");
+      }
+      else
+      {
+        dbProperties.put("derby.driver", "org.apache.derby.jdbc.EmbeddedDriver");
+      }
+      dbProperties.put("derby.url", dbUrl);
       dbProperties.put("db.schema", EPPparams.getParameter("EppClient.dbname"));
       dbProperties.put("user", EPPparams.getParameter("EppClient.dbuid"));
       dbProperties.put("password", EPPparams.getParameter("EppClient.dbpwd"));
