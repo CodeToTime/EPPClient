@@ -17,6 +17,7 @@ package EPPClient.config;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
@@ -26,6 +27,13 @@ public class CryptoUtils
 {
   private static final String KEY_FILE = "local.key";
   public static final String AES = "AES";
+  // Old hardcoded key for migration from versions <= 2.3.2
+  private static final String OLD_KEY = "D6B80943CCE0F1C049D9A39094FB4FA1";
+
+  private static String getKeyFilePath() {
+    String userHome = System.getProperty("user.home");
+    return userHome + "/.eppclient/" + KEY_FILE;
+  }
 
   public static String encrypt(String value)
           throws GeneralSecurityException, IOException
@@ -40,25 +48,97 @@ public class CryptoUtils
   public static String decrypt(String message)
           throws GeneralSecurityException, IOException
   {
-    SecretKeySpec sks = getSecretKeySpec();
-    Cipher cipher = Cipher.getInstance(CryptoUtils.AES);
-    cipher.init(Cipher.DECRYPT_MODE, sks);
-    byte[] decrypted = cipher.doFinal(hexStringToByteArray(message));
-    return new String(decrypted);
+    // Try with new key first
+    try {
+      SecretKeySpec sks = getSecretKeySpec();
+      Cipher cipher = Cipher.getInstance(CryptoUtils.AES);
+      cipher.init(Cipher.DECRYPT_MODE, sks);
+      byte[] decrypted = cipher.doFinal(hexStringToByteArray(message));
+      return new String(decrypted);
+    } catch (Exception e) {
+      // If fails, try with old key for migration from <= 2.3.2
+      try {
+        byte[] oldKeyBytes = hexStringToByteArray(OLD_KEY);
+        SecretKeySpec sks = new SecretKeySpec(oldKeyBytes, CryptoUtils.AES);
+        Cipher cipher = Cipher.getInstance(CryptoUtils.AES);
+        cipher.init(Cipher.DECRYPT_MODE, sks);
+        byte[] decrypted = cipher.doFinal(hexStringToByteArray(message));
+        return new String(decrypted);
+      } catch (Exception e2) {
+        throw new GeneralSecurityException("Decryption failed with both new and old keys");
+      }
+    }
   }
 
   private static SecretKeySpec getSecretKeySpec()
           throws NoSuchAlgorithmException, IOException
   {
-    byte[] key = readKeyFile();
+    byte[] key = readOrGenerateKeyFile();
     SecretKeySpec sks = new SecretKeySpec(key, CryptoUtils.AES);
     return sks;
   }
 
-  private static byte[] readKeyFile()
+  private static byte[] readOrGenerateKeyFile()
   {
-    String keyValue = EPPparams.getKey();
-    return hexStringToByteArray(keyValue);
+    String keyPath = getKeyFilePath();
+    File keyFile = new File(keyPath);
+    
+    // If key file exists, read it
+    if (keyFile.exists()) {
+      try {
+        java.util.Scanner scanner = new java.util.Scanner(keyFile);
+        String keyHex = scanner.nextLine().trim();
+        scanner.close();
+        if (keyHex.length() == 32) { // 16 bytes = 32 hex chars
+          return hexStringToByteArray(keyHex);
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    
+    // Generate new key and save it
+    byte[] newKey = new byte[16];
+    new java.security.SecureRandom().nextBytes(newKey);
+    
+    try {
+      // Ensure directory exists
+      File keyDir = keyFile.getParentFile();
+      if (keyDir != null) {
+        keyDir.mkdirs();
+      }
+      
+      // Save key to file
+      java.io.FileWriter writer = new java.io.FileWriter(keyFile);
+      writer.write(byteArrayToHexString(newKey));
+      writer.close();
+      
+      // Set file permissions to owner only (Unix-like systems)
+      keyFile.setReadable(true, false);
+      keyFile.setWritable(true, false);
+      keyFile.setExecutable(false);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    
+    return newKey;
+  }
+
+  /**
+   * Check if migration from old key is needed
+   * @return true if preferences exist encrypted with old key
+   */
+  public static boolean needsMigration() {
+    String keyPath = getKeyFilePath();
+    File keyFile = new File(keyPath);
+    return !keyFile.exists();
+  }
+
+  /**
+   * Get old key for migration purposes
+   */
+  public static String getOldKey() {
+    return OLD_KEY;
   }
 
 
