@@ -16,6 +16,7 @@
 package EPPClient.config;
 
 import EPPClient.CustomLogin;
+import EPPClient.Debug;
 import EPPClient.main;
 import it.nic.epp.client.commands.session.Login;
 import it.nic.epp.client.commands.session.Logout;
@@ -402,15 +403,15 @@ public class manageParameters extends JFrame implements WindowListener
 
           // send the login command
           //System.out.println("CLIENT: "+ login.toString() + "\n");
-          System.out.println("CLIENT: *LOGIN w/CHANGE PWD COMMAND OMITTED*\n");
+          Debug.log("manageParameters", "CLIENT: *LOGIN w/CHANGE PWD COMMAND OMITTED*\n");
           HttpBaseResponse response = client.sendCommand(login);
-          System.out.println("SERVER: " + response.toString());
+          Debug.log("manageParameters", "SERVER: " + response.toString());
 
           // send the logout command with verbose interaction
           Logout logout = new Logout();
-          System.out.println("CLIENT: " + logout.toString() + "\n");
+          Debug.log("manageParameters", "CLIENT: " + logout.toString() + "\n");
           response = client.sendCommand(logout);
-          System.out.println("SERVER: " + response.toString());
+          Debug.log("manageParameters", "SERVER: " + response.toString());
 
           defaultPassword.setText(newPassword);
           EPPparams.setParameter("EppClient.defaultPassword", defaultPassword.getText());

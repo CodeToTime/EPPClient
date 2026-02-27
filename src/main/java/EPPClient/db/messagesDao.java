@@ -16,6 +16,7 @@
 package EPPClient.db;
 
 import EPPClient.config.EPPparams;
+import EPPClient.Debug;
 import EPPClient.messages.Message;
 
 import java.io.File;
@@ -213,7 +214,7 @@ public class messagesDao
         }
         catch (ClassNotFoundException e)
         {
-          ex.printStackTrace();
+          Debug.printStackTrace(e);
         }
       }
       else
@@ -260,7 +261,7 @@ public class messagesDao
 
   private boolean createTables(Connection dbConnection)
   {
-    System.out.println("Creazione tabelle in corso...");
+    Debug.log("messagesDao", "Creazione tabelle in corso...");
     boolean bCreatedTables = false;
     Statement statement = null;
     try
@@ -347,8 +348,7 @@ public class messagesDao
     catch (SQLException ex)
     {
       isConnected = false;
-      System.out.println("errore!!");
-      ex.printStackTrace();
+      Debug.printStackTrace(ex);
     }
     return isConnected;
   }

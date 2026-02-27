@@ -73,6 +73,17 @@ java -jar build/libs/eppclient-<versione>-all.jar
 
 ---
 
+## Opzioni di debug
+
+Per abilitare i messaggi di debug nella console, utilizzare il flag `-Deppclient.debug=true`:
+```bash
+java -Deppclient.debug=true -jar build/libs/eppclient-<versione>-all.jar
+```
+
+Questa opzione attiva la stampa di messaggi di log utili per il troubleshooting.
+
+---
+
 ## Note sulle dipendenze e compatibilità
 
 Questa sezione descrive le principali dipendenze del progetto e le scelte adottate per garantire la compatibilità con la libreria del Registro .it e il corretto funzionamento dell'applicazione.

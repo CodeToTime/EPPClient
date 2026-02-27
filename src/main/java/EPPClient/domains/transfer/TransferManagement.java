@@ -17,6 +17,7 @@ package EPPClient.domains.transfer;
 
 
 import EPPClient.logger;
+import EPPClient.Debug;
 import EPPClient.uplink.EPPuplink;
 import it.nic.epp.client.commands.transform.DomainTransfer;
 import it.nic.epp.client.exceptions.EppSchemaException;
@@ -239,7 +240,7 @@ public class TransferManagement extends JFrame implements ActionListener
   public void actionPerformed(ActionEvent e)
   {
     String actionCommand = e.getActionCommand();
-    System.out.println("ActionEvent: " + actionCommand);
+    Debug.log("TransferManagement", "ActionEvent: " + actionCommand);
     if (actionCommand.equalsIgnoreCase("CANCEL_ADDRESS"))
     {
       cancelTransfer();

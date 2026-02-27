@@ -16,6 +16,7 @@
 package EPPClient.uplink;
 
 import EPPClient.CustomLogin;
+import EPPClient.Debug;
 import EPPClient.config.EPPparams;
 import EPPClient.logger;
 import EPPClient.main;
@@ -138,7 +139,24 @@ class EPPthread extends Thread
     }
     catch (IOException v)
     {
-      v.printStackTrace();
+      // Check if debug mode is enabled
+      Debug.printStackTrace(v);
+      // Check for connection errors that might indicate whitelist issues
+      String errorMessage = v.getMessage();
+      if (errorMessage != null && (errorMessage.contains("Connection refused") || errorMessage.contains("Connect to") || errorMessage.contains("Connection timed out") || errorMessage.contains("ConnectException"))) {
+        JOptionPane.showMessageDialog(mainFrame, 
+            "Impossibile connettersi al server EPP.\n\n" +
+            "Possibili cause:\n" +
+            "- L'indirizzo IP non è nella whitelist del Registro\n" +
+            "- Il firewall blocca la connessione\n" +
+            "- Il server EPP non è raggiungibile\n\n" +
+            "Verificare che l'indirizzo IP sia abilitato presso il Registro.", 
+            "Errore di Connessione", JOptionPane.ERROR_MESSAGE);
+      } else {
+        JOptionPane.showMessageDialog(mainFrame, 
+            "Errore di comunicazione con il server EPP:\n" + v.getMessage(), 
+            "Errore di Connessione", JOptionPane.ERROR_MESSAGE);
+      }
     }
     catch (URISyntaxException v)
     {
@@ -343,7 +361,7 @@ class EPPthread extends Thread
     }
     catch (InterruptedException ex)
     {
-      System.out.println("Interrupted while waiting for EPP uplink availability.");
+      Debug.log("EPPthread", "Interrupted while waiting for EPP uplink availability.");
     }
 
     return response;
