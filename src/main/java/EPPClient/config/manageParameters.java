@@ -552,6 +552,7 @@ public class manageParameters extends JFrame implements WindowListener
     { //0: derby, 1: mysql/mariadb, 2: postgresql
       case 0:
         EPPparams.setParameter("EppClient.dburl", "jdbc:derby:");
+        EPPparams.setParameter("EppClient.dbname", "eppclient");
         EPPparams.setParameter("EppClient.dbuid", "eppclient");
         EPPparams.setParameter("EppClient.dbpwd", "clientepp");
         break;
