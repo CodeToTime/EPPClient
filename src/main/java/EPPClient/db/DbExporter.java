@@ -26,7 +26,7 @@ import java.util.zip.ZipOutputStream;
 /**
  * Utility to export database tables (contacts, domains, messages) to CSV files inside a ZIP archive.
  * It uses raw SELECT * and connects using the same configuration used by DAOs,
- * so it works with both Derby and MySQL/MariaDB.
+ * so it works with both Derby and MySQL/MariaDB/PostgreSQL.
  */
 public class DbExporter {
 
@@ -84,6 +84,10 @@ public class DbExporter {
         props.put("user", EPPparams.getParameter("EppClient.dbuid"));
         props.put("password", EPPparams.getParameter("EppClient.dbpwd"));
 
+        if (EPPparams.getParameter("EppClient.dburl").contains("postgresql")) {
+            props.put("db.schema", "public");
+        }
+
         // Ensure Derby system directory is configured, like DAOs do
         setDerbySystemDir();
 
@@ -99,7 +103,7 @@ public class DbExporter {
 
         // For Derby, DAOs use separate DB names: contacts/domains/messages. Infer from properties file name.
         String dbNameForDerby = null;
-        if (baseUrl != null && !baseUrl.toLowerCase().contains("mariadb")) {
+        if (baseUrl != null && !baseUrl.toLowerCase().contains("mariadb") && !baseUrl.toLowerCase().contains("postgresql")) {
             dbNameForDerby = propertiesResourceName;
             if (dbNameForDerby != null && dbNameForDerby.endsWith(".properties")) {
                 dbNameForDerby = dbNameForDerby.substring(0, dbNameForDerby.length() - ".properties".length());
@@ -184,17 +188,22 @@ public class DbExporter {
     }
 
     private static String resolveDriver(String url) {
-        if (url != null && url.toLowerCase().contains("mariadb")) {
-            // Prefer modern MySQL/MariaDB driver if present
-            return "org.mariadb.jdbc.Driver";
+        if (url != null) {
+            String lurl = url.toLowerCase();
+            if (lurl.contains("mariadb")) {
+                return "org.mariadb.jdbc.Driver";
+            } else if (lurl.contains("postgresql")) {
+                return "org.postgresql.Driver";
+            }
         }
         return "org.apache.derby.jdbc.EmbeddedDriver";
     }
 
     private static String buildJdbcUrl(String baseUrl, String dbName) {
         if (baseUrl == null) return null;
-        if (baseUrl.toLowerCase().contains("mariadb")) {
-            return baseUrl; // full URL already configured for MySQL/MariaDB
+        String lurl = baseUrl.toLowerCase();
+        if (lurl.contains("mariadb") || lurl.contains("postgresql")) {
+            return baseUrl; // full URL already configured for MySQL/MariaDB/PostgreSQL
         }
         // Derby: append database name (contacts/domains/messages). If dbName is null, return baseUrl as-is.
         if (dbName == null || dbName.isEmpty()) {
