@@ -60,6 +60,11 @@ public class domainsDao
     setDBSystemDir();
     dbProperties = loadDBProperties();
 
+    if (dbProperties.getProperty("derby.url").contains("postgresql"))
+    {
+      dbProperties.put("db.schema", "public");
+    }
+
     strDropDomainTable = "drop table " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table");
 
     strCreateAddressTable =
@@ -116,7 +121,7 @@ public class domainsDao
 
     String driverName = dbProperties.getProperty("derby.driver");
     loadDatabaseDriver(driverName);
-    if (!dbExists() && !dbProperties.getProperty("derby.url").contains("mariadb"))
+    if (!dbExists() && !dbProperties.getProperty("derby.url").contains("mariadb") && !dbProperties.getProperty("derby.url").contains("postgresql"))
     {
       createDatabase();
     }
@@ -145,13 +150,13 @@ public class domainsDao
 
   /**
    * Verifica se una colonna esiste nella tabella specificata.
-   * Gestisce le differenze di case-sensitivity tra Derby (maiuscolo) e MySQL/MariaDB (minuscolo).
+   * Gestisce le differenze di case-sensitivity tra Derby (maiuscolo) e MySQL/MariaDB/PostgreSQL (minuscolo).
    */
   private boolean columnExists(Connection conn, String tableName, String columnName)
   {
     try
     {
-      // Prova prima con il nome tabella originale (funziona per MySQL/MariaDB con nomi minuscoli)
+      // Prova prima con il nome tabella originale (funziona per MySQL/MariaDB/PostgreSQL con nomi minuscoli)
       ResultSet columns = conn.getMetaData().getColumns(null, null, tableName, null);
       while (columns.next())
       {
@@ -272,11 +277,11 @@ public class domainsDao
     }
     catch (ClassNotFoundException ex)
     {
-      if ("org.mariadb.jdbc.Driver".equals(driverName))
+      if ("org.mariadb.jdbc.Driver".equals(driverName) || "org.postgresql.Driver".equals(driverName))
       {
         try
         {
-          Class.forName("org.mariadb.jdbc.Driver");
+          Class.forName(driverName);
         }
         catch (ClassNotFoundException e)
         {
@@ -305,6 +310,10 @@ public class domainsDao
       {
         dbProperties.put("derby.driver", "org.mariadb.jdbc.Driver");
       }
+      else if (dbUrl.contains("postgresql"))
+      {
+        dbProperties.put("derby.driver", "org.postgresql.Driver");
+      }
       else
       {
         dbProperties.put("derby.driver", "org.apache.derby.jdbc.EmbeddedDriver");
@@ -330,13 +339,22 @@ public class domainsDao
     try
     {
       statement = dbConnection.createStatement();
-      statement.execute(strCreateAddressTable);
+      String createTableSql = strCreateAddressTable;
+      if (dbProperties.getProperty("derby.url").contains("mariadb") || dbProperties.getProperty("derby.url").contains("postgresql"))
+      {
+        createTableSql = strCreateAddressTable.replace("create table ", "create table IF NOT EXISTS ");
+      }
+      statement.execute(createTableSql);
       bCreatedTables = true;
       EPPparams.setParameter("EppClient.dblevel", "1");
     }
     catch (SQLException ex)
     {
-      ex.printStackTrace();
+      if (ex.getSQLState().equals("X0Y32") || ex.getMessage().contains("already exists")) {
+        bCreatedTables = true;
+      } else {
+        ex.printStackTrace();
+      }
     }
 
     return bCreatedTables;
@@ -432,7 +450,7 @@ public class domainsDao
   public String getDatabaseUrl()
   {
     String dbUrl = dbProperties.getProperty("derby.url");
-    if (!dbUrl.contains("mariadb"))
+    if (!dbUrl.contains("mariadb") && !dbUrl.contains("postgresql"))
       dbUrl += dbName;
     return dbUrl;
   }
@@ -510,19 +528,22 @@ public class domainsDao
       }
       else
       {
-        stmtSaveNewRecord.setDate(8, null);
+        stmtSaveNewRecord.setNull(8, java.sql.Types.DATE);
       }
       stmtSaveNewRecord.setString(9, record.getValidationCode());
-      stmtSaveNewRecord.setInt(10, record.isDNSSec() ? 1 : 0);
+      if (dbProperties.getProperty("derby.url").contains("postgresql"))
+      {
+        stmtSaveNewRecord.setShort(10, (short) (record.isDNSSec() ? 1 : 0));
+      }
+      else
+      {
+        stmtSaveNewRecord.setInt(10, record.isDNSSec() ? 1 : 0);
+      }
       stmtSaveNewRecord.setString(11, record.getKeyTag());
       stmtSaveNewRecord.setInt(12, record.getAlg());
       stmtSaveNewRecord.setInt(13, record.getDigestType());
       stmtSaveNewRecord.setString(14, record.getDigest());
       int rowCount = stmtSaveNewRecord.executeUpdate();
-//            ResultSet results = stmtSaveNewRecord.getGeneratedKeys();
-//            if (results.next()) {
-//                id = results.getInt(1);
-//            }
 
     }
     catch (SQLException sqle)
@@ -603,12 +624,19 @@ public class domainsDao
       }
       else
       {
-        stmtUpdateExistingRecord.setDate(7, null);
+        stmtUpdateExistingRecord.setNull(7, java.sql.Types.DATE);
       }
 
       stmtUpdateExistingRecord.setString(8, record.getValidationCode());
 
-      stmtUpdateExistingRecord.setInt(9, record.isDNSSec() ? 1 : 0);
+      if (dbProperties.getProperty("derby.url").contains("postgresql"))
+      {
+        stmtUpdateExistingRecord.setShort(9, (short) (record.isDNSSec() ? 1 : 0));
+      }
+      else
+      {
+        stmtUpdateExistingRecord.setInt(9, record.isDNSSec() ? 1 : 0);
+      }
       stmtUpdateExistingRecord.setString(10, record.getKeyTag());
       stmtUpdateExistingRecord.setInt(11, record.getAlg());
       stmtUpdateExistingRecord.setInt(12, record.getDigestType());

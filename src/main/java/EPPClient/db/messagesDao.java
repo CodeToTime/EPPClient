@@ -62,6 +62,11 @@ public class messagesDao
     setDBSystemDir();
     dbProperties = loadDBProperties();
 
+    if (dbProperties.getProperty("derby.url").contains("postgresql"))
+    {
+      dbProperties.put("db.schema", "public");
+    }
+
     strDropMessageTable = "drop table " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table");
 
     strCreateAddressTable =
@@ -76,7 +81,7 @@ public class messagesDao
                     ")";
 
     strCreateAddressTableMYSQL =
-            "create table " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " (" +
+            "create table IF NOT EXISTS " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " (" +
                     "    MSGID                 VARCHAR(30 ) NOT NULL PRIMARY KEY," +
                     "    DATETIME              TIMESTAMP DEFAULT '1970-01-01 01:00:01', " +
                     "    MESSAGE               VARCHAR(255), " +
@@ -112,7 +117,7 @@ public class messagesDao
 
     String driverName = dbProperties.getProperty("derby.driver");
     loadDatabaseDriver(driverName);
-    if (!dbExists() && !dbProperties.getProperty("derby.url").contains("mariadb"))
+    if (!dbExists() && !dbProperties.getProperty("derby.url").contains("mariadb") && !dbProperties.getProperty("derby.url").contains("postgresql"))
     {
       createDatabase();
     }
@@ -205,11 +210,11 @@ public class messagesDao
     }
     catch (ClassNotFoundException ex)
     {
-      if ("org.mariadb.jdbc.Driver".equals(driverName))
+      if ("org.mariadb.jdbc.Driver".equals(driverName) || "org.postgresql.Driver".equals(driverName))
       {
         try
         {
-          Class.forName("org.mariadb.jdbc.Driver");
+          Class.forName(driverName);
         }
         catch (ClassNotFoundException e)
         {
@@ -240,6 +245,10 @@ public class messagesDao
       {
         dbProperties.put("derby.driver", "org.mariadb.jdbc.Driver");
       }
+      else if (dbUrl.contains("postgresql"))
+      {
+        dbProperties.put("derby.driver", "org.postgresql.Driver");
+      }
       else
       {
         dbProperties.put("derby.driver", "org.apache.derby.jdbc.EmbeddedDriver");
@@ -266,7 +275,7 @@ public class messagesDao
     try
     {
       statement = dbConnection.createStatement();
-      if (dbProperties.getProperty("derby.url").contains("mariadb"))
+      if (dbProperties.getProperty("derby.url").contains("mariadb") || dbProperties.getProperty("derby.url").contains("postgresql"))
       {
         statement.execute(strCreateAddressTableMYSQL);
       }
@@ -384,7 +393,7 @@ public class messagesDao
   public String getDatabaseUrl()
   {
     String dbUrl = dbProperties.getProperty("derby.url");
-    if (!dbUrl.contains("mariadb"))
+    if (!dbUrl.contains("mariadb") && !dbUrl.contains("postgresql"))
       dbUrl += dbName;
     return dbUrl;
   }
@@ -397,12 +406,28 @@ public class messagesDao
       stmtSaveNewRecord.clearParameters();
 
       stmtSaveNewRecord.setString(1, record.getMsgId());
-      stmtSaveNewRecord.setString(2, dateFormatter.format(record.getDateTime()));
+      if (dbProperties.getProperty("derby.url").contains("postgresql"))
+      {
+        stmtSaveNewRecord.setTimestamp(2, new java.sql.Timestamp(record.getDateTime().getTime()));
+      }
+      else
+      {
+        stmtSaveNewRecord.setString(2, dateFormatter.format(record.getDateTime()));
+      }
       stmtSaveNewRecord.setString(3, record.getTitle());
       stmtSaveNewRecord.setString(4, record.getXml());
-      stmtSaveNewRecord.setBoolean(5, record.getRead());
-      stmtSaveNewRecord.setBoolean(6, record.getAck());
-      stmtSaveNewRecord.setBoolean(7, record.getActioned());
+      if (dbProperties.getProperty("derby.url").contains("postgresql"))
+      {
+        stmtSaveNewRecord.setShort(5, (short) (record.getRead() ? 1 : 0));
+        stmtSaveNewRecord.setShort(6, (short) (record.getAck() ? 1 : 0));
+        stmtSaveNewRecord.setShort(7, (short) (record.getActioned() ? 1 : 0));
+      }
+      else
+      {
+        stmtSaveNewRecord.setBoolean(5, record.getRead());
+        stmtSaveNewRecord.setBoolean(6, record.getAck());
+        stmtSaveNewRecord.setBoolean(7, record.getActioned());
+      }
       int rowCount = stmtSaveNewRecord.executeUpdate();
 
     }
@@ -421,9 +446,18 @@ public class messagesDao
       stmtUpdateExistingRecord.clearParameters();
 
 
-      stmtUpdateExistingRecord.setBoolean(1, record.getRead());
-      stmtUpdateExistingRecord.setBoolean(2, record.getAck());
-      stmtUpdateExistingRecord.setBoolean(3, record.getActioned());
+      if (dbProperties.getProperty("derby.url").contains("postgresql"))
+      {
+        stmtUpdateExistingRecord.setShort(1, (short) (record.getRead() ? 1 : 0));
+        stmtUpdateExistingRecord.setShort(2, (short) (record.getAck() ? 1 : 0));
+        stmtUpdateExistingRecord.setShort(3, (short) (record.getActioned() ? 1 : 0));
+      }
+      else
+      {
+        stmtUpdateExistingRecord.setBoolean(1, record.getRead());
+        stmtUpdateExistingRecord.setBoolean(2, record.getAck());
+        stmtUpdateExistingRecord.setBoolean(3, record.getActioned());
+      }
       stmtUpdateExistingRecord.setString(4, record.getMsgId());
 
       stmtUpdateExistingRecord.executeUpdate();
