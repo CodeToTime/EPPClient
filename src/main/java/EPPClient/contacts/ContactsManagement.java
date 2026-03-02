@@ -1,6 +1,7 @@
 /*
  * SPDX-FileCopyrightText: 2008-2025 AssoTLD <reg@assotld.it>
  * SPDX-FileCopyrightText: 2026 Riccardo Bertelli
+ * SPDX-FileCopyrightText: 2026 Matteo Trubini @ CUBIC S.R.L. <https://cubicsrl.it/>
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
@@ -15,10 +16,9 @@
 
 package EPPClient.contacts;
 
+import EPPClient.main;
 import EPPClient.db.contactsDao;
 import EPPClient.importer.ImportContact;
-import EPPClient.logger;
-import EPPClient.main;
 import EPPClient.uplink.EPPuplink;
 import it.nic.epp.client.commands.query.ContactCheck;
 import it.nic.epp.client.commands.query.ContactInfo;
@@ -29,18 +29,23 @@ import it.nic.epp.client.responses.HttpBaseResponse;
 import it.nic.epp.client.responses.ext.ContactInfoResponseExt;
 import it.nic.epp.client.responses.resData.ContactCheckResponseResData;
 import it.nic.epp.client.responses.resData.ContactInfoResponseResData;
-import org.apache.xmlbeans.XmlException;
-
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.*;
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.List;
+import javax.swing.GroupLayout;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.LayoutStyle;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import org.apache.xmlbeans.XmlException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ContactsManagement extends JFrame implements ActionListener, ListSelectionListener
 {
@@ -67,7 +72,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
     refreshContactList();
 
 
-    logger = new logger("CONTACT");
+    log = LoggerFactory.getLogger(ContactsManagement.class);
   }
 
   /**
@@ -184,9 +189,9 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
          */
         ContactDelete contactDelete = new ContactDelete();
         contactDelete.setId(contactId);
-        logger.logmessage("CLIENT: " + contactDelete.toString() + "\n");
+        log.debug("CLIENT: {}", contactDelete);
         HttpBaseResponse response = EPPuplink.sendCommand(contactDelete);
-        logger.logmessage("SERVER: " + response.toString() + "\n");
+        log.debug("SERVER: {}", response);
 
         if (response.isSuccessfully())
         {
@@ -274,7 +279,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
             try
             {
               HttpBaseResponse response = EPPuplink.sendCommand(contactCheck);
-              logger.logmessage("SERVER: " + response.toString() + "\n");
+              log.debug("SERVER: {}", response);
               if (response.isSuccessfully())
               {
                 ContactCheckResponseResData resData = (ContactCheckResponseResData) response.getResponseResData();
@@ -317,9 +322,9 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
             contactCreate.setExtRegistrant(address.getNationalityCode(), address.getEntityType(), address.getRegCode());
           }
 
-          logger.logmessage("CLIENT: " + contactCreate.toString() + "\n");
+          log.debug("CLIENT: {}", contactCreate);
           HttpBaseResponse response = EPPuplink.sendCommand(contactCreate);
-          logger.logmessage("SERVER: " + response.toString() + "\n");
+          log.debug("SERVER: {}", response);
 
           if (response.isSuccessfully())
           {
@@ -366,7 +371,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
           ContactInfo contactInfo = new ContactInfo();
           contactInfo.setId(address.getContactId());
           HttpBaseResponse response = EPPuplink.sendCommand(contactInfo);
-          logger.logmessage("ContactInfo PRIMA: " + response.toString() + "\n");
+          log.debug("ContactInfo PRIMA: {}", response);
           ContactInfoResponseResData contactInfoResData = (ContactInfoResponseResData) response.getResponseResData();
           ContactInfoResponseExt contactInfoExt = (ContactInfoResponseExt) response.getResponseExtension();
 
@@ -434,9 +439,9 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
 
             if (updateMigrated)
             {
-              logger.logmessage("CLIENT: " + contactUpdate.toString() + "\n");
+              log.debug("CLIENT: {}", contactUpdate);
               response = EPPuplink.sendCommand(contactUpdate);
-              logger.logmessage("SERVER: " + response.toString() + "\n");
+              log.debug("SERVER: {}", response);
 
               if (!response.isSuccessfully())
               {
@@ -476,9 +481,9 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
 
             contactUpdate.setExtConsForPub(address.getConsentForPublishing());
 
-            logger.logmessage("CLIENT: " + contactUpdate.toString() + "\n");
+            log.debug("CLIENT: {}", contactUpdate);
             response = EPPuplink.sendCommand(contactUpdate);
-            logger.logmessage("SERVER: " + response.toString() + "\n");
+            log.debug("SERVER: {}", response);
 
 
             if (response.isSuccessfully())
@@ -503,16 +508,16 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
         }
         catch (NullPointerException v)
         {
-          v.printStackTrace();
+          log.error("NullPointerException in saveAddress", v);
         }
         catch (XmlException v)
         {
-          v.printStackTrace();
+          log.error("XmlException in saveAddress", v);
         }
         catch (IOException v)
         {
           JOptionPane.showMessageDialog(this, v.getCause().toString());
-          v.printStackTrace();
+          log.error("IOException in saveAddress", v);
         }
       }
     }
@@ -529,9 +534,9 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
         contactCheck.addId(contactId);
       }
 
-      logger.logmessage("CLIENT: " + contactCheck.toString() + "\n");
+      log.debug("CLIENT: {}", contactCheck);
       HttpBaseResponse response = EPPuplink.sendCommand(contactCheck);
-      logger.logmessage("SERVER: " + response.toString() + "\n");
+      log.debug("SERVER: {}", response);
 
       if (response.isSuccessfully())
       {
@@ -584,9 +589,9 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
       try
       {
         ContactInfo contactInfo = new ContactInfo(contactId);
-        logger.logmessage("CLIENT: " + contactInfo.toString() + "\n");
+        log.debug("CLIENT: {}", contactInfo);
         HttpBaseResponse response = EPPuplink.sendCommand(contactInfo);
-        logger.logmessage("SERVER: " + response.toString() + "\n");
+        log.debug("SERVER: {}", response);
 
         if (response.isSuccessfully())
         {
@@ -686,7 +691,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
     }
     catch (Exception e)
     {
-      e.printStackTrace();
+      log.error("Error in parseContactResult", e);
     }
   }
 
@@ -791,6 +796,6 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
   private AddressPanel addressPanel;
   private AddressListPanel addressListPanel;
   // End of variables declaration//GEN-END:variables
-  private logger logger;
+  private Logger log;
   private EPPuplink EPPuplink;
 }

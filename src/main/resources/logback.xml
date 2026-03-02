@@ -1,0 +1,92 @@
+<!--
+  SPDX-FileCopyrightText: 2026 Matteo Trubini @ CUBIC S.R.L. <https://cubicsrl.it/>
+  SPDX-License-Identifier: GPL-3.0-or-later
+-->
+<configuration>
+    <!-- Silence Logback's own status messages -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+    <!-- Enables the -Deppclient.logLevel=DEBUG flag for file logging -->
+    <property name="LOG_LEVEL" value="${eppclient.logLevel:-OFF}"/>
+
+    <!-- Enables the -Deppclient.console=true flag for console output -->
+    <property name="CONSOLE_ENABLED" value="${eppclient.console:-false}"/>
+
+    <!-- Console appender - only active when -Deppclient.console=true -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss} [%level] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Rolling file appender with daily rotation - only active when -Deppclient.logLevel is set -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/eppclient.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/eppclient-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%level] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Logger for EPPClient package - uses dynamic LOG_LEVEL property -->
+    <logger name="EPPClient" level="${LOG_LEVEL}"/>
+
+    <!-- Dynamic configuration based on system properties -->
+    <!-- Default: no logging to file or console -->
+    <!-- Use -Deppclient.logLevel=DEBUG to enable file logging -->
+    <!-- Use -Deppclient.console=true to enable console output -->
+    <if condition='property("LOG_LEVEL").equals("OFF")'>
+        <then>
+            <!-- No file logging by default -->
+            <if condition='property("CONSOLE_ENABLED").equals("true")'>
+                <then>
+                    <!-- Console only, no file logging -->
+                    <root level="ERROR">
+                        <appender-ref ref="CONSOLE"/>
+                    </root>
+                </then>
+                <else>
+                    <!-- No logging at all by default -->
+                    <root level="OFF">
+                    </root>
+                </else>
+            </if>
+        </then>
+        <else>
+            <!-- File logging enabled based on logLevel -->
+            <if condition='property("CONSOLE_ENABLED").equals("true")'>
+                <then>
+                    <!-- Both file and console -->
+                    <root>
+                        <levelByName>
+                            <levelByName precedence="OFF" value="OFF"/>
+                            <levelByName precedence="TRACE" value="TRACE"/>
+                            <levelByName precedence="DEBUG" value="DEBUG"/>
+                            <levelByName precedence="INFO" value="INFO"/>
+                            <levelByName precedence="WARN" value="WARN"/>
+                            <levelByName precedence="ERROR" value="ERROR"/>
+                        </levelByName>
+                        <appender-ref ref="FILE"/>
+                        <appender-ref ref="CONSOLE"/>
+                    </root>
+                </then>
+                <else>
+                    <!-- File only, no console -->
+                    <root>
+                        <levelByName>
+                            <levelByName precedence="OFF" value="OFF"/>
+                            <levelByName precedence="TRACE" value="TRACE"/>
+                            <levelByName precedence="DEBUG" value="DEBUG"/>
+                            <levelByName precedence="INFO" value="INFO"/>
+                            <levelByName precedence="WARN" value="WARN"/>
+                            <levelByName precedence="ERROR" value="ERROR"/>
+                        </levelByName>
+                        <appender-ref ref="FILE"/>
+                    </root>
+                </else>
+            </if>
+        </else>
+    </if>
+</configuration>

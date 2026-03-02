@@ -1,3 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Riccardo Bertelli
+ * SPDX-FileCopyrightText: 2026 Matteo Trubini @ CUBIC S.R.L. <https://cubicsrl.it/>
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import java.text.SimpleDateFormat
 
@@ -19,16 +26,19 @@ repositories {
 }
 
 dependencies {
-    implementation('org.apache.xmlbeans:xmlbeans:3.1.0')
-    implementation('org.apache.httpcomponents:httpclient:4.5.14')
-    implementation('org.apache.httpcomponents:httpcore:4.4.16')
-    implementation(files('libs/epp-client-cmd-line-1.19.1.jar'))
-    implementation('org.apache.derby:derby:10.17.1.0')
-    implementation('org.apache.derby:derbytools:10.17.1.0')
-    implementation('org.slf4j:slf4j-api:2.0.17')
-    implementation('org.slf4j:slf4j-simple:2.0.17')
+    implementation('ch.qos.logback:logback-classic:1.5.32')
+    implementation('ch.qos.logback:logback-core:1.5.32')
     implementation('com.google.code.gson:gson:2.13.2')
     implementation('com.mysql:mysql-connector-j:9.6.0')
+    implementation('org.apache.derby:derby:10.17.1.0')
+    implementation('org.apache.derby:derbytools:10.17.1.0')
+    implementation('org.apache.httpcomponents:httpclient:4.5.14')
+    implementation('org.apache.httpcomponents:httpcore:4.4.16')
+    implementation('org.apache.xmlbeans:xmlbeans:3.1.0')
+    implementation('org.codehaus.janino:commons-compiler:3.1.12')
+    implementation('org.codehaus.janino:janino:3.1.12')
+    implementation('org.slf4j:slf4j-api:2.0.17')
+    implementation(files('libs/epp-client-cmd-line-1.19.1.jar'))
 
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'

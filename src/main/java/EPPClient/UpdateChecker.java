@@ -27,8 +27,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UpdateChecker {
+
+  private static final Logger log = LoggerFactory.getLogger(UpdateChecker.class);
 
     private static final String GITHUB_API_URL = "https://api.github.com/repos/CodeToTime/EPPClient/releases";
 
@@ -46,7 +50,7 @@ public class UpdateChecker {
                 }
             } catch (Exception e) {
                 // Silenziosamente ignora errori di rete
-                System.err.println("Errore durante il controllo aggiornamenti: " + e.getMessage());
+                log.warn("Errore durante il controllo aggiornamenti: {}", e.getMessage());
             }
         }).start();
     }

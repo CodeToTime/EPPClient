@@ -1,6 +1,7 @@
 /*
  * SPDX-FileCopyrightText: 2008-2025 AssoTLD <reg@assotld.it>
  * SPDX-FileCopyrightText: 2026 Riccardo Bertelli
+ * SPDX-FileCopyrightText: 2026 Matteo Trubini @ CUBIC S.R.L. <https://cubicsrl.it/>
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
@@ -15,11 +16,10 @@
 
 package EPPClient.domains;
 
+import EPPClient.main;
 import EPPClient.db.domainsDao;
 import EPPClient.domains.transfer.TransferManagement;
 import EPPClient.importer.ImportDomain;
-import EPPClient.logger;
-import EPPClient.main;
 import EPPClient.uplink.EPPuplink;
 import it.nic.epp.client.commands.converters.AbstractHostsConverter.Host;
 import it.nic.epp.client.commands.query.DomainCheck;
@@ -33,13 +33,8 @@ import it.nic.epp.client.responses.HttpBaseResponse;
 import it.nic.epp.client.responses.resData.DomainCheckResponseResData;
 import it.nic.epp.client.responses.resData.DomainCreateResponseResData;
 import it.nic.epp.client.responses.resData.DomainInfoResponseResData;
-import org.apache.xmlbeans.XmlException;
-
-import javax.swing.*;
-import javax.swing.border.LineBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.*;
+import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -47,6 +42,17 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
+import javax.swing.GroupLayout;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.LayoutStyle;
+import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import org.apache.xmlbeans.XmlException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DomainsManagement extends JFrame implements ActionListener, ListSelectionListener
 {
@@ -74,7 +80,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
     refreshDomainList();
 
 
-    logger = new logger("DOMAIN");
+    log = LoggerFactory.getLogger(DomainsManagement.class);
 
   }
 
@@ -197,9 +203,9 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
         try
         {
           DomainDelete domainDelete = new DomainDelete(domainName);
-          logger.logmessage("CLIENT: " + domainDelete.toString());
+          log.debug("CLIENT: {}", domainDelete);
           HttpBaseResponse response = EPPuplink.sendCommand(domainDelete);
-          logger.logmessage("SERVER: " + response.toString() + "\n");
+          log.debug("SERVER: {}", response);
 
           if (response.isSuccessfully())
           {
@@ -303,7 +309,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
               }
               catch (Exception e)
               {
-                System.err.println("Invalid IP Address");
+                log.warn("Invalid IP Address: {}", e.getMessage());
               }
             }
             else
@@ -313,15 +319,17 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
           }
 
           domainCreate.setAuthInfo(domain.getAuthInfo());
-          if(!domain.getValidationCode().isEmpty()) {
+          if (!domain.getValidationCode().isEmpty())
+          {
             domainCreate.setExtValidationCode(domain.getValidationCode());
           }
-          if(domain.isDNSSec()) {
-            domainCreate.addDsData(Integer.parseInt(domain.getKeyTag()), (short) domain.getAlg(), (short) domain.getDigestType(),  parseHex(domain.getDigest()));
+          if (domain.isDNSSec())
+          {
+            domainCreate.addDsData(Integer.parseInt(domain.getKeyTag()), (short) domain.getAlg(), (short) domain.getDigestType(), parseHex(domain.getDigest()));
           }
-          logger.logmessage("CLIENT: " + domainCreate.toString() + "\n");
+          log.debug("CLIENT: {}", domainCreate);
           HttpBaseResponse response = EPPuplink.sendCommand(domainCreate);
-          logger.logmessage("SERVER: " + response.toString() + "\n");
+          log.debug("SERVER: {}", response);
 
           if (response.isSuccessfully())
           {
@@ -347,15 +355,15 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
         }
         catch (NullPointerException v)
         {
-          v.printStackTrace();
+          log.error("NullPointerException in deleteDomain", v);
         }
         catch (XmlException v)
         {
-          v.printStackTrace();
+          log.error("XmlException in deleteDomain", v);
         }
         catch (IOException v)
         {
-          v.printStackTrace();
+          log.error("IOException in deleteDomain", v);
         }
 
 
@@ -371,13 +379,14 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
           HttpBaseResponse response = EPPuplink.sendCommand(domainInfo);
           if (response.isSuccessfully())
           {
-            logger.logmessage("DomainInfo PRIMA: " + response.toString() + "\n");
+            log.debug("DomainInfo PRIMA: {}", response);
             DomainInfoResponseResData domainInfoResData = (DomainInfoResponseResData) response.getResponseResData();
 
             DomainUpdate domainUpdate = new DomainUpdate(domain.getDomainName());
             //domainUpdate.setAllToSecDNSRem();
-            if(domain.isDNSSec()) {
-              domainUpdate.addDsDataToSecDNSAdd(Integer.parseInt(domain.getKeyTag()), (short) domain.getAlg(), (short) domain.getDigestType(),  parseHex(domain.getDigest()));
+            if (domain.isDNSSec())
+            {
+              domainUpdate.addDsDataToSecDNSAdd(Integer.parseInt(domain.getKeyTag()), (short) domain.getAlg(), (short) domain.getDigestType(), parseHex(domain.getDigest()));
             }
             //domainUpdate.addDsDataToSecDNSRem();
 
@@ -438,9 +447,9 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
               //if changing Registrant make a custom update request
               domainUpdate.setRegistrant(domain.getRegistrant());
 
-              logger.logmessage("CLIENT: " + domainUpdate.toString() + "\n");
+              log.debug("CLIENT: {}", domainUpdate);
               response = EPPuplink.sendCommand(domainUpdate);
-              logger.logmessage("SERVER: " + response.toString() + "\n");
+              log.debug("SERVER: {}", response);
 
               domainUpdate = new DomainUpdate(domain.getDomainName());
             }
@@ -663,7 +672,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                     }
                     catch (Exception e)
                     {
-                      System.err.println("Invalid IP Address");
+                      log.warn("Invalid IP Address: {}", e.getMessage());
                     }
                   }
                   else
@@ -740,15 +749,15 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                 }
               }
 
-              logger.logmessage("CLIENT: " + domainUpdate.toString() + "\n");
+              log.debug("CLIENT: {}", domainUpdate);
               response = EPPuplink.sendCommand(domainUpdate);
-              logger.logmessage("SERVER: " + response.toString() + "\n");
+              log.debug("SERVER: {}", response);
 
               if (response.isSuccessfully() || (response.getResultCode() == 2003 && response.getReasonCode() == 9019))
               {
 
                 response = EPPuplink.sendCommand(domainInfo);
-                logger.logmessage("DomainInfo DOPO: " + response.toString() + "\n");
+                log.debug("DomainInfo DOPO: {}", response);
 
                 domainInfoResData = (DomainInfoResponseResData) response.getResponseResData();
                 domain.setExpire(domainInfoResData.getExDate().getTime());
@@ -794,19 +803,19 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
         }
         catch (EppSchemaException v)
         {
-          v.printStackTrace();
+          log.error("EppSchemaException in saveAddress", v);
         }
         catch (NullPointerException v)
         {
-          v.printStackTrace();
+          log.error("NullPointerException in saveAddress", v);
         }
         catch (XmlException v)
         {
-          v.printStackTrace();
+          log.error("XmlException in saveAddress", v);
         }
         catch (IOException v)
         {
-          v.printStackTrace();
+          log.error("IOException in saveAddress", v);
         }
 
 
@@ -824,19 +833,23 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
     }
   }
 
-  public static byte[] parseHex(String hex) {
-    if ((hex.length() & 1) != 0) {
+  public static byte[] parseHex(String hex)
+  {
+    if ((hex.length() & 1) != 0)
+    {
       throw new IllegalArgumentException("Hex string must have even length");
     }
 
     int len = hex.length();
     byte[] out = new byte[len / 2];
 
-    for (int i = 0; i < len; i += 2) {
+    for (int i = 0; i < len; i += 2)
+    {
       int hi = Character.digit(hex.charAt(i), 16);
       int lo = Character.digit(hex.charAt(i + 1), 16);
 
-      if (hi == -1 || lo == -1) {
+      if (hi == -1 || lo == -1)
+      {
         throw new IllegalArgumentException("Invalid hex character");
       }
 
@@ -855,9 +868,9 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
       try
       {
         DomainInfo domainInfo = new DomainInfo(domainName);
-        logger.logmessage("CLIENT: " + domainInfo.toString());
+        log.debug("CLIENT: {}", domainInfo);
         HttpBaseResponse response = EPPuplink.sendCommand(domainInfo);
-        logger.logmessage("SERVER: " + response.toString() + "\n");
+        log.debug("SERVER: {}", response);
 
         if (response.isSuccessfully())
         {
@@ -1019,7 +1032,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
       }
 
       HttpBaseResponse response = EPPuplink.sendCommand(domainCheck);
-      logger.logmessage("SERVER: " + response.toString() + "\n");
+      log.debug("SERVER: {}", response);
 
       if (response.isSuccessfully())
       {
@@ -1077,9 +1090,9 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
       try
       {
 
-        logger.logmessage("CLIENT: " + domainUpdate.toString() + "\n");
+        log.debug("CLIENT: {}", domainUpdate);
         HttpBaseResponse response = EPPuplink.sendCommand(domainUpdate);
-        logger.logmessage("SERVER: " + response.toString() + "\n");
+        log.debug("SERVER: {}", response);
         if (response.isSuccessfully())
         {
           ImportDomain syncDomain = new ImportDomain(mainFrame, true);
@@ -1173,7 +1186,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
     }
     catch (Exception e)
     {
-      e.printStackTrace();
+      log.error("Error in parseDomainResult", e);
     }
   }
 
@@ -1207,6 +1220,6 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
   private DomainListPanel addressListPanel;
   // End of variables declaration//GEN-END:variables
 
-  private logger logger;
+  private Logger log;
   private EPPuplink EPPuplink;
 }

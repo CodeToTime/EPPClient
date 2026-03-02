@@ -1,6 +1,7 @@
 /*
  * SPDX-FileCopyrightText: 2009-2025 AssoTLD <reg@assotld.it>
  * SPDX-FileCopyrightText: 2026 Riccardo Bertelli
+ * SPDX-FileCopyrightText: 2026 Matteo Trubini @ CUBIC S.R.L. <https://cubicsrl.it/>
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
@@ -16,18 +17,18 @@
 package EPPClient.importer;
 
 
+import EPPClient.main;
 import EPPClient.db.contactsDao;
 import EPPClient.db.domainsDao;
 import EPPClient.domains.Domain;
-import EPPClient.logger;
-import EPPClient.main;
 import EPPClient.uplink.EPPuplink;
 import it.nic.epp.client.commands.query.DomainInfo;
 import it.nic.epp.client.responses.HttpBaseResponse;
 import it.nic.epp.client.responses.resData.DomainInfoResponseResData;
-import org.apache.xmlbeans.XmlException;
-
 import java.io.IOException;
+import org.apache.xmlbeans.XmlException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ImportDomain
 {
@@ -40,7 +41,7 @@ public class ImportDomain
     this.contactdb = mainFrame.contactsDao;
     this.recurseContacts = recurseContacts;
 
-    logger = new logger("DOMAIN");
+    log = LoggerFactory.getLogger(ImportDomain.class);
   }
 
   public boolean execute(String domainName)
@@ -53,9 +54,9 @@ public class ImportDomain
     try
     {
 
-      logger.logmessage("CLIENT: " + domainInfo.toString());
+      log.debug("CLIENT: {}", domainInfo);
       HttpBaseResponse response = EPPuplink.sendCommand(domainInfo);
-      logger.logmessage("SERVER: " + response.toString());
+      log.debug("SERVER: {}", response);
 
       if (response.isSuccessfully())
       {
@@ -104,11 +105,11 @@ public class ImportDomain
     }
     catch (XmlException v)
     {
-      v.printStackTrace();
+      log.error("XmlException in execute", v);
     }
     catch (IOException v)
     {
-      v.printStackTrace();
+      log.error("IOException in execute", v);
     }
 
 
@@ -133,6 +134,6 @@ public class ImportDomain
   //private String domainName;
   private boolean recurseContacts;
   private boolean closedb = false;
-  private logger logger;
+  private Logger log;
   private main mainFrame;
 }

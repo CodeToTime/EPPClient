@@ -3,12 +3,15 @@
 EPPClient è un'applicazione desktop Java per l'interazione con i server EPP (Extensible Provisioning Protocol) del Registro .it, a supporto dei Registrar nella gestione di domini, contatti e messaggi EPP. Fornisce un'interfaccia grafica e strumenti idonei alle principali operazioni di registrazione e mantenimento.
 
 ## Cos'è e a cosa serve
+
 - Gestione dei domini .it tramite EPP (creazione, aggiornamento, trasferimento, ecc.).
 - Gestione della rubrica contatti e della messaggistica EPP.
 - Funzionalità operative a supporto dell'attività quotidiana del Registrar.
 
 ## Origini del progetto
+
 Il progetto nasce come rimodernizzazione del software originale sviluppato dall'associazione [AssoTLD](https://www.assotld.it/) per i propri soci. Il software è stato aggiornato e rilasciato come software libero, con l'aggiunta di varie funzionalità, tra cui il supporto a DNSSEC, la gestione dei domini .gov.it e .edu.it e l'esportazione del database in formato CSV, oltre all'aggiornamento di tutte le dipendenze obsolete.
+
 ## Licenze
 
 - Le informazioni dettagliate sono disponibili nella cartella `LICENSES/` alla radice del progetto e nel file `REUSE.toml` (convenzioni [REUSE](https://reuse.software/)).
@@ -31,16 +34,21 @@ Il nome esatto del JAR da utilizzare è indicato nel file `build.gradle` alla se
 Per la compilazione e l'esecuzione in ambiente di sviluppo si utilizza Gradle.
 
 ### Requisiti
+
 - Java 21
 
 ### Esecuzione in sviluppo
+
 Per avviare l'applicazione direttamente tramite Gradle, eseguire:
+
 ```bash
 ./gradlew run
 ```
 
 ### Compilazione
+
 Per compilare il progetto senza eseguirlo:
+
 ```bash
 ./gradlew build
 ```
@@ -52,35 +60,69 @@ Per compilare il progetto senza eseguirlo:
 Il "fat jar" è un file JAR che include tutte le dipendenze necessarie per eseguire l'applicazione in modo autonomo.
 
 ### Generazione del Jar eseguibile
+
 Per generare il fat jar, eseguire il comando:
+
 ```bash
 ./gradlew shadowJar
 ```
+
 Al termine, il file generato sarà disponibile nella cartella:
 `build/libs/`
 
 Il nome del file sarà simile a:
 `eppclient-<versione>-all.jar`
 
-(Esempio: `eppclient-2.3.1-SNAPSHOT-all.jar`)
+(Esempio: `eppclient-2.3.1-all.jar`)
 
 ### Esecuzione del Fat Jar
+
 Per eseguire l'applicazione utilizzare il comando `java -jar`:
+
 ```bash
 java -jar build/libs/eppclient-<versione>-all.jar
 ```
-*(Verificare il nome del file generato presente nella cartella build/libs)*
+
+_(Verificare il nome del file generato presente nella cartella build/libs)_
 
 ---
 
 ## Opzioni di debug
 
-Per abilitare i messaggi di debug nella console, utilizzare il flag `-Deppclient.debug=true`:
+### Logging su file
+
+Per abilitare il logging su file, utilizzare il flag `-Deppclient.logLevel`:
+
 ```bash
-java -Deppclient.debug=true -jar build/libs/eppclient-<versione>-all.jar
+java -Deppclient.logLevel=DEBUG -jar build/libs/eppclient-<versione>-all.jar
 ```
 
-Questa opzione attiva la stampa di messaggi di log utili per il troubleshooting.
+Questa opzione attiva la scrittura dei messaggi di log nel file `logs/eppclient.log` con rotazione giornaliera (massimo 30 giorni).
+
+### Console output
+
+Per abilitare l'output dei log anche sulla console (oltre al file), aggiungere il flag `-Deppclient.console=true`:
+
+```bash
+java -Deppclient.logLevel=DEBUG -Deppclient.console=true -jar build/libs/eppclient-<versione>-all.jar
+```
+
+### Livelli di log disponibili
+
+- `OFF` - Disabilita il logging (default)
+- `ERROR` - Solo errori
+- `WARN` - Warning e errori
+- `INFO` - Info, warning e errori
+- `DEBUG` - Messaggi di debug completi
+- `TRACE` - Trace dettagliato
+
+### Visualizzatore log integrato
+
+Quando il debug logging è abilitato, appare automaticamente il pulsante "Apri Log" nella schermata principale che apre il visualizzatore dei log con filtro per livello.
+
+### Gestione errori con riavvio automatico
+
+In caso di errore, l'applicazione mostra una dialog con l'opzione "Riavvia con debug attivo" che riavvia l'applicazione con il logging di debug già abilitato, semplificando la diagnosi dei problemi.
 
 ---
 
@@ -109,18 +151,24 @@ Il progetto Derby è stato abbandonato nel 2025. Per il momento si è deciso di 
 ## Software Bill of Materials (SBOM)
 
 Componenti e versioni principali attualmente in uso (si veda `build.gradle`):
-- org.apache.xmlbeans:xmlbeans:3.1.0
-- org.apache.httpcomponents:httpclient:4.5.14
-- org.apache.httpcomponents:httpcore:4.4.16
-- epp-client-cmd-line:1.19.1 (Fornito dal Registro .it, JAR locale da collocare in `libs/`)
+
+- ch.qos.logback:logback-classic:1.5.32
+- ch.qos.logback:logback-core:1.5.32
+- com.google.code.gson:gson:2.13.2
+- com.mysql:mysql-connector-j:9.6.0
 - org.apache.derby:derby:10.17.1.0
 - org.apache.derby:derbytools:10.17.1.0
+- org.apache.httpcomponents:httpclient:4.5.14
+- org.apache.httpcomponents:httpcore:4.4.16
+- org.apache.xmlbeans:xmlbeans:3.1.0
+- org.codehaus.janino:commons-compiler:3.1.12
+- org.codehaus.janino:janino:3.1.12
 - org.slf4j:slf4j-api:2.0.17
-- org.slf4j:slf4j-simple:2.0.17
-- com.google.code.gson:gson:2.13.2
+- epp-client-cmd-line:1.19.1 (Fornito dal Registro .it, JAR locale da collocare in `libs/`)
 - test: org.junit:junit-bom:5.10.0; org.junit.jupiter:junit-jupiter
 
 Runtime/Build:
+
 - Java 21
 
 ---

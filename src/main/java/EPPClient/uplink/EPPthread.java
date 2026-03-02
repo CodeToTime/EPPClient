@@ -1,6 +1,7 @@
 /*
  * SPDX-FileCopyrightText: 2009-2025 AssoTLD <reg@assotld.it>
  * SPDX-FileCopyrightText: 2026 Riccardo Bertelli
+ * SPDX-FileCopyrightText: 2026 Matteo Trubini @ CUBIC S.R.L. <https://cubicsrl.it/>
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
@@ -16,32 +17,32 @@
 package EPPClient.uplink;
 
 import EPPClient.CustomLogin;
-import EPPClient.Debug;
-import EPPClient.config.EPPparams;
-import EPPClient.logger;
+import EPPClient.ErrorHandler;
 import EPPClient.main;
+import EPPClient.config.EPPparams;
 import EPPClient.messages.Message;
 import it.nic.epp.client.commands.interfaces.IEppRequest;
 import it.nic.epp.client.commands.query.Poll;
-import it.nic.epp.client.commands.session.Login;
 import it.nic.epp.client.commands.session.Logout;
 import it.nic.epp.client.exceptions.EppSchemaException;
 import it.nic.epp.client.httpClient.Client;
 import it.nic.epp.client.responses.HttpBaseResponse;
 import it.nic.epp.client.responses.ext.LoginResponseExt;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import javax.swing.JOptionPane;
 import org.apache.xmlbeans.XmlException;
-
-import javax.swing.*;
-import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class EPPthread extends Thread
 {
+  private static final Logger log = LoggerFactory.getLogger(EPPthread.class);
+
   public EPPthread(main mainFrame)
   {
     this.mainFrame = mainFrame;
-    logger = new logger("SESSION");
   }
 
   @Override
@@ -71,10 +72,9 @@ class EPPthread extends Thread
 //            logger.logmessage("HELLO: " + client.sendHello().toString());
 
 
-      logger.logmessage("CLIENT login request:\n" + login.toString() + "\n");
-      //logger.logmessage("CLIENT: *LOGIN COMMAND OMITTED*\n");
+      log.info("CLIENT login request: *REQUEST*");
       response = client.sendCommand(login);
-      logger.logmessage("SERVER login response:\n" + response.toString());
+      log.info("SERVER login response: *RESPONSE*");
       if (response.isSuccessfully())
       {
         EPPclosable = false;
@@ -139,32 +139,25 @@ class EPPthread extends Thread
     }
     catch (IOException v)
     {
-      // Check if debug mode is enabled
-      Debug.printStackTrace(v);
       // Check for connection errors that might indicate whitelist issues
       String errorMessage = v.getMessage();
-      if (errorMessage != null && (errorMessage.contains("Connection refused") || errorMessage.contains("Connect to") || errorMessage.contains("Connection timed out") || errorMessage.contains("ConnectException"))) {
-        JOptionPane.showMessageDialog(mainFrame, 
-            "Impossibile connettersi al server EPP.\n\n" +
-            "Possibili cause:\n" +
-            "- L'indirizzo IP non è nella whitelist del Registro\n" +
-            "- Il firewall blocca la connessione\n" +
-            "- Il server EPP non è raggiungibile\n\n" +
-            "Verificare che l'indirizzo IP sia abilitato presso il Registro.", 
-            "Errore di Connessione", JOptionPane.ERROR_MESSAGE);
-      } else {
-        JOptionPane.showMessageDialog(mainFrame, 
-            "Errore di comunicazione con il server EPP:\n" + v.getMessage(), 
-            "Errore di Connessione", JOptionPane.ERROR_MESSAGE);
+      if (errorMessage != null && (errorMessage.contains("Connection refused") || errorMessage.contains("Connect to") || errorMessage.contains("Connection timed out") || errorMessage.contains("ConnectException")))
+      {
+        log.error("IOException connecting to EPP server - Connection issue: {}", v.getMessage(), v);
+        JOptionPane.showMessageDialog(mainFrame, "Impossibile connettersi al server EPP.\n\n" + "Possibili cause:\n" + "- L'indirizzo IP non è nella whitelist del Registro\n" + "- Il firewall blocca la connessione\n" + "- Il server EPP non è raggiungibile\n\n" + "Verificare che l'indirizzo IP sia abilitato presso il Registro.\n\n" + "Per assistenza, attivare il logging di debug con -Deppclient.logLevel=DEBUG", "Errore di Connessione", JOptionPane.ERROR_MESSAGE);
+      }
+      else
+      {
+        ErrorHandler.error(log, v, "Errore di Connessione", mainFrame);
       }
     }
     catch (URISyntaxException v)
     {
-      v.printStackTrace();
+      ErrorHandler.error(log, v, "Errore di Configurazione", mainFrame);
     }
     catch (XmlException v)
     {
-      v.printStackTrace();
+      ErrorHandler.error(log, v, "Errore XML", mainFrame);
     }
     finally
     {
@@ -176,9 +169,9 @@ class EPPthread extends Thread
           if (!EPPclosable)
           {
             Logout logout = new Logout();
-            logger.logmessage("CLIENT: " + logout.toString() + "\n");
+            log.info("CLIENT logout command: {}", logout.toString());
             response = client.sendCommand(logout);
-            logger.logmessage("SERVER: " + response.toString());
+            log.info("SERVER logout response: {}", response.toString());
             if (response.isSuccessfully())
             {
               EPPclosable = true;
@@ -197,11 +190,11 @@ class EPPthread extends Thread
         }
         catch (IOException v)
         {
-          v.printStackTrace();
+          ErrorHandler.logError(log, v);
         }
         catch (XmlException v)
         {
-          v.printStackTrace();
+          ErrorHandler.logError(log, v);
         }
       }
     }
@@ -210,7 +203,10 @@ class EPPthread extends Thread
 
   public void restart()
   {
-    if (isClosing) isClosing = false;
+    if (isClosing)
+    {
+      isClosing = false;
+    }
     if (!isRunning)
     {
       this.start();
@@ -222,7 +218,10 @@ class EPPthread extends Thread
   {
     if (isRunning)
     {
-      if (!isClosing) isClosing = true;
+      if (!isClosing)
+      {
+        isClosing = true;
+      }
       this.interrupt();
       try
       {
@@ -255,13 +254,17 @@ class EPPthread extends Thread
       }
       catch (EppSchemaException ex)
       {
-        ex.printStackTrace();
+        ErrorHandler.logError(log, ex);
       }
 
       HttpBaseResponse response = this.sendCommand(pollCmd);
-      logger.logmessage("CLIENT: " + pollCmd.toString());
-      logger.logmessage("SERVER: " + response.toString());
-
+      if (response == null)
+      {
+        log.warn("Poll command returned null response - connection may have been interrupted");
+        return false;
+      }
+      log.info("CLIENT poll: {}", pollCmd.toString());
+      log.info("SERVER poll response: {}", response.toString());
       if (response.isSuccessfully())
       {
         mainFrame.setMSGQ(Integer.toString(response.getMsgQCount()));
@@ -291,9 +294,8 @@ class EPPthread extends Thread
               pollCmd.setAck(response.getMsgQId());
 
               HttpBaseResponse ackResponse = this.sendCommand(pollCmd);
-              logger.logmessage("CLIENT: " + pollCmd.toString());
-              logger.logmessage("SERVER: " + ackResponse.toString());
-
+              log.info("CLIENT poll ack: {}", pollCmd.toString());
+              log.info("SERVER poll ack response: {}", ackResponse.toString());
               if (ackResponse.isSuccessfully())
               {
                 Message message = mainFrame.messagesDao.getMessage(response.getMsgQId());
@@ -303,7 +305,7 @@ class EPPthread extends Thread
             }
             catch (EppSchemaException ex)
             {
-              ex.printStackTrace();
+              ErrorHandler.logError(log, ex);
             }
           }
           else
@@ -318,12 +320,12 @@ class EPPthread extends Thread
               mainFrame.addMsgtoList(message);
             }
           }
-          //mainFrame.setEnableMsgRecv(true);
+          // mainFrame.setEnableMsgRecv(true);
         }
         else
         {
           mainFrame.setNextMsg("No messages");
-          //mainFrame.setEnableMsgRecv(false);
+          // mainFrame.setEnableMsgRecv(false);
         }
       }
       else
@@ -361,7 +363,7 @@ class EPPthread extends Thread
     }
     catch (InterruptedException ex)
     {
-      Debug.log("EPPthread", "Interrupted while waiting for EPP uplink availability.");
+      log.debug("Interrupted while waiting for EPP uplink availability.");
     }
 
     return response;
@@ -377,6 +379,5 @@ class EPPthread extends Thread
   private boolean isClosing = false;
   private boolean isRunning = false;
   private boolean isWaitingEPPresponse = false;
-  private logger logger;
   private main mainFrame;
 }

@@ -1,6 +1,7 @@
 /*
  * SPDX-FileCopyrightText: 2009-2025 AssoTLD <reg@assotld.it>
  * SPDX-FileCopyrightText: 2026 Riccardo Bertelli
+ * SPDX-FileCopyrightText: 2026 Matteo Trubini @ CUBIC S.R.L. <https://cubicsrl.it/>
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
@@ -16,22 +17,26 @@
 package EPPClient.domains.transfer;
 
 
-import EPPClient.logger;
-import EPPClient.Debug;
 import EPPClient.uplink.EPPuplink;
 import it.nic.epp.client.commands.transform.DomainTransfer;
 import it.nic.epp.client.exceptions.EppSchemaException;
 import it.nic.epp.client.responses.HttpBaseResponse;
-import org.apache.xmlbeans.XmlException;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import javax.swing.GroupLayout;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JTabbedPane;
+import javax.swing.LayoutStyle;
+import org.apache.xmlbeans.XmlException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TransferManagement extends JFrame implements ActionListener
 {
+  private static final Logger log = LoggerFactory.getLogger(TransferManagement.class);
 
   /**
    * Creates new form DomainTransferFrame
@@ -45,8 +50,6 @@ public class TransferManagement extends JFrame implements ActionListener
     transferActionPanel.addActionListener(this);
 
     domainTransferPanel.setEditable(true);
-
-    logger = new logger("DOMAIN");
   }
 
   /**
@@ -137,7 +140,7 @@ public class TransferManagement extends JFrame implements ActionListener
           }
         }
 
-        logger.logmessage("CLIENT: " + domainTransfer.toString() + "\n");
+        log.info("CLIENT transfer request: {}", domainTransfer.toString());
         HttpBaseResponse response = EPPuplink.sendCommand(domainTransfer);
 
         if (response.isSuccessfully())
@@ -161,7 +164,7 @@ public class TransferManagement extends JFrame implements ActionListener
           canClose = false;
         }
 
-        logger.logmessage("SERVER: " + response.toString() + "\n");
+        log.info("SERVER transfer response: {}", response.toString());
 
       }
       catch (NullPointerException v)
@@ -200,7 +203,7 @@ public class TransferManagement extends JFrame implements ActionListener
           domainTransfer.setAuthInfo(bulkRequestEntries[1]);
           domainTransfer.setTransferRequest();
 
-          logger.logmessage("CLIENT: " + domainTransfer.toString() + "\n");
+          log.info("CLIENT bulk transfer request: {}", domainTransfer.toString());
           HttpBaseResponse response = EPPuplink.sendCommand(domainTransfer);
 
           if (response.isSuccessfully())
@@ -214,7 +217,7 @@ public class TransferManagement extends JFrame implements ActionListener
               JOptionPane.showMessageDialog(this, response.toString());
             }
           }
-          logger.logmessage("SERVER: " + response.toString() + "\n");
+          log.info("SERVER bulk transfer response: {}", response.toString());
 
         }
         catch (NullPointerException v)
@@ -240,7 +243,7 @@ public class TransferManagement extends JFrame implements ActionListener
   public void actionPerformed(ActionEvent e)
   {
     String actionCommand = e.getActionCommand();
-    Debug.log("TransferManagement", "ActionEvent: " + actionCommand);
+    log.debug("ActionEvent: {}", actionCommand);
     if (actionCommand.equalsIgnoreCase("CANCEL_ADDRESS"))
     {
       cancelTransfer();
@@ -251,7 +254,6 @@ public class TransferManagement extends JFrame implements ActionListener
     }
   }
 
-  private logger logger;
   private EPPuplink EPPuplink;
 
 }

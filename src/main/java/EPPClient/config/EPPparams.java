@@ -1,6 +1,7 @@
 /*
  * SPDX-FileCopyrightText: 2009-2025 AssoTLD <reg@assotld.it>
  * SPDX-FileCopyrightText: 2026 Riccardo Bertelli
+ * SPDX-FileCopyrightText: 2026 Matteo Trubini @ CUBIC S.R.L. <https://cubicsrl.it/>
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
@@ -18,9 +19,12 @@ package EPPClient.config;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EPPparams
 {
+  private static final Logger log = LoggerFactory.getLogger(EPPparams.class);
   private static final String BUNDLE_NAME = "EPPClient.config.EPPparams";
 
   private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
@@ -37,7 +41,7 @@ public class EPPparams
     }
     catch (ClassNotFoundException e)
     {
-      e.printStackTrace();
+      log.error("Class not found", e);
     }
   }
 
@@ -50,7 +54,8 @@ public class EPPparams
 
   public static String getParameter(String key)
   {
-
+    String parameterValue = "";
+    
     try
     {
       try
@@ -59,59 +64,67 @@ public class EPPparams
       }
       catch (java.util.prefs.BackingStoreException ex)
       {
-        ex.printStackTrace();
+        log.error("BackingStoreException in getParameter", ex);
       }
 
-      String parameterValue = new String(prefs.getByteArray(paramPrefix + key, new byte[0]));
-      try
+      String storedValue = new String(prefs.getByteArray(paramPrefix + key, new byte[0]));
+      
+      if (storedValue.length() > 0)
       {
-        if (parameterValue.length() > 0)
+        try
         {
-          parameterValue = CryptoUtils.decrypt(parameterValue);
+          String decryptedValue = CryptoUtils.decrypt(storedValue);
+          if (decryptedValue != null && !decryptedValue.isEmpty())
+          {
+            parameterValue = decryptedValue;
+            log.debug("Successfully decrypted parameter: {}", key);
+          }
+          else
+          {
+            log.warn("Decrypted value is empty for key {}, falling back to resource bundle", key);
+            throw new Exception("Decrypted value is empty");
+          }
         }
-        else
+        catch (Exception decryptEx)
         {
-          try
-          {
-            parameterValue = RESOURCE_BUNDLE.getString(key);
-          }
-          catch (MissingResourceException e)
-          {
-            parameterValue = "";
-          }
+          log.warn("Decryption failed for key {}, falling back to resource bundle: {}", key, decryptEx.getMessage());
+          // Fall through to load from resource bundle
+        }
+      }
+      
+      // Final check: if parameterValue is still empty, use resource bundle
+      if (parameterValue.isEmpty())
+      {
+        log.debug("Parameter value is empty for key {}, loading from resource bundle", key);
+        try
+        {
+          parameterValue = RESOURCE_BUNDLE.getString(key);
+          log.debug("Loaded parameter from resource bundle: {}", key);
+          // Save the fallback value to preferences
           setParameter(key, parameterValue);
-          try
-          {
-            prefs.sync();
-          }
-          catch (java.util.prefs.BackingStoreException ex)
-          {
-            ex.printStackTrace();
-          }
+        }
+        catch (MissingResourceException e)
+        {
+          log.error("Missing parameter in resource bundle: {}", key);
+          parameterValue = "";
         }
       }
-      catch (Exception e)
-      {
-        e.printStackTrace();
-      }
-
-      return parameterValue;
     }
-    catch (MissingResourceException e)
+    catch (Exception e)
     {
-      e.printStackTrace();
-      setParameter(paramPrefix + key, RESOURCE_BUNDLE.getString(key));
-      //prefs.put (key, RESOURCE_BUNDLE.getString(key));
+      log.error("Error in getParameter for key {}: {}", key, e.getMessage(), e);
+      // Final fallback attempt
       try
       {
-        prefs.sync();
+        parameterValue = RESOURCE_BUNDLE.getString(key);
       }
-      catch (java.util.prefs.BackingStoreException ex)
+      catch (MissingResourceException ex)
       {
-        ex.printStackTrace();
+        parameterValue = "";
       }
-      return RESOURCE_BUNDLE.getString(key);
     }
+
+    return parameterValue;
   }
 
   public static void setParameter(String key, String value)
@@ -127,15 +140,16 @@ public class EPPparams
       }
       catch (java.util.prefs.BackingStoreException ex)
       {
-        ex.printStackTrace();
+        log.error("BackingStoreException in setParameter", ex);
       }
     }
     catch (MissingResourceException e)
     {
+      log.error("MissingResourceException in setParameter", e);
     }
     catch (Exception e)
     {
-      e.printStackTrace();
+      log.error("Error in setParameter", e);
     }
   }
 
