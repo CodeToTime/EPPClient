@@ -129,7 +129,7 @@ public class domainsDao
 
     String driverName = dbProperties.getProperty("derby.driver");
     loadDatabaseDriver(driverName);
-    if (!dbExists() && !dbProperties.getProperty("derby.url").contains("mysql"))
+    if (!dbExists() && !dbProperties.getProperty("derby.url").contains("mariadb"))
     {
       createDatabase();
     }
@@ -292,11 +292,11 @@ public class domainsDao
     }
     catch (ClassNotFoundException ex)
     {
-      if ("com.mysql.cj.jdbc.Driver".equals(driverName))
+      if ("org.mariadb.jdbc.Driver".equals(driverName))
       {
         try
         {
-          Class.forName("com.mysql.jdbc.Driver");
+          Class.forName("org.mariadb.jdbc.Driver");
         }
         catch (ClassNotFoundException e)
         {
@@ -321,9 +321,9 @@ public class domainsDao
       dbProperties.load(dbPropInputStream);
 
       String dbUrl = EPPparams.getParameter("EppClient.dburl");
-      if (dbUrl.contains("mysql"))
+      if (dbUrl.contains("mariadb"))
       {
-        dbProperties.put("derby.driver", "com.mysql.cj.jdbc.Driver");
+        dbProperties.put("derby.driver", "org.mariadb.jdbc.Driver");
       }
       else
       {
@@ -451,7 +451,7 @@ public class domainsDao
   public String getDatabaseUrl()
   {
     String dbUrl = dbProperties.getProperty("derby.url");
-    if (!dbUrl.contains("mysql"))
+    if (!dbUrl.contains("mariadb"))
       dbUrl += dbName;
     return dbUrl;
   }
