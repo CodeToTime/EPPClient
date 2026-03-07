@@ -13,21 +13,19 @@
 
 package EPPClient;
 
-import java.io.File;
-import java.lang.management.ManagementFactory;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.Component;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 
 /**
  * Centralized error handling utility class.
  * Provides dialog display for errors - logging is done directly via SLF4J.
  *
- * The user receives a generic error message and is invited to enable logging for detailed information.
+ * The user receives a generic error message and is invited to view the log file for detailed information.
  *
  * File logging is controlled by system property -Deppclient.logLevel
  * Console output for errors can be enabled with -Deppclient.console=true
@@ -41,28 +39,9 @@ public class ErrorHandler
   private static final String LOG_LEVEL_PROPERTY = "eppclient.logLevel";
 
   /**
-   * Original command-line arguments passed to the application.
-   * Used when restarting with debug enabled.
-   */
-  private static String[] originalArgs = new String[0];
-
-  /**
-   * Sets the original command-line arguments for use during debug restart.
-   *
-   * @param args The command-line arguments passed to main()
-   */
-  public static void setOriginalArgs(String[] args)
-  {
-    if (args != null)
-    {
-      originalArgs = args.clone();
-    }
-  }
-
-  /**
    * Default message shown to users when an error occurs.
    */
-  public static final String DEFAULT_USER_MESSAGE = "Si è verificato un errore durante l'operazione.\n\n" + "Clicca \"Riavvia con debug attivo\" per riavviare l'applicazione con il logging di debug abilitato.\n\n" + "Consultare i file di log per maggiori dettagli.";
+  public static final String DEFAULT_USER_MESSAGE = "Si è verificato un errore durante l'operazione.\n\n" + "Clicca \"Visualizza log\" per aprire il visualizzatore dei log.\n\n" + "Consultare i file di log per maggiori dettagli.";
 
   /**
    * Logs an error and shows a dialog to the user.
@@ -150,7 +129,7 @@ public class ErrorHandler
    */
   public static void showErrorDialog(java.awt.Component parent, String title)
   {
-    showErrorDialogWithRestart(parent, title, DEFAULT_USER_MESSAGE);
+    showErrorDialogWithLogViewer(parent, title, DEFAULT_USER_MESSAGE);
   }
 
   /**
@@ -163,7 +142,7 @@ public class ErrorHandler
   public static void showErrorDialog(java.awt.Component parent, String title, String customMessage)
   {
     String fullMessage = customMessage + "\n\n" + DEFAULT_USER_MESSAGE;
-    showErrorDialogWithRestart(parent, title, fullMessage);
+    showErrorDialogWithLogViewer(parent, title, fullMessage);
   }
 
   /**
@@ -176,34 +155,34 @@ public class ErrorHandler
   public static void showErrorDialog(JFrame parent, String title, String customMessage)
   {
     String fullMessage = customMessage + "\n\n" + DEFAULT_USER_MESSAGE;
-    showErrorDialogWithRestart(parent, title, fullMessage);
+    showErrorDialogWithLogViewer(parent, title, fullMessage);
   }
 
   /**
-   * Shows an error dialog with a "Restart with debug active" button.
+   * Shows an error dialog with a "Show logs" button that opens the LogViewer.
    *
    * @param parent The parent component for the dialog
    * @param title The title of the dialog
    * @param message The message to display
    */
-  private static void showErrorDialogWithRestart(java.awt.Component parent, String title, String message)
+  private static void showErrorDialogWithLogViewer(Component parent, String title, String message)
   {
-    // Create buttons: OK and Restart with debug
-    JButton restartButton = new JButton("Riavvia con debug attivo");
-    restartButton.setFocusPainted(false);
+    // Create buttons: OK and View Log
+    JButton viewLogButton = new JButton("Visualizza log");
+    viewLogButton.setFocusPainted(false);
 
     // Create option pane with custom buttons
     JOptionPane optionPane = new JOptionPane(message, JOptionPane.ERROR_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null, new Object[]
-    {restartButton, "OK"}, "OK");
+    {viewLogButton, "OK"}, "OK");
 
     // Create and configure the dialog
     JDialog dialog = optionPane.createDialog(parent, title);
     dialog.setResizable(false);
 
     // Handle button click
-    restartButton.addActionListener(e -> {
+    viewLogButton.addActionListener(e -> {
       dialog.dispose();
-      restartWithDebug();
+      openLogViewer(parent);
     });
 
     // Show dialog
@@ -218,140 +197,23 @@ public class ErrorHandler
   }
 
   /**
-   * Restarts the application with debug logging enabled.
-   * Uses Java 21+ APIs for reliable process management.
+   * Opens the log viewer dialog.
+   *
+   * @param parent The parent component for the log viewer
    */
-  private static void restartWithDebug()
+  private static void openLogViewer(Component parent)
   {
-    try
+    // Get the parent frame for the log viewer
+    JFrame frame = null;
+    if (parent instanceof JFrame)
     {
-      // Get current JVM input arguments
-      List<String> inputArgs = ManagementFactory.getRuntimeMXBean().getInputArguments();
-
-      // Build new arguments list with debug enabled
-      List<String> newArgs = new ArrayList<>();
-      boolean debugAlreadySet = false;
-
-      for (String arg : inputArgs)
-      {
-        if (arg.startsWith("-D" + LOG_LEVEL_PROPERTY))
-        {
-          // Replace existing log level with DEBUG
-          newArgs.add("-D" + LOG_LEVEL_PROPERTY + "=DEBUG");
-          debugAlreadySet = true;
-        }
-        else
-        {
-          newArgs.add(arg);
-        }
-      }
-
-      // Add debug parameter if not already present
-      if (!debugAlreadySet)
-      {
-        newArgs.add("-D" + LOG_LEVEL_PROPERTY + "=DEBUG");
-      }
-
-      // Get the classpath using RuntimeMXBean
-      String classPath = ManagementFactory.getRuntimeMXBean().getClassPath();
-      // Use hardcoded main class name - the ProcessHandle command returns the Java executable, not the main class
-      String mainClass = "EPPClient.main";
-
-      // Build the command using ProcessHandle API (Java 9+)
-      List<String> command = buildJavaCommand();
-
-      // Add all JVM arguments (including -cp and -D properties)
-      for (String arg : newArgs)
-      {
-        command.add(arg);
-      }
-
-      // Add classpath
-      command.add("-cp");
-      command.add(classPath);
-      command.add(mainClass);
-
-      // Add original program arguments
-      for (String arg : originalArgs)
-      {
-        command.add(arg);
-      }
-
-      // Start new process and exit current one
-      ProcessBuilder pb = new ProcessBuilder(command);
-
-      // Preserve environment variables from current process
-      pb.environment().putAll(System.getenv());
-
-      pb.start();
-
-      // Exit current JVM
-      System.exit(0);
-
+      frame = (JFrame) parent;
     }
-    catch (Exception e)
+    else if (parent != null)
     {
-      // If restart fails, show error message
-      JOptionPane.showMessageDialog(null, "Impossibile riavviare l'applicazione con debug.\n" + "Avviare manualmente l'applicazione con:\n" + "java -D" + LOG_LEVEL_PROPERTY + "=DEBUG -jar EPPClient.jar", "Errore", JOptionPane.ERROR_MESSAGE);
-    }
-  }
-
-  /**
-   * Builds the Java command using Java 21+ APIs for cross-platform compatibility.
-   * @return List containing the Java executable path
-   */
-  private static List<String> buildJavaCommand()
-  {
-    List<String> command = new ArrayList<>();
-
-    // Try to get Java executable from ProcessHandle (Java 9+)
-    try
-    {
-      ProcessHandle currentProcess = ProcessHandle.current();
-      String javaExec = currentProcess.info().command().orElse(null);
-
-      if (javaExec != null && !javaExec.isEmpty())
-      {
-        File javaFile = new File(javaExec);
-        // Verify it exists
-        if (javaFile.exists())
-        {
-          command.add(javaExec);
-          return command;
-        }
-      }
-    }
-    catch (Exception e)
-    {
-      // Fallback to other methods
+      frame = (JFrame) SwingUtilities.getWindowAncestor(parent);
     }
 
-    // Fallback 1: Use java.home property with proper path construction
-    String javaHome = System.getProperty("java.home");
-    String os = System.getProperty("os.name").toLowerCase();
-    String javaExec;
-
-    if (os.contains("windows"))
-    {
-      javaExec = javaHome + File.separator + "bin" + File.separator + "java.exe";
-    }
-    else
-    {
-      javaExec = javaHome + File.separator + "bin" + File.separator + "java";
-    }
-
-    // Verify executable exists
-    File javaFile = new File(javaExec);
-    if (javaFile.exists())
-    {
-      command.add(javaExec);
-    }
-    else
-    {
-      // Last resort: just use "java" and rely on PATH
-      command.add("java");
-    }
-
-    return command;
+    LogViewer.showLogViewer(frame);
   }
 }
