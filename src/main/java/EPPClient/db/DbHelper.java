@@ -1,7 +1,4 @@
 /*
- * SPDX-FileCopyrightText: 2009-2025 AssoTLD <reg@assotld.it>
- * SPDX-FileCopyrightText: 2026 Riccardo Bertelli
- * SPDX-FileCopyrightText: 2026 Matteo Trubini @ CUBIC S.R.L. <https://cubicsrl.it/>
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
