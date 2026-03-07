@@ -87,34 +87,31 @@ _(Verificare il nome del file generato presente nella cartella build/libs)_
 
 ---
 
-## Opzioni di debug
+## Opzioni di log e debug
 
-### Logging su file
+L'applicazione registra i messaggi sia su console che su file simultaneamente. Il livello di log predefinito è `INFO`.
 
-Per abilitare il logging su file, utilizzare il flag `-Deppclient.logLevel`:
+### Configurazione del livello di log
+
+Per cambiare il livello di log, utilizzare il flag `-Deppclient.logLevel`:
 
 ```bash
 java -Deppclient.logLevel=DEBUG -jar build/libs/eppclient-<versione>-all.jar
 ```
 
-Questa opzione attiva la scrittura dei messaggi di log nel file `logs/eppclient.log` con rotazione giornaliera (massimo 30 giorni).
+### Logging su file (NDJSON)
 
-### Console output
-
-Per abilitare l'output dei log anche sulla console (oltre al file), aggiungere il flag `-Deppclient.console=true`:
-
-```bash
-java -Deppclient.logLevel=DEBUG -Deppclient.console=true -jar build/libs/eppclient-<versione>-all.jar
-```
+I log vengono salvati in formato NDJSON nel file `logs/eppclient.log` con rotazione giornaliera (mantenuti per un massimo di 30 giorni).
+Questo formato strutturato include i campi: `timestamp`, `loglevel`, `logger`, `message`, `thread`, `stackTrace`.
 
 ### Livelli di log disponibili
 
-- `OFF` - Disabilita il logging (default)
 - `ERROR` - Solo errori
 - `WARN` - Warning e errori
 - `INFO` - Info, warning e errori
 - `DEBUG` - Messaggi di debug completi
 - `TRACE` - Trace dettagliato
+- `OFF` - Disabilita il logging
 
 ### Visualizzatore log integrato
 
@@ -161,8 +158,7 @@ Componenti e versioni principali attualmente in uso (si veda `build.gradle`):
 - org.apache.httpcomponents:httpclient:4.5.14
 - org.apache.httpcomponents:httpcore:4.4.16
 - org.apache.xmlbeans:xmlbeans:3.1.0
-- org.codehaus.janino:commons-compiler:3.1.12
-- org.codehaus.janino:janino:3.1.12
+- net.logstash.logback:logstash-logback-encoder:9.0
 - org.slf4j:slf4j-api:2.0.17
 - epp-client-cmd-line:1.19.1 (Fornito dal Registro .it, JAR locale da collocare in `libs/`)
 - test: org.junit:junit-bom:5.10.0; org.junit.jupiter:junit-jupiter
