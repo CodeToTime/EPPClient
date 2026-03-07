@@ -15,37 +15,13 @@
 
 package EPPClient.db;
 
-import EPPClient.config.EPPparams;
 import EPPClient.messages.Message;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.*;
-import java.util.MissingResourceException;
-import java.util.Properties;
-import java.util.ResourceBundle;
 import java.util.Vector;
+import org.jdbi.v3.core.Handle;
 
 public class messagesDao
 {
-
-  private static final String BUNDLE_NAME = "EPPClient.db.messages";
-
-  private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
-
-  public static String getString(String key)
-  {
-    try
-    {
-      return RESOURCE_BUNDLE.getString(key);
-    }
-    catch (MissingResourceException e)
-    {
-      return '!' + key + '!';
-    }
-  }
-
 
   /**
    * Creates a new instance of AddressDao
@@ -57,15 +33,10 @@ public class messagesDao
 
   public messagesDao(String addressBookName)
   {
-    this.dbName = addressBookName;
+    strDropMessageTable = "drop table " + tableName;
 
-    setDBSystemDir();
-    dbProperties = loadDBProperties();
-
-    strDropMessageTable = "drop table " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table");
-
-    strCreateAddressTable =
-            "create table " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " (" +
+    strCreateMessageTable =
+            "create table " + tableName + " (" +
                     "    MSGID                 VARCHAR(30 ) NOT NULL PRIMARY KEY," +
                     "    DATETIME              TIMESTAMP, " +
                     "    MESSAGE               VARCHAR(255), " +
@@ -75,8 +46,8 @@ public class messagesDao
                     "    ACTIONEDFLAG          SMALLINT" +
                     ")";
 
-    strCreateAddressTableMYSQL =
-            "create table " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " (" +
+    strCreateMessageTableMYSQL =
+            "create table " + tableName + " (" +
                     "    MSGID                 VARCHAR(30 ) NOT NULL PRIMARY KEY," +
                     "    DATETIME              TIMESTAMP DEFAULT '1970-01-01 01:00:01', " +
                     "    MESSAGE               VARCHAR(255), " +
@@ -86,308 +57,93 @@ public class messagesDao
                     "    ACTIONEDFLAG          SMALLINT" +
                     ")";
 
-    strGetAddress =
-            "SELECT * FROM " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " " +
+    strGetMessage =
+            "SELECT * FROM " + tableName + " " +
                     "WHERE MSGID = ?";
 
-    strSaveAddress =
-            "INSERT INTO " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " " +
+    strSaveMessage =
+            "INSERT INTO " + tableName + " " +
                     "   (MSGID, DATETIME, MESSAGE, MSGXML, READFLAG, ACKFLAG, ACTIONEDFLAG) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
     strGetListEntries =
-            "SELECT MSGID, DATETIME, MESSAGE, MSGXML, READFLAG, ACKFLAG, ACTIONEDFLAG FROM " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " " +
+            "SELECT MSGID, DATETIME, MESSAGE, MSGXML, READFLAG, ACKFLAG, ACTIONEDFLAG FROM " + tableName + " " +
                     "ORDER BY DATETIME ASC, MSGID ASC";
 
-    strUpdateAddress =
-            "UPDATE " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " " +
+    strUpdateMessage =
+            "UPDATE " + tableName + " " +
                     "SET READFLAG = ?, " +
                     "    ACKFLAG = ?, " +
                     "    ACTIONEDFLAG = ? " +
                     "WHERE MSGID = ?";
 
-    strDeleteAddress =
-            "DELETE FROM " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " " +
+    strDeleteMessage =
+            "DELETE FROM " + tableName + " " +
                     "WHERE MSGID = ?";
 
-    String driverName = dbProperties.getProperty("derby.driver");
-    loadDatabaseDriver(driverName);
-    if (!dbExists() && !dbProperties.getProperty("derby.url").contains("mariadb"))
+    // Initialize DbHelper
+    if (!DbHelper.isInitialized())
     {
-      createDatabase();
+      DbHelper.initialize();
     }
-    else
+    this.dbHelper = DbHelper.getInstance();
+
+    // Try to create tables if they don't exist
+    if (!dbHelper.tableExists(tableName))
     {
-      connect();
-      if (!tableExists(dbConnection, dbProperties.getProperty("db.table")))
+      // Check for MySQL/MariaDB to use appropriate table definition
+      if (dbHelper.isMysqlOrMariaDb())
       {
-        createTables(dbConnection);
-      }
-    }
-  }
-
-  private boolean tableExists(Connection dbConnection, String tableName)
-  {
-    boolean tableExists = false;
-
-    Statement statement = null;
-    try
-    {
-      ResultSet rs = dbConnection.getMetaData().getTables(dbProperties.getProperty("db.schema"), null, "%", null);
-      while (rs.next())
-      {
-        if (rs.getString(3).toLowerCase().equals(tableName.toLowerCase()))
-          tableExists = true;
-      }
-    }
-    catch (SQLException ex)
-    {
-      ex.printStackTrace();
-    }
-    catch (Exception ex)
-    {
-      ex.printStackTrace();
-    }
-
-    return tableExists;
-  }
-
-  private boolean dbExists()
-  {
-    boolean bExists = false;
-    String dbLocation = getDatabaseLocation();
-    File dbFileDir = new File(dbLocation);
-    if (dbFileDir.exists())
-    {
-      bExists = true;
-    }
-    return bExists;
-  }
-
-  private void setDBSystemDir()
-  {
-    // decide on the db system directory
-    String userHomeDir = System.getProperty("user.home", ".");
-    String systemDir = userHomeDir + "/.eppclient";
-    System.setProperty("derby.system.home", systemDir);
-
-    // create the db system directory
-    File fileSystemDir = new File(systemDir);
-    fileSystemDir.mkdir();
-  }
-
-  private void loadDatabaseDriver(String driverName)
-  {
-    try
-    {
-      Class.forName(driverName);
-    }
-    catch (ClassNotFoundException ex)
-    {
-      if ("org.mariadb.jdbc.Driver".equals(driverName))
-      {
-        try
-        {
-          Class.forName("org.mariadb.jdbc.Driver");
-        }
-        catch (ClassNotFoundException e)
-        {
-          ex.printStackTrace();
-        }
+        dbHelper.executeSql(strCreateMessageTableMYSQL);
       }
       else
       {
-        ex.printStackTrace();
+        dbHelper.executeSql(strCreateMessageTable);
       }
     }
-
-  }
-
-  private Properties loadDBProperties()
-  {
-    InputStream dbPropInputStream = null;
-    dbPropInputStream = messagesDao.class.getResourceAsStream("messages.properties");
-    dbProperties = new Properties();
-    try
-    {
-      dbProperties.load(dbPropInputStream);
-      dbProperties.put("derby.locks.monitor", "true");
-      dbProperties.put("derby.locks.deadlockTrace", "true");
-      dbProperties.put("derby.language.logStatementText", "true");
-      String dbUrl = EPPparams.getParameter("EppClient.dburl");
-      if (dbUrl.contains("mariadb"))
-      {
-        dbProperties.put("derby.driver", "org.mariadb.jdbc.Driver");
-      }
-      else
-      {
-        dbProperties.put("derby.driver", "org.apache.derby.jdbc.EmbeddedDriver");
-      }
-      dbProperties.put("derby.url", dbUrl);
-      dbProperties.put("db.schema", EPPparams.getParameter("EppClient.dbname"));
-      dbProperties.put("user", EPPparams.getParameter("EppClient.dbuid"));
-      dbProperties.put("password", EPPparams.getParameter("EppClient.dbpwd"));
-
-    }
-    catch (IOException ex)
-    {
-      ex.printStackTrace();
-    }
-    return dbProperties;
-  }
-
-
-  private boolean createTables(Connection dbConnection)
-  {
-    System.out.println("Creazione tabelle in corso...");
-    boolean bCreatedTables = false;
-    Statement statement = null;
-    try
-    {
-      statement = dbConnection.createStatement();
-      if (dbProperties.getProperty("derby.url").contains("mariadb"))
-      {
-        statement.execute(strCreateAddressTableMYSQL);
-      }
-      else
-      {
-        statement.execute(strCreateAddressTable);
-      }
-      bCreatedTables = true;
-      try
-      {
-        Thread.sleep(1000);
-      }
-      catch (InterruptedException e)
-      {
-        e.printStackTrace();
-      }
-    }
-    catch (SQLException ex)
-    {
-      ex.printStackTrace();
-    }
-    return bCreatedTables;
   }
 
   public boolean dropTables()
   {
-    boolean bDroppedTables = false;
-    try
-    {
-      stmtDropMessageTable.clearParameters();
-      stmtDropMessageTable.execute();
-      bDroppedTables = true;
-    }
-    catch (SQLException ex)
-    {
-      ex.printStackTrace();
-    }
-    return bDroppedTables;
+    dbHelper.executeSql(strDropMessageTable);
+    return true;
   }
-
-  private boolean createDatabase()
-  {
-    boolean bCreated = false;
-    Connection dbConnection = null;
-
-    String dbUrl = getDatabaseUrl();
-    dbProperties.put("create", "true");
-    try
-    {
-      dbConnection = DriverManager.getConnection(dbUrl, dbProperties);
-      bCreated = createTables(dbConnection);
-    }
-    catch (SQLException ex)
-    {
-      ex.printStackTrace();
-    }
-    dbProperties.remove("create");
-    return bCreated;
-  }
-
 
   public boolean connect()
   {
-    String dbUrl = getDatabaseUrl();
-
     try
     {
-      dbProperties.put("shutdown", "false");
-      dbConnection = DriverManager.getConnection(dbUrl, dbProperties);
-      stmtSaveNewRecord = dbConnection.prepareStatement(strSaveAddress, Statement.RETURN_GENERATED_KEYS);
-      stmtUpdateExistingRecord = dbConnection.prepareStatement(strUpdateAddress);
-      stmtGetAddress = dbConnection.prepareStatement(strGetAddress);
-      stmtDeleteAddress = dbConnection.prepareStatement(strDeleteAddress);
-      stmtDropMessageTable = dbConnection.prepareStatement(strDropMessageTable);
-
-      isConnected = dbConnection != null;
+      handle = dbHelper.connect();
+      return handle != null;
     }
-    catch (SQLException ex)
+    catch (Exception ex)
     {
-      isConnected = false;
-      System.out.println("errore!!");
       ex.printStackTrace();
+      return false;
     }
-    return isConnected;
-  }
-
-  private String getHomeDir()
-  {
-    return System.getProperty("user.home");
   }
 
   public void disconnect()
   {
-    if (isConnected)
-    {
-      String dbUrl = getDatabaseUrl();
-      dbProperties.put("shutdown", "true");
-      try
-      {
-        DriverManager.getConnection(dbUrl, dbProperties);
-      }
-      catch (SQLException ex)
-      {
-      }
-      isConnected = false;
-    }
+    dbHelper.disconnect(handle);
+    handle = null;
   }
-
-  public String getDatabaseLocation()
-  {
-    String dbLocation = System.getProperty("derby.system.home") + "/" + dbName;
-    return dbLocation;
-  }
-
-  public String getDatabaseUrl()
-  {
-    String dbUrl = dbProperties.getProperty("derby.url");
-    if (!dbUrl.contains("mariadb"))
-      dbUrl += dbName;
-    return dbUrl;
-  }
-
 
   public String saveRecord(Message record)
   {
-    try
+    try (Handle h = dbHelper.connect())
     {
-      stmtSaveNewRecord.clearParameters();
+      java.sql.Timestamp timestamp = null;
+      if (record.getDateTime() != null)
+      {
+        timestamp = new java.sql.Timestamp(record.getDateTime().getTime());
+      }
 
-      stmtSaveNewRecord.setString(1, record.getMsgId());
-      stmtSaveNewRecord.setString(2, dateFormatter.format(record.getDateTime()));
-      stmtSaveNewRecord.setString(3, record.getTitle());
-      stmtSaveNewRecord.setString(4, record.getXml());
-      stmtSaveNewRecord.setBoolean(5, record.getRead());
-      stmtSaveNewRecord.setBoolean(6, record.getAck());
-      stmtSaveNewRecord.setBoolean(7, record.getActioned());
-      int rowCount = stmtSaveNewRecord.executeUpdate();
-
+      h.execute(strSaveMessage, record.getMsgId(), timestamp, record.getTitle(), record.getXml(), record.getRead() ? 1 : 0, record.getAck() ? 1 : 0, record.getActioned() ? 1 : 0);
     }
-    catch (SQLException sqle)
+    catch (Exception ex)
     {
-      sqle.printStackTrace();
+      ex.printStackTrace();
     }
     return record.getMsgId();
   }
@@ -395,22 +151,14 @@ public class messagesDao
   public boolean editRecord(Message record)
   {
     boolean bEdited = false;
-    try
+    try (Handle h = dbHelper.connect())
     {
-      stmtUpdateExistingRecord.clearParameters();
-
-
-      stmtUpdateExistingRecord.setBoolean(1, record.getRead());
-      stmtUpdateExistingRecord.setBoolean(2, record.getAck());
-      stmtUpdateExistingRecord.setBoolean(3, record.getActioned());
-      stmtUpdateExistingRecord.setString(4, record.getMsgId());
-
-      stmtUpdateExistingRecord.executeUpdate();
+      h.execute(strUpdateMessage, record.getRead() ? 1 : 0, record.getAck() ? 1 : 0, record.getActioned() ? 1 : 0, record.getMsgId());
       bEdited = true;
     }
-    catch (SQLException sqle)
+    catch (Exception ex)
     {
-      sqle.printStackTrace();
+      ex.printStackTrace();
     }
     return bEdited;
   }
@@ -418,25 +166,21 @@ public class messagesDao
   public boolean deleteRecord(String msgId)
   {
     boolean bDeleted = false;
-    try
+    try (Handle h = dbHelper.connect())
     {
-      stmtDeleteAddress.clearParameters();
-      stmtDeleteAddress.setString(1, msgId);
-      stmtDeleteAddress.executeUpdate();
+      h.execute(strDeleteMessage, msgId);
       bDeleted = true;
     }
-    catch (SQLException sqle)
+    catch (Exception ex)
     {
-      sqle.printStackTrace();
+      ex.printStackTrace();
     }
-
     return bDeleted;
   }
 
   public boolean deleteRecord(Message record)
   {
-    String contactId = record.getMsgId();
-    return deleteRecord(contactId);
+    return deleteRecord(record.getMsgId());
   }
 
   public Vector getListEntries()
@@ -447,81 +191,58 @@ public class messagesDao
   public Vector getSelectiveEntries(String preparedStatement)
   {
     Vector listEntries = new Vector();
-
-    Statement queryStatement = null;
-    ResultSet results = null;
-
-    try
+    try (Handle h = dbHelper.connect())
     {
-      queryStatement = dbConnection.createStatement();
-      results = queryStatement.executeQuery(preparedStatement);
-      while (results.next())
-      {
-        Message message = new Message(results.getString(1), results.getTimestamp(2), results.getString(3), results.getString(4), results.getBoolean(5), results.getBoolean(6), results.getBoolean(7));
-        listEntries.add(message);
-      }
-      results.close();
-
+      h.createQuery(strGetListEntries).map((rs, ctx) -> new Message(
+              rs.getString("MSGID"),
+              rs.getTimestamp("DATETIME"),
+              rs.getString("MESSAGE"),
+              rs.getString("MSGXML"),
+              rs.getInt("READFLAG") == 1,
+              rs.getInt("ACKFLAG") == 1,
+              rs.getInt("ACTIONEDFLAG") == 1
+      )).list().forEach(listEntries::add);
     }
-    catch (SQLException sqle)
+    catch (Exception ex)
     {
-      sqle.printStackTrace();
-
+      ex.printStackTrace();
     }
-
     return listEntries;
   }
 
   public Message getMessage(String msgId)
   {
     Message message = null;
-    try
+    try (Handle h = dbHelper.connect())
     {
-      stmtGetAddress.clearParameters();
-      stmtGetAddress.setString(1, msgId);
-      ResultSet result = stmtGetAddress.executeQuery();
-      if (result.next())
-      {
-        java.util.Date datetime = result.getTimestamp("DATETIME");
-        String title = result.getString("MESSAGE");
-        String xml = result.getString("MSGXML");
-        boolean read = result.getBoolean("READFLAG");
-        boolean ack = result.getBoolean("ACKFLAG");
-        boolean actioned = result.getBoolean("ACTIONEDFLAG");
-        message = new Message(msgId, datetime, title, xml, read, ack, actioned);
-      }
-      result.close();
+      message = h.createQuery(strGetMessage).bind(0, msgId).map((rs, ctx) -> {
+        java.util.Date datetime = rs.getTimestamp("DATETIME");
+        String title = rs.getString("MESSAGE");
+        String xml = rs.getString("MSGXML");
+        boolean read = rs.getInt("READFLAG") == 1;
+        boolean ack = rs.getInt("ACKFLAG") == 1;
+        boolean actioned = rs.getInt("ACTIONEDFLAG") == 1;
+        return new Message(msgId, datetime, title, xml, read, ack, actioned);
+      }).findFirst().orElse(null);
     }
-    catch (SQLException sqle)
+    catch (Exception ex)
     {
-      sqle.printStackTrace();
+      ex.printStackTrace();
     }
 
     return message;
   }
 
-
-
-  private Connection dbConnection;
-  private Properties dbProperties;
-  private boolean isConnected;
-  private String dbName;
-  private PreparedStatement stmtSaveNewRecord;
-  private PreparedStatement stmtUpdateExistingRecord;
-  private PreparedStatement stmtGetListEntries;
-  private PreparedStatement stmtGetRegistrantEntries;
-  private PreparedStatement stmtGetAddress;
-  private PreparedStatement stmtDeleteAddress;
-  private PreparedStatement stmtDropMessageTable;
+  private String tableName = "messages";
+  private final DbHelper dbHelper;
+  private Handle handle;
 
   private final String strDropMessageTable;
-  private final String strCreateAddressTable;
-  private final String strCreateAddressTableMYSQL;
-  private final String strGetAddress;
-  private final String strSaveAddress;
+  private final String strCreateMessageTable;
+  private final String strCreateMessageTableMYSQL;
+  private final String strGetMessage;
+  private final String strSaveMessage;
   private final String strGetListEntries;
-  private final String strUpdateAddress;
-  private final String strDeleteAddress;
-
-  java.text.SimpleDateFormat dateFormatter = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+  private final String strUpdateMessage;
+  private final String strDeleteMessage;
 }

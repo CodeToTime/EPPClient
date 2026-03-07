@@ -18,32 +18,16 @@ package EPPClient.db;
 import EPPClient.config.EPPparams;
 import EPPClient.contacts.Address;
 import EPPClient.contacts.ListEntry;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import org.jdbi.v3.core.Handle;
 
 public class contactsDao
 {
-
-  private static final String BUNDLE_NAME = "EPPClient.db.contacts";
-
-  private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
-
-  public static String getString(String key)
-  {
-    try
-    {
-      return RESOURCE_BUNDLE.getString(key);
-    }
-    catch (MissingResourceException e)
-    {
-      return '!' + key + '!';
-    }
-  }
-
 
   /**
    * Creates a new instance of AddressDao
@@ -55,15 +39,10 @@ public class contactsDao
 
   public contactsDao(String addressBookName)
   {
-    this.dbName = addressBookName;
+    strDropContactTable = "drop table " + tableName;
 
-    setDBSystemDir();
-    dbProperties = loadDBProperties();
-
-    strDropContactTable = "drop table " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table");
-
-    strCreateAddressTable =
-            "create table " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " (" +
+    strCreateContactTable =
+            "create table " + tableName + " (" +
                     "    CONTACTID             VARCHAR(30 ) NOT NULL PRIMARY KEY," +
                     "    NAME                  VARCHAR(255), " +
                     "    ORG                   VARCHAR(255), " +
@@ -86,12 +65,12 @@ public class contactsDao
                     "    IPACODE               VARCHAR(64 )  " +
                     ")";
 
-    strGetAddress =
-            "SELECT * FROM " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " " +
+    strGetContact =
+            "SELECT * FROM " + tableName + " " +
                     "WHERE CONTACTID = ?";
 
-    strSaveAddress =
-            "INSERT INTO " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " " +
+    strSaveContact =
+            "INSERT INTO " + tableName + " " +
                     "   (CONTACTID, NAME, ORG, STREET, CITY, STATEORPROVINCE, POSTALCODE, " +
                     "    COUNTRYCODE, VOICE, FAX, EMAIL, CONSENTFORPUBLISHING, ISREGISTRANT, " +
                     "    NATIONALITYCODE, ENTITYTYPE, REGCODE, STATUS, SCHOOLCODE, UOCODE, IPACODE) " +
@@ -99,15 +78,15 @@ public class contactsDao
 
 
     strGetListEntries =
-            "SELECT CONTACTID, NAME FROM " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " " +
+            "SELECT CONTACTID, NAME FROM " + tableName + " " +
                     "ORDER BY NAME ASC";
 
     strGetRegistrantEntries =
-            "SELECT CONTACTID, NAME FROM " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " " +
+            "SELECT CONTACTID, NAME FROM " + tableName + " " +
                     "WHERE ISREGISTRANT = 1 ORDER BY NAME ASC";
 
-    strUpdateAddress =
-            "UPDATE " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " " +
+    strUpdateContact =
+            "UPDATE " + tableName + " " +
                     "SET NAME = ?, " +
                     "    ORG = ?, " +
                     "    STREET = ?, " +
@@ -129,33 +108,39 @@ public class contactsDao
                     "    IPACODE = ? " +
                     "WHERE CONTACTID = ?";
 
-    strDeleteAddress =
-            "DELETE FROM " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " " +
+    strDeleteContact =
+            "DELETE FROM " + tableName + " " +
                     "WHERE CONTACTID = ?";
 
-    String driverName = dbProperties.getProperty("derby.driver");
-    loadDatabaseDriver(driverName);
-    if (!dbExists() && !dbProperties.getProperty("derby.url").contains("mariadb"))
+    // Initialize DbHelper
+    if (!DbHelper.isInitialized())
     {
-      createDatabase();
+      DbHelper.initialize();
+    }
+    this.dbHelper = DbHelper.getInstance();
+
+    // Try to create tables if they don't exist, otherwise add missing columns
+    if (!dbHelper.tableExists(tableName))
+    {
+      dbHelper.executeSql(strCreateContactTable);
     }
     else
     {
-      connect();
-      if (!tableExists(dbConnection, dbProperties.getProperty("db.table")))
-      {
-        createTables(dbConnection);
-      }
-      else
-      {
-        // Aggiorna lo schema: aggiunge le colonne mancanti se non esistono
-        String tableName = dbProperties.getProperty("db.table");
-        String fullTableName = dbProperties.getProperty("db.schema") + "." + tableName;
+      addMissingColumns();
+    }
+  }
 
+  private void addMissingColumns()
+  {
+    try (Connection dbConnection = dbHelper.getConnection())
+    {
         addColumnIfNotExists(dbConnection, tableName, "SCHOOLCODE", "VARCHAR(64)");
         addColumnIfNotExists(dbConnection, tableName, "UOCODE", "VARCHAR(64)");
         addColumnIfNotExists(dbConnection, tableName, "IPACODE", "VARCHAR(64)");
-      }
+    }
+    catch (SQLException e)
+    {
+      e.printStackTrace();
     }
   }
 
@@ -165,31 +150,15 @@ public class contactsDao
    */
   private boolean columnExists(Connection conn, String tableName, String columnName)
   {
-    try
+    try (ResultSet columns = conn.getMetaData().getColumns(null, null, tableName, null))
     {
-      // Prova prima con il nome tabella originale (funziona per MySQL/MariaDB con nomi minuscoli)
-      ResultSet columns = conn.getMetaData().getColumns(null, null, tableName, null);
       while (columns.next())
       {
         if (columns.getString("COLUMN_NAME").equalsIgnoreCase(columnName))
         {
-          columns.close();
           return true;
         }
       }
-      columns.close();
-
-      // Prova con il nome tabella in maiuscolo (funziona per Derby)
-      columns = conn.getMetaData().getColumns(null, null, tableName.toUpperCase(), null);
-      while (columns.next())
-      {
-        if (columns.getString("COLUMN_NAME").equalsIgnoreCase(columnName))
-        {
-          columns.close();
-          return true;
-        }
-      }
-      columns.close();
     }
     catch (SQLException ex)
     {
@@ -208,11 +177,9 @@ public class contactsDao
       return; // La colonna esiste già, niente da fare
     }
 
-    String fullTableName = dbProperties.getProperty("db.schema") + "." + tableName;
-    Statement statement = null;
-    try
+    String fullTableName = EPPparams.getParameter("EppClient.dbname") + "." + tableName;
+    try (Statement statement = conn.createStatement())
     {
-      statement = conn.createStatement();
       statement.execute("ALTER TABLE " + fullTableName + " ADD COLUMN " + columnName + " " + columnType);
       System.out.println("Aggiunta colonna " + columnName + " alla tabella " + fullTableName);
     }
@@ -221,277 +188,43 @@ public class contactsDao
       // La colonna potrebbe già esistere (race condition) o altro errore
       ex.printStackTrace();
     }
-    finally
-    {
-      if (statement != null)
-      {
-        try { statement.close(); } catch (SQLException e) { /* ignore */ }
-      }
-    }
-  }
-
-  private boolean tableExists(Connection dbConnection, String tableName)
-  {
-    boolean tableExists = false;
-
-    Statement statement = null;
-    try
-    {
-      ResultSet rs = dbConnection.getMetaData().getTables(dbProperties.getProperty("db.schema"), null, "%", null);
-      while (rs.next())
-      {
-        if (rs.getString(3).toLowerCase().equals(tableName.toLowerCase()))
-          tableExists = true;
-      }
-    }
-    catch (SQLException ex)
-    {
-      ex.printStackTrace();
-    }
-    catch (Exception ex)
-    {
-      ex.printStackTrace();
-    }
-
-    return tableExists;
-  }
-
-  private boolean dbExists()
-  {
-    boolean bExists = false;
-    String dbLocation = getDatabaseLocation();
-    File dbFileDir = new File(dbLocation);
-    if (dbFileDir.exists())
-    {
-      bExists = true;
-    }
-    return bExists;
-  }
-
-  private void setDBSystemDir()
-  {
-    // decide on the db system directory
-    String userHomeDir = System.getProperty("user.home", ".");
-    String systemDir = userHomeDir + "/.eppclient";
-    System.setProperty("derby.system.home", systemDir);
-
-    // create the db system directory
-    File fileSystemDir = new File(systemDir);
-    fileSystemDir.mkdir();
-  }
-
-  private void loadDatabaseDriver(String driverName)
-  {
-    try
-    {
-      Class.forName(driverName);
-    }
-    catch (ClassNotFoundException ex)
-    {
-      if ("org.mariadb.jdbc.Driver".equals(driverName))
-      {
-        try
-        {
-          Class.forName("org.mariadb.jdbc.Driver");
-        }
-        catch (ClassNotFoundException e)
-        {
-          ex.printStackTrace();
-        }
-      }
-      else
-      {
-        ex.printStackTrace();
-      }
-    }
-
-  }
-
-  private Properties loadDBProperties()
-  {
-    InputStream dbPropInputStream = null;
-    dbPropInputStream = contactsDao.class.getResourceAsStream("contacts.properties");
-    dbProperties = new Properties();
-    try
-    {
-      dbProperties.load(dbPropInputStream);
-
-      String dbUrl = EPPparams.getParameter("EppClient.dburl");
-      if (dbUrl.contains("mariadb"))
-      {
-        dbProperties.put("derby.driver", "org.mariadb.jdbc.Driver");
-      }
-      else
-      {
-        dbProperties.put("derby.driver", "org.apache.derby.jdbc.EmbeddedDriver");
-      }
-      dbProperties.put("derby.url", dbUrl);
-      dbProperties.put("db.schema", EPPparams.getParameter("EppClient.dbname"));
-      dbProperties.put("user", EPPparams.getParameter("EppClient.dbuid"));
-      dbProperties.put("password", EPPparams.getParameter("EppClient.dbpwd"));
-
-    }
-    catch (IOException ex)
-    {
-      ex.printStackTrace();
-    }
-    return dbProperties;
-  }
-
-
-  private boolean createTables(Connection dbConnection)
-  {
-    connect();
-    boolean bCreatedTables = false;
-    Statement statement = null;
-    try
-    {
-      statement = dbConnection.createStatement();
-      statement.execute(strCreateAddressTable);
-      bCreatedTables = true;
-    }
-    catch (SQLException ex)
-    {
-      ex.printStackTrace();
-    }
-    disconnect();
-    return bCreatedTables;
   }
 
   public boolean dropTables()
   {
-    boolean bDroppedTables = false;
-    try
-    {
-      stmtDropContactTable.clearParameters();
-      stmtDropContactTable.execute();
-      bDroppedTables = true;
-    }
-    catch (SQLException ex)
-    {
-      ex.printStackTrace();
-    }
-    return bDroppedTables;
+    dbHelper.executeSql(strDropContactTable);
+    return true;
   }
-
-  private boolean createDatabase()
-  {
-    boolean bCreated = false;
-    Connection dbConnection = null;
-
-    String dbUrl = getDatabaseUrl();
-    dbProperties.put("create", "true");
-
-    try
-    {
-      dbConnection = DriverManager.getConnection(dbUrl, dbProperties);
-      bCreated = createTables(dbConnection);
-    }
-    catch (SQLException ex)
-    {
-    }
-    dbProperties.remove("create");
-    return bCreated;
-  }
-
 
   public boolean connect()
   {
-    String dbUrl = getDatabaseUrl();
     try
     {
-      dbProperties.put("shutdown", "false");
-      dbConnection = DriverManager.getConnection(dbUrl, dbProperties);
-      stmtSaveNewRecord = dbConnection.prepareStatement(strSaveAddress, Statement.RETURN_GENERATED_KEYS);
-      stmtUpdateExistingRecord = dbConnection.prepareStatement(strUpdateAddress);
-      stmtGetAddress = dbConnection.prepareStatement(strGetAddress);
-      stmtDeleteAddress = dbConnection.prepareStatement(strDeleteAddress);
-      stmtDropContactTable = dbConnection.prepareStatement(strDropContactTable);
-
-      isConnected = dbConnection != null;
+      handle = dbHelper.connect();
+      return handle != null;
     }
-    catch (SQLException ex)
+    catch (Exception ex)
     {
-      isConnected = false;
-      System.out.println("errore!!");
       ex.printStackTrace();
+      return false;
     }
-    return isConnected;
-  }
-
-  private String getHomeDir()
-  {
-    return System.getProperty("user.home");
   }
 
   public void disconnect()
   {
-    if (isConnected)
-    {
-      String dbUrl = getDatabaseUrl();
-      dbProperties.put("shutdown", "true");
-      try
-      {
-        DriverManager.getConnection(dbUrl, dbProperties);
-      }
-      catch (SQLException ex)
-      {
-      }
-      isConnected = false;
-    }
+    dbHelper.disconnect(handle);
+    handle = null;
   }
-
-  public String getDatabaseLocation()
-  {
-    String dbLocation = System.getProperty("derby.system.home") + "/" + dbName;
-    return dbLocation;
-  }
-
-  public String getDatabaseUrl()
-  {
-    String dbUrl = dbProperties.getProperty("derby.url");
-    if (!dbUrl.contains("mariadb"))
-      dbUrl += dbName;
-    return dbUrl;
-  }
-
 
   public String saveRecord(Address record)
   {
-    try
+    try (Handle h = dbHelper.connect())
     {
-      stmtSaveNewRecord.clearParameters();
-
-      stmtSaveNewRecord.setString(1, record.getContactId());
-      stmtSaveNewRecord.setString(2, record.getContactName());
-      stmtSaveNewRecord.setString(3, record.getOrg());
-      stmtSaveNewRecord.setString(4, record.getStreet());
-      stmtSaveNewRecord.setString(5, record.getCity());
-      stmtSaveNewRecord.setString(6, record.getStateOrProvince());
-      stmtSaveNewRecord.setString(7, record.getPostalCode());
-      stmtSaveNewRecord.setString(8, record.getCountryCode());
-      stmtSaveNewRecord.setString(9, record.getVoice());
-      stmtSaveNewRecord.setString(10, record.getFax());
-      stmtSaveNewRecord.setString(11, record.getEmail());
-      stmtSaveNewRecord.setBoolean(12, record.getConsentForPublishing());
-      stmtSaveNewRecord.setBoolean(13, record.getIsRegistrant());
-      stmtSaveNewRecord.setString(14, record.getNationalityCode());
-      stmtSaveNewRecord.setInt(15, record.getEntityType());
-      stmtSaveNewRecord.setString(16, record.getRegCode());
-      stmtSaveNewRecord.setString(17, "");
-      stmtSaveNewRecord.setString(18, record.getSchoolCode());
-      stmtSaveNewRecord.setString(19, record.getUoCode());
-      stmtSaveNewRecord.setString(20, record.getIpaCode());
-      int rowCount = stmtSaveNewRecord.executeUpdate();
-//            ResultSet results = stmtSaveNewRecord.getGeneratedKeys();
-//            if (results.next()) {
-//                id = results.getInt(1);
-//            }
-
+      h.execute(strSaveContact, record.getContactId(), record.getContactName(), record.getOrg(), record.getStreet(), record.getCity(), record.getStateOrProvince(), record.getPostalCode(), record.getCountryCode(), record.getVoice(), record.getFax(), record.getEmail(), record.getConsentForPublishing() ? 1 : 0, record.getIsRegistrant() ? 1 : 0, record.getNationalityCode(), record.getEntityType(), record.getRegCode(), "", record.getSchoolCode(), record.getUoCode(), record.getIpaCode());
     }
-    catch (SQLException sqle)
+    catch (Exception ex)
     {
-      sqle.printStackTrace();
+      ex.printStackTrace();
     }
     return record.getContactId();
   }
@@ -499,78 +232,36 @@ public class contactsDao
   public boolean editRecord(Address record)
   {
     boolean bEdited = false;
-    try
+    try (Handle h = dbHelper.connect())
     {
-      stmtUpdateExistingRecord.clearParameters();
-
-
-      stmtUpdateExistingRecord.setString(1, record.getContactName());
-      stmtUpdateExistingRecord.setString(2, record.getOrg());
-      stmtUpdateExistingRecord.setString(3, record.getStreet());
-      stmtUpdateExistingRecord.setString(4, record.getCity());
-      stmtUpdateExistingRecord.setString(5, record.getStateOrProvince());
-      stmtUpdateExistingRecord.setString(6, record.getPostalCode());
-      stmtUpdateExistingRecord.setString(7, record.getCountryCode());
-      stmtUpdateExistingRecord.setString(8, record.getVoice());
-      stmtUpdateExistingRecord.setString(9, record.getFax());
-      stmtUpdateExistingRecord.setString(10, record.getEmail());
-      stmtUpdateExistingRecord.setBoolean(11, record.getConsentForPublishing());
-      stmtUpdateExistingRecord.setBoolean(12, record.getIsRegistrant());
-      stmtUpdateExistingRecord.setString(13, record.getNationalityCode());
-      stmtUpdateExistingRecord.setInt(14, record.getEntityType());
-      stmtUpdateExistingRecord.setString(15, record.getRegCode());
-
-      String newStatus = "";
-      int[] newStatuses = record.getNewStatus();
-
-      if (newStatuses != null)
-      {
-        for (int statusIndex = 0; statusIndex < newStatuses.length; statusIndex++)
-        {
-          if (newStatus.length() > 0) newStatus = newStatus + ",";
-          newStatus = newStatus + newStatuses[statusIndex];
-        }
-      }
-
-      stmtUpdateExistingRecord.setString(16, newStatus);
-      stmtUpdateExistingRecord.setString(17, record.getSchoolCode());
-      stmtUpdateExistingRecord.setString(18, record.getUoCode());
-      stmtUpdateExistingRecord.setString(19, record.getIpaCode());
-      stmtUpdateExistingRecord.setString(20, record.getContactId());  // shifted from 17 to 20
-
-      stmtUpdateExistingRecord.executeUpdate();
+      h.execute(strUpdateContact, record.getContactName(), record.getOrg(), record.getStreet(), record.getCity(), record.getStateOrProvince(), record.getPostalCode(), record.getCountryCode(), record.getVoice(), record.getFax(), record.getEmail(), record.getConsentForPublishing() ? 1 : 0, record.getIsRegistrant() ? 1 : 0, record.getNationalityCode(), record.getEntityType(), record.getRegCode(), "", record.getSchoolCode(), record.getUoCode(), record.getIpaCode(), record.getContactId());
       bEdited = true;
     }
-    catch (SQLException sqle)
+    catch (Exception ex)
     {
-      sqle.printStackTrace();
+      ex.printStackTrace();
     }
     return bEdited;
-
   }
 
   public boolean deleteRecord(String contactID)
   {
     boolean bDeleted = false;
-    try
+    try (Handle h = dbHelper.connect())
     {
-      stmtDeleteAddress.clearParameters();
-      stmtDeleteAddress.setString(1, contactID);
-      stmtDeleteAddress.executeUpdate();
+      h.execute(strDeleteContact, contactID);
       bDeleted = true;
     }
-    catch (SQLException sqle)
+    catch (Exception ex)
     {
-      sqle.printStackTrace();
+      ex.printStackTrace();
     }
-
     return bDeleted;
   }
 
   public boolean deleteRecord(Address record)
   {
-    String contactId = record.getContactId();
-    return deleteRecord(contactId);
+    return deleteRecord(record.getContactId());
   }
 
   public List<ListEntry> getRegistrantEntries()
@@ -583,123 +274,59 @@ public class contactsDao
     return getSelectiveEntries(strGetListEntries);
   }
 
-  public List<ListEntry> getSelectiveEntries(String preparedStatement)
+  public List<ListEntry> getSelectiveEntries(String sql)
   {
     List<ListEntry> listEntries = new ArrayList<ListEntry>();
-    Statement queryStatement = null;
-    ResultSet results = null;
-
-    try
+    try (Handle h = dbHelper.connect())
     {
-      queryStatement = dbConnection.createStatement();
-      results = queryStatement.executeQuery(preparedStatement);
-      while (results.next())
-      {
-        String contactId = results.getString(1);
-        String name = results.getString(2);
-
-        ListEntry entry = new ListEntry(name, contactId);
-        listEntries.add(entry);
-      }
-      results.close();
+      h.createQuery(sql).map((rs, ctx) -> new ListEntry(rs.getString(2), rs.getString(1))).list().forEach(listEntries::add);
     }
-    catch (SQLException sqle)
+    catch (Exception ex)
     {
-      sqle.printStackTrace();
-
+      ex.printStackTrace();
     }
-
     return listEntries;
   }
 
   public Address getAddress(String contactId)
   {
     Address address = null;
-    try
+    try (Handle h = dbHelper.connect())
     {
-      stmtGetAddress.clearParameters();
-      stmtGetAddress.setString(1, contactId);
-      ResultSet result = stmtGetAddress.executeQuery();
-      if (result.next())
-      {
-        String name = result.getString("NAME");
-        String org = result.getString("ORG");
-        String street = result.getString("STREET");
-        String city = result.getString("CITY");
-        String stateOrProvince = result.getString("STATEORPROVINCE");
-        String postalCode = result.getString("POSTALCODE");
-        String countryCode = result.getString("COUNTRYCODE");
-        String voice = result.getString("VOICE");
-        String fax = result.getString("FAX");
-        String email = result.getString("EMAIL");
-        boolean consentForPublishing = result.getBoolean("CONSENTFORPUBLISHING");
-        boolean isRegistrant = result.getBoolean("ISREGISTRANT");
-        String nationalityCode = result.getString("NATIONALITYCODE");
-        int entityType = result.getInt("ENTITYTYPE");
-        String regCode = result.getString("REGCODE");
-        String schoolCode = result.getString("SCHOOLCODE");
-        String uoCode = result.getString("UOCODE");
-        String ipaCode = result.getString("IPACODE");
-
-
-        int[] oldStatus;
-        if (result.getString("STATUS") != null)
+      address = h.createQuery(strGetContact).bind(0, contactId).map((rs, ctx) -> {
+        int[] oldStatus = null;
+        String statusStr = rs.getString("STATUS");
+        if (statusStr != null && statusStr.length() > 0)
         {
-          if (result.getString("STATUS").length() > 0)
+          String[] oldStatuses = statusStr.split(",");
+          oldStatus = new int[oldStatuses.length];
+          for (int i = 0; i < oldStatuses.length; i++)
           {
-            String[] oldStatuses = result.getString("STATUS").split(",");
-            oldStatus = new int[oldStatuses.length];
-            for (int statusIndex = 0; statusIndex < oldStatuses.length; statusIndex++)
-            {
-              oldStatus[statusIndex] = Integer.valueOf(oldStatuses[statusIndex]);
-            }
-          }
-          else
-          {
-            oldStatus = null;
+            oldStatus[i] = Integer.valueOf(oldStatuses[i]);
           }
         }
-        else
-        {
-          oldStatus = null;
-        }
-
-        address = new Address(name, org, street, city, stateOrProvince, postalCode, countryCode,
-                voice, fax, email, consentForPublishing, isRegistrant,
-                nationalityCode, entityType, regCode, oldStatus, contactId,
-                schoolCode, ipaCode, uoCode);
-      }
-      result.close();
+        return new Address(rs.getString("NAME"), rs.getString("ORG"), rs.getString("STREET"), rs.getString("CITY"), rs.getString("STATEORPROVINCE"), rs.getString("POSTALCODE"), rs.getString("COUNTRYCODE"), rs.getString("VOICE"), rs.getString("FAX"), rs.getString("EMAIL"), rs.getInt("CONSENTFORPUBLISHING") == 1, rs.getInt("ISREGISTRANT") == 1, rs.getString("NATIONALITYCODE"), rs.getInt("ENTITYTYPE"), rs.getString("REGCODE"), oldStatus, rs.getString("CONTACTID"), rs.getString("SCHOOLCODE"), rs.getString("IPACODE"), rs.getString("UOCODE"));
+      }).findFirst().orElse(null);
     }
-    catch (SQLException sqle)
+    catch (Exception ex)
     {
-      sqle.printStackTrace();
+      ex.printStackTrace();
     }
 
     return address;
   }
 
-
-
-  private Connection dbConnection;
-  private Properties dbProperties;
-  private boolean isConnected;
-  private String dbName;
-  private PreparedStatement stmtSaveNewRecord;
-  private PreparedStatement stmtUpdateExistingRecord;
-  private PreparedStatement stmtGetListEntries;
-  private PreparedStatement stmtGetRegistrantEntries;
-  private PreparedStatement stmtGetAddress;
-  private PreparedStatement stmtDeleteAddress;
-  private PreparedStatement stmtDropContactTable;
+  private String tableName = "contacts";
+  private final DbHelper dbHelper;
+  private Handle handle;
 
   private final String strDropContactTable;
-  private final String strCreateAddressTable;
-  private final String strGetAddress;
-  private final String strSaveAddress;
+  private final String strCreateContactTable;
+  private final String strGetContact;
+  private final String strSaveContact;
   private final String strGetListEntries;
   private final String strGetRegistrantEntries;
-  private final String strUpdateAddress;
-  private final String strDeleteAddress;
+  private final String strUpdateContact;
+  private final String strDeleteContact;
 
 }

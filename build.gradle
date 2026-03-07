@@ -34,6 +34,15 @@ dependencies {
     implementation('org.slf4j:slf4j-simple:2.0.17')
     implementation('com.google.code.gson:gson:2.13.2')
     implementation('org.mariadb.jdbc:mariadb-java-client:3.5.7')
+    implementation('org.xerial:sqlite-jdbc:3.49.1.0')
+    implementation('org.postgresql:postgresql:42.7.7')
+
+    // JDBI for database abstraction
+    implementation('org.jdbi:jdbi3-core:3.51.0')
+    implementation('org.jdbi:jdbi3-sqlobject:3.51.0')
+
+    // HikariCP for connection pooling
+    implementation('com.zaxxer:HikariCP:7.0.2')
 
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
