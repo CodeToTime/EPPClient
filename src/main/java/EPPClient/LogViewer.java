@@ -13,6 +13,8 @@
 
 package EPPClient;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -55,28 +57,16 @@ public class LogViewer extends JDialog
 
   private List<LogEntry> allLogEntries = new ArrayList<>();
 
-  // Level detection patterns in order of priority (more specific first)
-  // Format: {displayLevel, logPattern}
-  private static final String[][] LEVEL_PATTERNS =
+  // Filter options: "ALL" + log levels
+  private static final String ALL_LEVELS = "ALL";
+  private static final String[] LEVELS =
   {
-      {"ERROR", "[ERROR]"},
-      {"WARN", "[WARN]"},
-      {"DEBUG", "[DEBUG]"},
-      {"INFO", "[INFO]"}};
-
-  // Filter options: "TUTTI" + levels derived from patterns
-  private static final String[] LEVELS = buildLevels();
-
-  private static String[] buildLevels()
-  {
-    String[] levels = new String[LEVEL_PATTERNS.length + 1];
-    levels[0] = "TUTTI";
-    for (int i = 0; i < LEVEL_PATTERNS.length; i++)
-    {
-      levels[i + 1] = LEVEL_PATTERNS[i][0];
-    }
-    return levels;
-  }
+    ALL_LEVELS,
+    "ERROR",
+    "WARN",
+    "DEBUG",
+    "INFO"
+  };
 
   /**
    * Creates a new LogViewer dialog.
@@ -210,10 +200,8 @@ public class LogViewer extends JDialog
       return;
     }
 
-    BufferedReader reader = null;
-    try
+    try (BufferedReader reader = new BufferedReader(new FileReader(logFile)))
     {
-      reader = new BufferedReader(new FileReader(logFile));
       String line;
       while ((line = reader.readLine()) != null)
       {
@@ -228,26 +216,12 @@ public class LogViewer extends JDialog
     {
       JOptionPane.showMessageDialog(this, "Errore nella lettura del file di log:\n\n" + ex.getMessage(), "Errore lettura", JOptionPane.ERROR_MESSAGE);
     }
-    finally
-    {
-      if (reader != null)
-      {
-        try
-        {
-          reader.close();
-        }
-        catch (IOException ex)
-        {
-          // Ignore close error
-        }
-      }
-    }
 
     applyFilter();
   }
 
   /**
-   * Parses a log line and extracts level and message.
+   * Parses a log line and extracts level and message from JSON format.
    *
    * @param line the log line to parse
    * @return LogEntry or null if line cannot be parsed
@@ -259,19 +233,20 @@ public class LogViewer extends JDialog
       return null;
     }
 
-    String level = "INFO"; // Default level
-
-    // Look for level pattern in order of priority
-    for (String[] pattern : LEVEL_PATTERNS)
+    try
     {
-      if (line.contains(pattern[1]))
-      {
-        level = pattern[0];
-        break;
-      }
-    }
+      JsonObject json = JsonParser.parseString(line).getAsJsonObject();
 
-    return new LogEntry(level, line);
+      String level = json.has("loglevel") ? json.get("loglevel").getAsString() : "INFO";
+      String message = json.has("message") ? json.get("message").getAsString() : line;
+
+      return new LogEntry(level, message);
+    }
+    catch (Exception e)
+    {
+      // Invalid JSON, skip line
+      return null;
+    }
   }
 
   /**
@@ -285,9 +260,9 @@ public class LogViewer extends JDialog
 
     for (LogEntry entry : allLogEntries)
     {
-      if (LEVELS[0].equals(selectedLevel) || selectedLevel.equals(entry.getLevel()))
+      if (ALL_LEVELS.equals(selectedLevel) || selectedLevel.equals(entry.level()))
       {
-        logModel.addElement(entry.getMessage());
+        logModel.addElement(entry.message());
       }
     }
 
@@ -336,27 +311,9 @@ public class LogViewer extends JDialog
   }
 
   /**
-   * Simple class to hold log entry data.
+   * Record class to hold log entry data (Java 21+).
    */
-  private static class LogEntry
+  private record LogEntry(String level, String message)
   {
-    private final String level;
-    private final String message;
-
-    public LogEntry(String level, String message)
-    {
-      this.level = level;
-      this.message = message;
-    }
-
-    public String getLevel()
-    {
-      return level;
-    }
-
-    public String getMessage()
-    {
-      return message;
-    }
   }
 }
