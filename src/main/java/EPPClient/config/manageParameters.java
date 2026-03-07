@@ -1,6 +1,7 @@
 /*
  * SPDX-FileCopyrightText: 2008-2025 AssoTLD <reg@assotld.it>
  * SPDX-FileCopyrightText: 2026 Riccardo Bertelli
+ * SPDX-FileCopyrightText: 2026 Matteo Trubini @ CUBIC S.R.L. <https://cubicsrl.it/>
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
@@ -201,7 +202,8 @@ public class manageParameters extends JFrame implements WindowListener
       //---- dbengine ----
       dbengine.setModel(new DefaultComboBoxModel<>(new String[] {
           "Internal DB",
-          "MySQL/MariaDB"
+          "MySQL/MariaDB",
+          "SQLite"
       }));
       dbengine.setPreferredSize(new Dimension(150, 20));
       dbengine.addActionListener(e -> dbengineActionPerformed(e));
@@ -548,14 +550,20 @@ public class manageParameters extends JFrame implements WindowListener
     EPPparams.setParameter("EppClient.implement.DNSSEC", Boolean.toString(chkDNSSEC.isSelected()));
 
     switch (dbengine.getSelectedIndex())
-    { //0: derby, 1: mysql/mariadb
+    { //0: derby, 1: mysql/mariadb, 2: sqlite
       case 0:
-        EPPparams.setParameter("EppClient.dburl", "jdbc:derby:");
+        EPPparams.setParameter("EppClient.dburl", "jdbc:derby:EPPclient");
         EPPparams.setParameter("EppClient.dbuid", "eppclient");
         EPPparams.setParameter("EppClient.dbpwd", "clientepp");
         break;
       case 1:
         EPPparams.setParameter("EppClient.dburl", "jdbc:mariadb://" + dbhost.getText() + "/" + dbname.getText());
+        break;
+      case 2:
+        // Save SQLite database in the same directory as Derby database (.eppclient)
+        String systemDir = System.getProperty("user.home") + "/.eppclient";
+        String dbPath = systemDir + "/" + dbname.getText() + ".db";
+        EPPparams.setParameter("EppClient.dburl", "jdbc:sqlite:" + dbPath);
         break;
       default:
         break;
@@ -588,7 +596,7 @@ public class manageParameters extends JFrame implements WindowListener
   private void setVisibleOnDbEngine()
   {
     switch (dbengine.getSelectedIndex())
-    { //0: derby, 1: mysql/mariadb
+    { //0: derby, 1: mysql/mariadb, 2: sqlite
       case 0:
         dbhost.setEditable(false);
         dbname.setEditable(false);
@@ -600,6 +608,12 @@ public class manageParameters extends JFrame implements WindowListener
         dbname.setEditable(true);
         dbuid.setEditable(true);
         dbpwd.setEditable(true);
+        break;
+      case 2:
+        dbhost.setEditable(false);
+        dbname.setEditable(true);
+        dbuid.setEditable(false);
+        dbpwd.setEditable(false);
         break;
       default:
         break;
@@ -621,7 +635,16 @@ public class manageParameters extends JFrame implements WindowListener
       defaultTech.setText(EPPparams.getParameter("EppClient.defaultTech"));
       defaultNS.setText(EPPparams.getParameter("EppClient.defaultNS"));
       refreshInterval.setText(EPPparams.getParameter("EppClient.refreshInterval"));
-      dbengine.setSelectedIndex(Integer.parseInt(EPPparams.getParameter("EppClient.dbengine")));
+      try {
+        int dbEngineIndex = Integer.parseInt(EPPparams.getParameter("EppClient.dbengine"));
+        // Validate the value (0=Internal DB, 1=MySQL/MariaDB, 2=SQLite)
+        if (dbEngineIndex < 0 || dbEngineIndex > 2) {
+          dbEngineIndex = 0; // Default to Internal DB
+        }
+        dbengine.setSelectedIndex(dbEngineIndex);
+      } catch (NumberFormatException e) {
+        dbengine.setSelectedIndex(0); // Default to Internal DB
+      }
       dbname.setText(EPPparams.getParameter("EppClient.dbname"));
       dbhost.setText(EPPparams.getParameter("EppClient.dbhost"));
       dbuid.setText(EPPparams.getParameter("EppClient.dbuid"));
