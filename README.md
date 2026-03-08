@@ -117,10 +117,6 @@ Questo formato strutturato include i campi: `timestamp`, `loglevel`, `logger`, `
 
 Quando il debug logging è abilitato, appare automaticamente il pulsante "Apri Log" nella schermata principale che apre il visualizzatore dei log con filtro per livello.
 
-### Gestione errori con riavvio automatico
-
-In caso di errore, l'applicazione mostra una dialog con l'opzione "Riavvia con debug attivo" che riavvia l'applicazione con il logging di debug già abilitato, semplificando la diagnosi dei problemi.
-
 ---
 
 ## Note sulle dipendenze e compatibilità
