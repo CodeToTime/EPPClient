@@ -34,28 +34,9 @@ public class ErrorHandler
 {
 
   /**
-   * System property to set the logging level.
-   */
-  private static final String LOG_LEVEL_PROPERTY = "eppclient.logLevel";
-
-  /**
    * Default message shown to users when an error occurs.
    */
   public static final String DEFAULT_USER_MESSAGE = "Si è verificato un errore durante l'operazione.\n\n" + "Clicca \"Visualizza log\" per aprire il visualizzatore dei log.\n\n" + "Consultare i file di log per maggiori dettagli.";
-
-  /**
-   * Logs an error and shows a dialog to the user.
-   * The exception is logged at ERROR level with full stack trace.
-   *
-   * @param logger The SLF4J logger instance
-   * @param exception The exception that occurred
-   * @param userTitle The title for the error dialog
-   */
-  public static void error(Logger logger, Exception exception, String userTitle)
-  {
-    logger.error("Error occurred: {}", exception.getMessage(), exception);
-    showErrorDialog(null, userTitle);
-  }
 
   /**
    * Logs an error and shows a dialog to the user.
@@ -73,21 +54,6 @@ public class ErrorHandler
   }
 
   /**
-   * Logs an error and shows a dialog to the user.
-   * The exception is logged at ERROR level with full stack trace.
-   *
-   * @param logger The SLF4J logger instance
-   * @param exception The exception that occurred
-   * @param userTitle The title for the error dialog
-   * @param parent The parent component for the dialog
-   */
-  public static void error(Logger logger, Exception exception, String userTitle, java.awt.Component parent)
-  {
-    logger.error("Error occurred: {}", exception.getMessage(), exception);
-    showErrorDialog(parent, userTitle);
-  }
-
-  /**
    * Logs an error without showing a dialog.
    *
    * @param logger The SLF4J logger instance
@@ -99,29 +65,6 @@ public class ErrorHandler
   }
 
   /**
-   * Logs an error without showing a dialog.
-   *
-   * @param logger The SLF4J logger instance
-   * @param message The error message to log
-   */
-  public static void logError(Logger logger, String message)
-  {
-    logger.error(message);
-  }
-
-  /**
-   * Logs an error with exception without showing a dialog.
-   *
-   * @param logger The SLF4J logger instance
-   * @param message The error message to log
-   * @param exception The exception to log
-   */
-  public static void logError(Logger logger, String message, Exception exception)
-  {
-    logger.error(message, exception);
-  }
-
-  /**
    * Shows an error dialog to the user with the default message.
    *
    * @param parent The parent component for the dialog
@@ -130,32 +73,6 @@ public class ErrorHandler
   public static void showErrorDialog(java.awt.Component parent, String title)
   {
     showErrorDialogWithLogViewer(parent, title, DEFAULT_USER_MESSAGE);
-  }
-
-  /**
-   * Shows an error dialog to the user with a custom message.
-   *
-   * @param parent The parent component for the dialog
-   * @param title The title of the dialog
-   * @param customMessage Custom message to display
-   */
-  public static void showErrorDialog(java.awt.Component parent, String title, String customMessage)
-  {
-    String fullMessage = customMessage + "\n\n" + DEFAULT_USER_MESSAGE;
-    showErrorDialogWithLogViewer(parent, title, fullMessage);
-  }
-
-  /**
-   * Shows an error dialog to the user with a custom message.
-   *
-   * @param parent The parent frame for the dialog
-   * @param title The title of the dialog
-   * @param customMessage Custom message to display
-   */
-  public static void showErrorDialog(JFrame parent, String title, String customMessage)
-  {
-    String fullMessage = customMessage + "\n\n" + DEFAULT_USER_MESSAGE;
-    showErrorDialogWithLogViewer(parent, title, fullMessage);
   }
 
   /**
@@ -187,13 +104,6 @@ public class ErrorHandler
 
     // Show dialog
     dialog.setVisible(true);
-
-    // Check if OK was clicked (no action needed)
-    Object selectedValue = optionPane.getValue();
-    if (selectedValue == null || "OK".equals(selectedValue))
-    {
-      // User clicked OK or closed dialog - no action needed
-    }
   }
 
   /**
