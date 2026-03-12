@@ -50,7 +50,8 @@ public class MessageManagement extends JFrame
     this.EPPuplink = mainFrame.EPPuplink;
     this.db = mainFrame.messagesDao;
 
-    messagesTable.addMouseListener(new java.awt.event.MouseAdapter() {
+    messagesTable.addMouseListener(new java.awt.event.MouseAdapter()
+    {
       @Override
       public void mouseClicked(java.awt.event.MouseEvent e)
       {
@@ -87,23 +88,23 @@ public class MessageManagement extends JFrame
     refresh = new JButton();
     refresh1 = new JButton();
 
-    // ======== this ========
+    //======== this ========
     setTitle("Gestione MESSAGGI");
     Container contentPane = getContentPane();
 
-    // ======== jScrollPane1 ========
+    //======== jScrollPane1 ========
     {
 
-      // ---- messagesTable ----
+      //---- messagesTable ----
       messagesTable.setModel(model);
       jScrollPane1.setViewportView(messagesTable);
     }
 
-    // ---- refresh ----
+    //---- refresh ----
     refresh.setText("refresh list");
     refresh.addActionListener(e -> refreshActionPerformed(e));
 
-    // ---- refresh1 ----
+    //---- refresh1 ----
     refresh1.setText("ACK ALL");
     refresh1.addActionListener(e -> ACKALLActionPerformed(e));
 
@@ -146,14 +147,14 @@ public class MessageManagement extends JFrame
   }
 
   private void refreshActionPerformed(java.awt.event.ActionEvent evt)
-  {// GEN-FIRST:event_refreshActionPerformed
+  {//GEN-FIRST:event_refreshActionPerformed
     updateTableContent();
-  }// GEN-LAST:event_refreshActionPerformed
+  }//GEN-LAST:event_refreshActionPerformed
 
   private void ACKALLActionPerformed(java.awt.event.ActionEvent evt)
-  {// GEN-FIRST:event_ACKALLActionPerformed
+  {//GEN-FIRST:event_ACKALLActionPerformed
     ackAllMessages();
-  }// GEN-LAST:event_ACKALLActionPerformed
+  }//GEN-LAST:event_ACKALLActionPerformed
 
   @Override
   public void setVisible(boolean b)
@@ -231,8 +232,7 @@ public class MessageManagement extends JFrame
 
   public void addMessage(Message message)
   {
-    model.insertRow(0, new Object[]
-    {message.getMsgId(), dateFormatter.format(message.getDateTime()), message.getTitle(), message.getRead(), message.getAck()});
+    model.insertRow(0, new Object[]{message.getMsgId(), dateFormatter.format(message.getDateTime()), message.getTitle(), message.getRead(), message.getAck()});
   }
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -242,7 +242,7 @@ public class MessageManagement extends JFrame
   private JButton refresh1;
   // End of variables declaration//GEN-END:variables
   private EPPuplink EPPuplink;
-  // DefaultTableModel model = new DefaultTableModel();
+  //DefaultTableModel model = new DefaultTableModel();
   NotEditableTableModel model = new NotEditableTableModel();
   private messagesDao db;
   private boolean EPPstatus;

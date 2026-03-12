@@ -202,10 +202,7 @@ class EPPthread extends Thread
 
   public void restart()
   {
-    if (isClosing)
-    {
-      isClosing = false;
-    }
+    if (isClosing) isClosing = false;
     if (!isRunning)
     {
       this.start();
@@ -217,10 +214,7 @@ class EPPthread extends Thread
   {
     if (isRunning)
     {
-      if (!isClosing)
-      {
-        isClosing = true;
-      }
+      if (!isClosing) isClosing = true;
       this.interrupt();
       try
       {
@@ -319,12 +313,12 @@ class EPPthread extends Thread
               mainFrame.addMsgtoList(message);
             }
           }
-          // mainFrame.setEnableMsgRecv(true);
+          //mainFrame.setEnableMsgRecv(true);
         }
         else
         {
           mainFrame.setNextMsg("No messages");
-          // mainFrame.setEnableMsgRecv(false);
+          //mainFrame.setEnableMsgRecv(false);
         }
       }
       else

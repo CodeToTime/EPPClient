@@ -221,14 +221,7 @@ public class domainsDao
     {
       if (statement != null)
       {
-        try
-        {
-          statement.close();
-        }
-        catch (SQLException e)
-        {
-          /* ignore */
-        }
+        try { statement.close(); } catch (SQLException e) { /* ignore */ }
       }
     }
   }
@@ -471,10 +464,7 @@ public class domainsDao
       {
         for (int adminIndex = 0; adminIndex < newAdmins.length; adminIndex++)
         {
-          if (newAdmin.length() > 0)
-          {
-            newAdmin = newAdmin + ";";
-          }
+          if (newAdmin.length() > 0) newAdmin = newAdmin + ";";
           newAdmin = newAdmin + newAdmins[adminIndex];
         }
       }
@@ -486,10 +476,7 @@ public class domainsDao
       {
         for (int techIndex = 0; techIndex < newTechs.length; techIndex++)
         {
-          if (newTech.length() > 0)
-          {
-            newTech = newTech + ";";
-          }
+          if (newTech.length() > 0) newTech = newTech + ";";
           newTech = newTech + newTechs[techIndex];
         }
       }
@@ -502,10 +489,7 @@ public class domainsDao
       {
         for (int nameServerIndex = 0; nameServerIndex < newNameServers.length; nameServerIndex++)
         {
-          if (newNameServer.length() > 0)
-          {
-            newNameServer = newNameServer + ";";
-          }
+          if (newNameServer.length() > 0) newNameServer = newNameServer + ";";
           newNameServer = newNameServer + newNameServers[nameServerIndex];
         }
       }
@@ -518,10 +502,7 @@ public class domainsDao
       if (record.getNewStatusV() != null)
         for (int statusIndex = 0; statusIndex < record.getNewStatusV().size(); statusIndex++)
         {
-          if (newStatus.length() > 0)
-          {
-            newStatus = newStatus + ",";
-          }
+          if (newStatus.length() > 0) newStatus = newStatus + ",";
           newStatus += record.getNewStatusV().get(statusIndex);
         }
 
@@ -578,9 +559,7 @@ public class domainsDao
       {
         for (int adminIndex = 0; adminIndex < newAdmins.length; adminIndex++)
         {
-          if (newAdmin.length() > 0) {
-            newAdmin = newAdmin + ";";
-          }
+          if (newAdmin.length() > 0) newAdmin = newAdmin + ";";
           newAdmin = newAdmin + newAdmins[adminIndex];
         }
       }
@@ -592,9 +571,7 @@ public class domainsDao
       {
         for (int techIndex = 0; techIndex < newTechs.length; techIndex++)
         {
-          if (newTech.length() > 0) {
-            newTech = newTech + ";";
-          }
+          if (newTech.length() > 0) newTech = newTech + ";";
           newTech = newTech + newTechs[techIndex];
         }
       }
@@ -606,10 +583,7 @@ public class domainsDao
       {
         for (int nameServerIndex = 0; nameServerIndex < newNameServers.length; nameServerIndex++)
         {
-          if (newNameServer.length() > 0)
-          {
-            newNameServer = newNameServer + ";";
-          }
+          if (newNameServer.length() > 0) newNameServer = newNameServer + ";";
           newNameServer = newNameServer + newNameServers[nameServerIndex];
         }
       }
@@ -620,10 +594,7 @@ public class domainsDao
       String newStatus = "";
       for (int statusIndex = 0; statusIndex < record.getNewStatusV().size(); statusIndex++)
       {
-        if (newStatus.length() > 0)
-        {
-          newStatus = newStatus + ",";
-        }
+        if (newStatus.length() > 0) newStatus = newStatus + ",";
         newStatus += record.getNewStatusV().get(statusIndex);
       }
 

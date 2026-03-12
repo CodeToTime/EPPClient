@@ -318,13 +318,11 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
           }
 
           domainCreate.setAuthInfo(domain.getAuthInfo());
-          if (!domain.getValidationCode().isEmpty())
-          {
+          if(!domain.getValidationCode().isEmpty()) {
             domainCreate.setExtValidationCode(domain.getValidationCode());
           }
-          if (domain.isDNSSec())
-          {
-            domainCreate.addDsData(Integer.parseInt(domain.getKeyTag()), (short) domain.getAlg(), (short) domain.getDigestType(), parseHex(domain.getDigest()));
+          if(domain.isDNSSec()) {
+            domainCreate.addDsData(Integer.parseInt(domain.getKeyTag()), (short) domain.getAlg(), (short) domain.getDigestType(),  parseHex(domain.getDigest()));
           }
           log.debug("CLIENT: {}", domainCreate);
           HttpBaseResponse response = EPPuplink.sendCommand(domainCreate);
@@ -383,9 +381,8 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
 
             DomainUpdate domainUpdate = new DomainUpdate(domain.getDomainName());
             //domainUpdate.setAllToSecDNSRem();
-            if (domain.isDNSSec())
-            {
-              domainUpdate.addDsDataToSecDNSAdd(Integer.parseInt(domain.getKeyTag()), (short) domain.getAlg(), (short) domain.getDigestType(), parseHex(domain.getDigest()));
+            if(domain.isDNSSec()) {
+              domainUpdate.addDsDataToSecDNSAdd(Integer.parseInt(domain.getKeyTag()), (short) domain.getAlg(), (short) domain.getDigestType(),  parseHex(domain.getDigest()));
             }
             //domainUpdate.addDsDataToSecDNSRem();
 
@@ -832,23 +829,19 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
     }
   }
 
-  public static byte[] parseHex(String hex)
-  {
-    if ((hex.length() & 1) != 0)
-    {
+  public static byte[] parseHex(String hex) {
+    if ((hex.length() & 1) != 0) {
       throw new IllegalArgumentException("Hex string must have even length");
     }
 
     int len = hex.length();
     byte[] out = new byte[len / 2];
 
-    for (int i = 0; i < len; i += 2)
-    {
+    for (int i = 0; i < len; i += 2) {
       int hi = Character.digit(hex.charAt(i), 16);
       int lo = Character.digit(hex.charAt(i + 1), 16);
 
-      if (hi == -1 || lo == -1)
-      {
+      if (hi == -1 || lo == -1) {
         throw new IllegalArgumentException("Invalid hex character");
       }
 
