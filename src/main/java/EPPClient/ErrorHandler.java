@@ -24,11 +24,6 @@ import org.slf4j.Logger;
 /**
  * Centralized error handling utility class.
  * Provides dialog display for errors - logging is done directly via SLF4J.
- *
- * The user receives a generic error message and is invited to view the log file for detailed information.
- *
- * File logging is controlled by system property -Deppclient.logLevel
- * Console output for errors can be enabled with -Deppclient.console=true
  */
 public class ErrorHandler
 {
