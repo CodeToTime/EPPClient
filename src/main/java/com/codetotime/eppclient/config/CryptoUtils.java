@@ -19,17 +19,26 @@
 
 package com.codetotime.eppclient.config;
 
-import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.security.NoSuchAlgorithmException;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ * Utility class for AES encryption and decryption of configuration values.
+ *
+ * <p>Uses a hardcoded 128-bit AES key provided by {@link EPPparams#getKey()}.
+ */
 public class CryptoUtils {
-  private static final String KEY_FILE = "local.key";
   public static final String AES = "AES";
 
-  public static String encrypt(String value) throws GeneralSecurityException, IOException {
+  /**
+   * Encrypts a string value using AES encryption.
+   *
+   * @param value the plaintext string to encrypt
+   * @return the encrypted value as an uppercase hex string
+   * @throws GeneralSecurityException if encryption fails
+   */
+  public static String encrypt(String value) throws GeneralSecurityException {
     SecretKeySpec sks = getSecretKeySpec();
     Cipher cipher = Cipher.getInstance(CryptoUtils.AES);
     cipher.init(Cipher.ENCRYPT_MODE, sks, cipher.getParameters());
@@ -37,7 +46,14 @@ public class CryptoUtils {
     return byteArrayToHexString(encrypted);
   }
 
-  public static String decrypt(String message) throws GeneralSecurityException, IOException {
+  /**
+   * Decrypts a hex-encoded AES-encrypted string.
+   *
+   * @param message the hex-encoded encrypted string to decrypt
+   * @return the decrypted plaintext string
+   * @throws GeneralSecurityException if decryption fails
+   */
+  public static String decrypt(String message) throws GeneralSecurityException {
     SecretKeySpec sks = getSecretKeySpec();
     Cipher cipher = Cipher.getInstance(CryptoUtils.AES);
     cipher.init(Cipher.DECRYPT_MODE, sks);
@@ -45,7 +61,7 @@ public class CryptoUtils {
     return new String(decrypted);
   }
 
-  private static SecretKeySpec getSecretKeySpec() throws NoSuchAlgorithmException, IOException {
+  private static SecretKeySpec getSecretKeySpec() {
     byte[] key = readKeyFile();
     SecretKeySpec sks = new SecretKeySpec(key, CryptoUtils.AES);
     return sks;
