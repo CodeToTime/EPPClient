@@ -14,11 +14,9 @@
 package EPPClient;
 
 import java.awt.Component;
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 
 /**
@@ -31,7 +29,7 @@ public class ErrorHandler
   /**
    * Default message shown to users when an error occurs.
    */
-  public static final String DEFAULT_USER_MESSAGE = "Si è verificato un errore durante l'operazione.\n\n" + "Clicca \"Visualizza log\" per aprire il visualizzatore dei log.\n\n" + "Consultare i file di log per maggiori dettagli.";
+  public static final String DEFAULT_USER_MESSAGE = "Si è verificato un errore durante l'operazione.\n\n" + "Consultare i log per maggiori dettagli.";
 
   /**
    * Logs an error and shows a dialog to the user.
@@ -60,65 +58,36 @@ public class ErrorHandler
   }
 
   /**
-   * Shows an error dialog to the user with the default message.
+   * Shows an error dialog to the user
    *
    * @param parent The parent component for the dialog
    * @param title The title of the dialog
    */
-  public static void showErrorDialog(java.awt.Component parent, String title)
-  {
-    showErrorDialogWithLogViewer(parent, title, DEFAULT_USER_MESSAGE);
-  }
+  public static void showErrorDialog(Component parent, String title, String message) {
+    JOptionPane optionPane = new JOptionPane(
+            message,
+            JOptionPane.ERROR_MESSAGE,
+            JOptionPane.DEFAULT_OPTION,
+            null,
+            new Object[]{"OK"},
+            "OK"
+    );
 
-  /**
-   * Shows an error dialog with a "Show logs" button that opens the LogViewer.
-   *
-   * @param parent The parent component for the dialog
-   * @param title The title of the dialog
-   * @param message The message to display
-   */
-  private static void showErrorDialogWithLogViewer(Component parent, String title, String message)
-  {
-    // Create buttons: OK and View Log
-    JButton viewLogButton = new JButton("Visualizza log");
-    viewLogButton.setFocusPainted(false);
-
-    // Create option pane with custom buttons
-    JOptionPane optionPane = new JOptionPane(message, JOptionPane.ERROR_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null, new Object[]
-    {viewLogButton, "OK"}, "OK");
-
-    // Create and configure the dialog
     JDialog dialog = optionPane.createDialog(parent, title);
     dialog.setResizable(false);
-
-    // Handle button click
-    viewLogButton.addActionListener(e -> {
-      dialog.dispose();
-      openLogViewer(parent);
-    });
-
-    // Show dialog
     dialog.setVisible(true);
+    dialog.dispose();
   }
 
   /**
-   * Opens the log viewer dialog.
+   * Shows an error dialog to the user with the default message.
+   * Delegates to {@link #showErrorDialog(Component, String, String)}.
    *
-   * @param parent The parent component for the log viewer
+   * @param parent The parent component for the dialog
+   * @param title The title of the dialog
    */
-  private static void openLogViewer(Component parent)
+  public static void showErrorDialog(Component parent, String title)
   {
-    // Get the parent frame for the log viewer
-    JFrame frame = null;
-    if (parent instanceof JFrame)
-    {
-      frame = (JFrame) parent;
-    }
-    else if (parent != null)
-    {
-      frame = (JFrame) SwingUtilities.getWindowAncestor(parent);
-    }
-
-    LogViewer.showLogViewer(frame);
+    showErrorDialog(parent, title, DEFAULT_USER_MESSAGE);
   }
 }
