@@ -15,11 +15,10 @@
 
 package EPPClient.importer;
 
-
-import EPPClient.main;
 import EPPClient.db.contactsDao;
 import EPPClient.db.domainsDao;
 import EPPClient.domains.Domain;
+import EPPClient.main;
 import EPPClient.uplink.EPPuplink;
 import it.nic.epp.client.commands.query.DomainInfo;
 import it.nic.epp.client.responses.HttpBaseResponse;
@@ -29,11 +28,9 @@ import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ImportDomain
-{
+public class ImportDomain {
 
-  public ImportDomain(main mainFrame, boolean recurseContacts)
-  {
+  public ImportDomain(main mainFrame, boolean recurseContacts) {
     this.mainFrame = mainFrame;
     this.EPPuplink = mainFrame.EPPuplink;
     this.domaindb = mainFrame.domainsDao;
@@ -43,85 +40,78 @@ public class ImportDomain
     log = LoggerFactory.getLogger(ImportDomain.class);
   }
 
-  public boolean execute(String domainName)
-  {
+  public boolean execute(String domainName) {
     boolean importStatus = true;
 
     DomainInfo domainInfo = new DomainInfo();
     domainInfo.setName(domainName);
 
-    try
-    {
+    try {
 
       log.debug("CLIENT: {}", domainInfo);
       HttpBaseResponse response = EPPuplink.sendCommand(domainInfo);
       log.debug("SERVER: {}", response);
 
-      if (response.isSuccessfully())
-      {
-        DomainInfoResponseResData domainInfoResData = (DomainInfoResponseResData) response.getResponseResData();
+      if (response.isSuccessfully()) {
+        DomainInfoResponseResData domainInfoResData =
+            (DomainInfoResponseResData) response.getResponseResData();
 
-        Domain transferredDomain = new Domain(domainInfoResData.getName(), domainInfoResData.getRegistrant(), domainInfoResData.getAdmins(), domainInfoResData.getTechs(), domainInfoResData.getNs(), domainInfoResData.getAuthInfo(), domainInfoResData.getStatuses(), domainInfoResData.getExDate().getTime());
+        Domain transferredDomain =
+            new Domain(
+                domainInfoResData.getName(),
+                domainInfoResData.getRegistrant(),
+                domainInfoResData.getAdmins(),
+                domainInfoResData.getTechs(),
+                domainInfoResData.getNs(),
+                domainInfoResData.getAuthInfo(),
+                domainInfoResData.getStatuses(),
+                domainInfoResData.getExDate().getTime());
 
-        if (domaindb.getDomain(domainInfoResData.getName()) == null)
-        {
+        if (domaindb.getDomain(domainInfoResData.getName()) == null) {
           domaindb.saveRecord(transferredDomain);
-        }
-        else
-        {
+        } else {
           domaindb.editRecord(transferredDomain);
         }
 
-        if (recurseContacts)
-        {
+        if (recurseContacts) {
 
-          ImportContact importRegistrant = new ImportContact(mainFrame, domainInfoResData.getRegistrant());
+          ImportContact importRegistrant =
+              new ImportContact(mainFrame, domainInfoResData.getRegistrant());
           importRegistrant.execute();
           importRegistrant = null;
 
-          for (String admin : domainInfoResData.getAdmins())
-          {
+          for (String admin : domainInfoResData.getAdmins()) {
             ImportContact importAdmin = new ImportContact(mainFrame, admin);
             importAdmin.execute();
             importAdmin = null;
           }
 
-          for (String tech : domainInfoResData.getTechs())
-          {
+          for (String tech : domainInfoResData.getTechs()) {
             ImportContact importTech = new ImportContact(mainFrame, tech);
             importTech.execute();
             importTech = null;
           }
         }
-      }
-      else
-      {
+      } else {
         importResultCode = response.getResultCode();
         importReasonCode = response.getReasonCode();
 
         importStatus = false;
       }
-    }
-    catch (XmlException v)
-    {
+    } catch (XmlException v) {
       log.error("XmlException in execute", v);
-    }
-    catch (IOException v)
-    {
+    } catch (IOException v) {
       log.error("IOException in execute", v);
     }
-
 
     return importStatus;
   }
 
-  public Integer getResultCode()
-  {
+  public Integer getResultCode() {
     return importResultCode;
   }
 
-  public Integer getReasonCode()
-  {
+  public Integer getReasonCode() {
     return importReasonCode;
   }
 
@@ -130,7 +120,7 @@ public class ImportDomain
   private EPPuplink EPPuplink;
   private domainsDao domaindb;
   private contactsDao contactdb;
-  //private String domainName;
+  // private String domainName;
   private boolean recurseContacts;
   private boolean closedb = false;
   private Logger log;

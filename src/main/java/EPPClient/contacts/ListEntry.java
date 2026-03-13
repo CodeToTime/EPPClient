@@ -15,50 +15,39 @@
 
 package EPPClient.contacts;
 
-public class ListEntry
-{
+public class ListEntry {
 
-  /**
-   * Creates a new instance of ListEntry
-   */
-  public ListEntry()
-  {
+  /** Creates a new instance of ListEntry */
+  public ListEntry() {
     this("", "");
   }
 
-  public ListEntry(String name, String contactId)
-  {
+  public ListEntry(String name, String contactId) {
     this.name = name;
-//        this.firstName = firstName;
-//        this.middleName = middleName;
+    //        this.firstName = firstName;
+    //        this.middleName = middleName;
     this.contactId = contactId;
   }
 
-  public String getContactName()
-  {
+  public String getContactName() {
     return name;
   }
 
-  public void setContactName(String name)
-  {
+  public void setContactName(String name) {
     this.name = name;
   }
 
-  public String getContactId()
-  {
+  public String getContactId() {
     return contactId;
   }
 
-  public void setContactId(String contactId)
-  {
+  public void setContactId(String contactId) {
     this.contactId = contactId;
   }
 
-  public String toString()
-  {
-    String value = name + ": " + contactId; //+ ", " + firstName + " " + middleName + ": " + id;
+  public String toString() {
+    String value = name + ": " + contactId; // + ", " + firstName + " " + middleName + ": " + id;
     return value;
-
   }
 
   private String name;

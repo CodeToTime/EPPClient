@@ -17,20 +17,32 @@ package EPPClient.contacts;
 
 import EPPClient.config.EPPparams;
 
-public class Address
-{
+public class Address {
 
-  /**
-   * Creates a new instance of Address
-   */
-  public Address()
-  {
-  }
+  /** Creates a new instance of Address */
+  public Address() {}
 
-  public Address(String name, String org, String street, String city, String stateOrProvince, String postalCode,
-                 String countryCode, String voice, String fax, String email, boolean consentForPublishing, boolean isRegistrant,
-                 String nationalityCode, Integer entityType, String regCode, int[] oldStatus, String contactId, String schoolCode, String ipaCode, String uoCode)
-  {
+  public Address(
+      String name,
+      String org,
+      String street,
+      String city,
+      String stateOrProvince,
+      String postalCode,
+      String countryCode,
+      String voice,
+      String fax,
+      String email,
+      boolean consentForPublishing,
+      boolean isRegistrant,
+      String nationalityCode,
+      Integer entityType,
+      String regCode,
+      int[] oldStatus,
+      String contactId,
+      String schoolCode,
+      String ipaCode,
+      String uoCode) {
 
     this.name = name;
     this.org = org;
@@ -45,12 +57,9 @@ public class Address
     this.consentForPublishing = consentForPublishing;
     this.isRegistrant = isRegistrant;
     this.nationalityCode = nationalityCode;
-    if (entityType instanceof Integer)
-    {
+    if (entityType instanceof Integer) {
       this.entityType = entityType;
-    }
-    else
-    {
+    } else {
       this.entityType = 0;
     }
 
@@ -63,325 +72,263 @@ public class Address
     this.uoCode = uoCode;
   }
 
-  public void setIpaCode(String ipaCode)
-  {
+  public void setIpaCode(String ipaCode) {
     this.ipaCode = ipaCode;
   }
 
-  public String getIpaCode()
-  {
+  public String getIpaCode() {
     return this.ipaCode;
   }
 
-  public void setUoCode(String uoCode)
-  {
+  public void setUoCode(String uoCode) {
     this.uoCode = uoCode;
   }
 
-  public String getUoCode()
-  {
+  public String getUoCode() {
     return this.uoCode;
   }
 
-  public void setSchoolCode(String schoolCode)
-  {
+  public void setSchoolCode(String schoolCode) {
     this.schoolCode = schoolCode;
   }
 
-  public String getSchoolCode()
-  {
+  public String getSchoolCode() {
     return this.schoolCode;
   }
 
-  public void setContactId(String contactId)
-  {
+  public void setContactId(String contactId) {
     this.contactId = contactId;
   }
 
-  public String getContactId()
-  {
+  public String getContactId() {
     return this.contactId;
   }
 
-  public void setAutoContactId(boolean autoContactId)
-  {
+  public void setAutoContactId(boolean autoContactId) {
     this.autoContactId = autoContactId;
   }
 
-  public boolean getAutoContactId()
-  {
+  public boolean getAutoContactId() {
     return this.autoContactId;
   }
 
-  public void setContactName(String name)
-  {
+  public void setContactName(String name) {
     this.name = name;
   }
 
-  public String getContactName()
-  {
+  public String getContactName() {
     return this.name;
   }
 
-  public void setOrg(String org)
-  {
+  public void setOrg(String org) {
     this.org = org;
   }
 
-  public String getOrg()
-  {
+  public String getOrg() {
     return this.org;
   }
 
-  public void setStreet(String street)
-  {
+  public void setStreet(String street) {
     this.street = street;
   }
 
-  public String getStreet()
-  {
+  public String getStreet() {
     return this.street;
   }
 
-  public void setCity(String city)
-  {
+  public void setCity(String city) {
     this.city = city;
   }
 
-  public String getCity()
-  {
+  public String getCity() {
     return this.city;
   }
 
-  public void setStateOrProvince(String stateOrProvince)
-  {
+  public void setStateOrProvince(String stateOrProvince) {
     this.stateOrProvince = stateOrProvince;
   }
 
-  public String getStateOrProvince()
-  {
+  public String getStateOrProvince() {
     return this.stateOrProvince;
   }
 
-  public void setPostalCode(String postalCode)
-  {
+  public void setPostalCode(String postalCode) {
     this.postalCode = postalCode;
   }
 
-  public String getPostalCode()
-  {
+  public String getPostalCode() {
     return this.postalCode;
   }
 
-  public void setCountryCode(String countryCode)
-  {
+  public void setCountryCode(String countryCode) {
     this.countryCode = countryCode;
   }
 
-  public String getCountryCode()
-  {
+  public String getCountryCode() {
     return this.countryCode;
   }
 
-  public void setVoice(String voice)
-  {
+  public void setVoice(String voice) {
     this.voice = voice;
   }
 
-  public String getVoice()
-  {
+  public String getVoice() {
     return this.voice;
   }
 
-  public void setFax(String fax)
-  {
+  public void setFax(String fax) {
     this.fax = fax;
   }
 
-  public String getFax()
-  {
+  public String getFax() {
     return this.fax;
   }
 
-  public void setEmail(String email)
-  {
+  public void setEmail(String email) {
     this.email = email;
   }
 
-  public String getEmail()
-  {
+  public String getEmail() {
     return this.email;
   }
 
-  public void setConsentForPublishing(boolean consentForPublishing)
-  {
+  public void setConsentForPublishing(boolean consentForPublishing) {
     this.consentForPublishing = consentForPublishing;
   }
 
-  public boolean getConsentForPublishing()
-  {
+  public boolean getConsentForPublishing() {
     return this.consentForPublishing;
   }
 
-  public void setIsRegistrant(boolean isRegistrant)
-  {
+  public void setIsRegistrant(boolean isRegistrant) {
     this.isRegistrant = isRegistrant;
   }
 
-  public boolean getIsRegistrant()
-  {
+  public boolean getIsRegistrant() {
     return this.isRegistrant;
   }
 
-  public void setNationalityCode(String nationalityCode)
-  {
+  public void setNationalityCode(String nationalityCode) {
     this.nationalityCode = nationalityCode;
   }
 
-  public String getNationalityCode()
-  {
+  public String getNationalityCode() {
     return this.nationalityCode;
   }
 
-  public void setEntityType(int entityType)
-  {
+  public void setEntityType(int entityType) {
     this.entityType = entityType;
   }
 
-  public int getEntityType()
-  {
+  public int getEntityType() {
     return this.entityType;
   }
 
-  public void setRegCode(String regCode)
-  {
+  public void setRegCode(String regCode) {
     this.regCode = regCode;
   }
 
-  public String getRegCode()
-  {
+  public String getRegCode() {
     return this.regCode;
   }
 
-  public void setOldStatus(int[] oldStatus)
-  {
+  public void setOldStatus(int[] oldStatus) {
     this.oldStatus = oldStatus;
   }
 
-  public int[] getOldStatus()
-  {
+  public int[] getOldStatus() {
     return this.oldStatus;
   }
 
-  public void setNewStatus(int[] newStatus)
-  {
+  public void setNewStatus(int[] newStatus) {
     this.newStatus = newStatus;
   }
 
-  public int[] getNewStatus()
-  {
+  public int[] getNewStatus() {
     return this.newStatus;
   }
 
-  public void setIsNewContact(boolean isNewContact)
-  {
+  public void setIsNewContact(boolean isNewContact) {
     this.isNewContact = isNewContact;
   }
 
-  public boolean getIsNewContact()
-  {
+  public boolean getIsNewContact() {
     return this.isNewContact;
   }
 
-  public String getRandomContactId()
-  {
+  public String getRandomContactId() {
     String contactId = Integer.toString((int) (Math.random() * 100000000));
-    contactId = EPPparams.getParameter("EppClient.contactPrefix") + contactId.substring(contactId.length() - 7);
+    contactId =
+        EPPparams.getParameter("EppClient.contactPrefix")
+            + contactId.substring(contactId.length() - 7);
     return contactId;
   }
 
-  public boolean isNameChanged()
-  {
+  public boolean isNameChanged() {
     return isNameChanged;
   }
 
-  public boolean isOrgChanged()
-  {
+  public boolean isOrgChanged() {
     return isOrgChanged;
   }
 
-  public boolean isStreetChanged()
-  {
+  public boolean isStreetChanged() {
     return isStreetChanged;
   }
 
-  public boolean isCityChanged()
-  {
+  public boolean isCityChanged() {
     return isCityChanged;
   }
 
-  public boolean isStateOrProvinceChanged()
-  {
+  public boolean isStateOrProvinceChanged() {
     return isStateOrProvinceChanged;
   }
 
-  public boolean isPostalCodeChanged()
-  {
+  public boolean isPostalCodeChanged() {
     return isPostalCodeChanged;
   }
 
-  public boolean isCountryCodeChanged()
-  {
+  public boolean isCountryCodeChanged() {
     return isCountryCodeChanged;
   }
 
-  public boolean isVoiceChanged()
-  {
+  public boolean isVoiceChanged() {
     return isVoiceChanged;
   }
 
-  public boolean isFaxChanged()
-  {
+  public boolean isFaxChanged() {
     return isFaxChanged;
   }
 
-  public boolean isEmailChanged()
-  {
+  public boolean isEmailChanged() {
     return isEmailChanged;
   }
 
-  public boolean isConsentForPublishingChanged()
-  {
+  public boolean isConsentForPublishingChanged() {
     return isConsentForPublishingChanged;
   }
 
-  public void isIsRegistrantChanged(boolean isIsRegistrantChanged)
-  {
+  public void isIsRegistrantChanged(boolean isIsRegistrantChanged) {
     this.isIsRegistrantChanged = isIsRegistrantChanged;
   }
 
-  public boolean isIsRegistrantChanged()
-  {
+  public boolean isIsRegistrantChanged() {
     return isIsRegistrantChanged;
   }
 
-  public boolean isNationalityCodeChanged()
-  {
+  public boolean isNationalityCodeChanged() {
     return isNationalityCodeChanged;
   }
 
-  public boolean isEntityTypeChanged()
-  {
+  public boolean isEntityTypeChanged() {
     return isEntityTypeChanged;
   }
 
-  public boolean isRegCodeChanged()
-  {
+  public boolean isRegCodeChanged() {
     return isRegCodeChanged;
   }
 
-  public boolean isSchoolCodeChanged()
-  {
+  public boolean isSchoolCodeChanged() {
     return isSchoolCodeChanged;
   }
 
@@ -427,5 +374,4 @@ public class Address
   private boolean isSchoolCodeChanged;
 
   private static final int PRIMENO = 37;
-
 }

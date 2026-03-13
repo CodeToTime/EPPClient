@@ -15,27 +15,20 @@
 
 package EPPClient.domains;
 
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
-public class ListEntryRenderer extends DefaultListCellRenderer
-{
+public class ListEntryRenderer extends DefaultListCellRenderer {
 
-  /**
-   * Creates a new instance of ListEntryRenderer
-   */
-  public ListEntryRenderer()
-  {
-  }
+  /** Creates a new instance of ListEntryRenderer */
+  public ListEntryRenderer() {}
 
-  public Component getListCellRendererComponent(JList list, Object value,
-                                                int index, boolean isSelected, boolean cellHasFocus)
-  {
+  public Component getListCellRendererComponent(
+      JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
     super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
     ListEntry entry = (ListEntry) value;
     this.setText(entry.getDomainName());
     return this;
   }
-
 }

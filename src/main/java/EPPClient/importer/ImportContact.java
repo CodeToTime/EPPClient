@@ -15,9 +15,9 @@
 
 package EPPClient.importer;
 
-import EPPClient.main;
 import EPPClient.contacts.Address;
 import EPPClient.db.contactsDao;
+import EPPClient.main;
 import EPPClient.uplink.EPPuplink;
 import it.nic.epp.client.commands.query.ContactInfo;
 import it.nic.epp.client.responses.HttpBaseResponse;
@@ -28,19 +28,16 @@ import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ImportContact
-{
+public class ImportContact {
   private static final Logger log = LoggerFactory.getLogger(ImportContact.class);
 
-  public ImportContact(main mainFrame, String contactId)
-  {
+  public ImportContact(main mainFrame, String contactId) {
     this.EPPuplink = mainFrame.EPPuplink;
     this.contactdb = mainFrame.contactsDao;
     this.contactId = contactId;
   }
 
-  public boolean execute()
-  {
+  public boolean execute() {
     boolean importStatus = false;
 
     ContactInfo contactInfo = new ContactInfo();
@@ -48,196 +45,136 @@ public class ImportContact
     ContactInfoResponseExt contactInfoExt = null;
     contactInfo.setId(contactId);
 
-    try
-    {
+    try {
       HttpBaseResponse response = EPPuplink.sendCommand(contactInfo);
-      if (response.isSuccessfully())
-      {
+      if (response.isSuccessfully()) {
         contactInfoResData = (ContactInfoResponseResData) response.getResponseResData();
         contactInfoExt = (ContactInfoResponseExt) response.getResponseExtension();
         Address RegistrantContact = new Address();
 
-/*                contactInfoResData.getName(), contactInfoResData.getOrg(), "", contactInfoResData.getCity(), contactInfoResData.getSp(), contactInfoResData.getPc(),
-                            contactInfoResData.getCc(), contactInfoResData.getVoice(), contactInfoResData.getFax(), contactInfoResData.getEmail(), contactInfoExt.getConsentForPublishing(), contactInfoExt.isRegistrant(),
-                            contactInfoExt.getNationalityCode(), contactInfoExt.getEntityType(), contactInfoExt.getRegCode(), null, contactInfoResData.getId()
+        /*                contactInfoResData.getName(), contactInfoResData.getOrg(), "", contactInfoResData.getCity(), contactInfoResData.getSp(), contactInfoResData.getPc(),
+            contactInfoResData.getCc(), contactInfoResData.getVoice(), contactInfoResData.getFax(), contactInfoResData.getEmail(), contactInfoExt.getConsentForPublishing(), contactInfoExt.isRegistrant(),
+            contactInfoExt.getNationalityCode(), contactInfoExt.getEntityType(), contactInfoExt.getRegCode(), null, contactInfoResData.getId()
 
 
-                        RegistrantContact = new Address(contactInfoResData.getName(), contactInfoResData.getOrg(), contactInfoResData.getStreet(0), contactInfoResData.getCity(), contactInfoResData.getSp(), contactInfoResData.getPc(),
-                            contactInfoResData.getCc(), contactInfoResData.getVoice(), contactInfoResData.getFax(), contactInfoResData.getEmail(), contactInfoExt.getConsentForPublishing(), contactInfoExt.isRegistrant(),
-                            contactInfoExt.getNationalityCode(), contactInfoExt.getEntityType(), contactInfoExt.getRegCode(), null, contactInfoResData.getId());*/
+        RegistrantContact = new Address(contactInfoResData.getName(), contactInfoResData.getOrg(), contactInfoResData.getStreet(0), contactInfoResData.getCity(), contactInfoResData.getSp(), contactInfoResData.getPc(),
+            contactInfoResData.getCc(), contactInfoResData.getVoice(), contactInfoResData.getFax(), contactInfoResData.getEmail(), contactInfoExt.getConsentForPublishing(), contactInfoExt.isRegistrant(),
+            contactInfoExt.getNationalityCode(), contactInfoExt.getEntityType(), contactInfoExt.getRegCode(), null, contactInfoResData.getId());*/
 
-        try
-        {
+        try {
           RegistrantContact.setContactName(contactInfoResData.getName());
-        }
-        catch (NullPointerException e)
-        {
-          //discard field;
+        } catch (NullPointerException e) {
+          // discard field;
         }
 
-        try
-        {
+        try {
           RegistrantContact.setOrg(contactInfoResData.getOrg());
-        }
-        catch (NullPointerException e)
-        {
-          //discard field;
+        } catch (NullPointerException e) {
+          // discard field;
         }
 
-        try
-        {
+        try {
           RegistrantContact.setStreet(contactInfoResData.getStreet(0));
-        }
-        catch (NullPointerException e)
-        {
-          //discard field;
+        } catch (NullPointerException e) {
+          // discard field;
         }
 
-        try
-        {
+        try {
           RegistrantContact.setCity(contactInfoResData.getCity());
-        }
-        catch (NullPointerException e)
-        {
-          //discard field;
+        } catch (NullPointerException e) {
+          // discard field;
         }
 
-        try
-        {
+        try {
           RegistrantContact.setStateOrProvince(contactInfoResData.getSp());
-        }
-        catch (NullPointerException e)
-        {
-          //discard field;
+        } catch (NullPointerException e) {
+          // discard field;
         }
 
-        try
-        {
+        try {
           RegistrantContact.setPostalCode(contactInfoResData.getPc());
-        }
-        catch (NullPointerException e)
-        {
-          //discard field;
+        } catch (NullPointerException e) {
+          // discard field;
         }
 
-        try
-        {
+        try {
           RegistrantContact.setCountryCode(contactInfoResData.getCc());
-        }
-        catch (NullPointerException e)
-        {
-          //discard field;
+        } catch (NullPointerException e) {
+          // discard field;
         }
 
-        try
-        {
+        try {
           RegistrantContact.setVoice(contactInfoResData.getVoice());
-        }
-        catch (NullPointerException e)
-        {
-          //discard field;
+        } catch (NullPointerException e) {
+          // discard field;
         }
 
-        try
-        {
+        try {
           RegistrantContact.setFax(contactInfoResData.getFax());
-        }
-        catch (NullPointerException e)
-        {
-          //discard field;
+        } catch (NullPointerException e) {
+          // discard field;
         }
 
-        try
-        {
+        try {
           RegistrantContact.setEmail(contactInfoResData.getEmail());
-        }
-        catch (NullPointerException e)
-        {
-          //discard field;
+        } catch (NullPointerException e) {
+          // discard field;
         }
 
-        try
-        {
+        try {
           RegistrantContact.setSchoolCode(contactInfoExt.getSchoolCode());
-        }
-        catch (NullPointerException e)
-        {
-          //discard field;
+        } catch (NullPointerException e) {
+          // discard field;
         }
 
-        try
-        {
+        try {
           RegistrantContact.setConsentForPublishing(contactInfoExt.getConsentForPublishing());
-        }
-        catch (NullPointerException e)
-        {
-          //discard field;
+        } catch (NullPointerException e) {
+          // discard field;
         }
 
-        try
-        {
+        try {
           RegistrantContact.setIsRegistrant(contactInfoExt.isRegistrant());
-        }
-        catch (NullPointerException e)
-        {
-          //discard field;
+        } catch (NullPointerException e) {
+          // discard field;
         }
 
-        try
-        {
+        try {
           RegistrantContact.setNationalityCode(contactInfoExt.getNationalityCode());
-        }
-        catch (NullPointerException e)
-        {
-          //discard field;
+        } catch (NullPointerException e) {
+          // discard field;
         }
 
-        try
-        {
+        try {
           RegistrantContact.setEntityType(contactInfoExt.getEntityType());
-        }
-        catch (NullPointerException e)
-        {
-          //discard field;
+        } catch (NullPointerException e) {
+          // discard field;
         }
 
-        try
-        {
+        try {
           RegistrantContact.setRegCode(contactInfoExt.getRegCode());
-        }
-        catch (NullPointerException e)
-        {
-          //discard field;
+        } catch (NullPointerException e) {
+          // discard field;
         }
 
-        try
-        {
+        try {
           RegistrantContact.setContactId(contactInfoResData.getId());
-        }
-        catch (NullPointerException e)
-        {
-          //discard field;
+        } catch (NullPointerException e) {
+          // discard field;
         }
 
-        if (contactdb.getAddress(contactId) == null)
-        {
+        if (contactdb.getAddress(contactId) == null) {
           contactdb.saveRecord(RegistrantContact);
-        }
-        else
-        {
+        } else {
           contactdb.editRecord(RegistrantContact);
         }
 
         importStatus = true;
         RegistrantContact = null;
       }
-    }
-    catch (XmlException v)
-    {
+    } catch (XmlException v) {
       log.error("XmlException in execute", v);
-    }
-    catch (IOException v)
-    {
+    } catch (IOException v) {
       log.error("IOException in execute", v);
     }
 

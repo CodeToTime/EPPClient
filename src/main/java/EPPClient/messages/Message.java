@@ -17,15 +17,18 @@ package EPPClient.messages;
 
 import java.util.Date;
 
-public class Message
-{
+public class Message {
 
-  public Message()
-  {
-  }
+  public Message() {}
 
-  public Message(String msgId, Date datetime, String title, String xml, boolean read, boolean ack, boolean actioned)
-  {
+  public Message(
+      String msgId,
+      Date datetime,
+      String title,
+      String xml,
+      boolean read,
+      boolean ack,
+      boolean actioned) {
 
     this.msgId = msgId;
     this.datetime = datetime;
@@ -36,73 +39,59 @@ public class Message
     this.actioned = actioned;
   }
 
-  public void setMsgId(String msgId)
-  {
+  public void setMsgId(String msgId) {
     this.msgId = msgId;
   }
 
-  public String getMsgId()
-  {
+  public String getMsgId() {
     return this.msgId;
   }
 
-  public void setDateTime(Date datetime)
-  {
+  public void setDateTime(Date datetime) {
     this.datetime = datetime;
   }
 
-  public Date getDateTime()
-  {
+  public Date getDateTime() {
     return this.datetime;
   }
 
-  public void setTitle(String title)
-  {
+  public void setTitle(String title) {
     this.title = title;
   }
 
-  public String getTitle()
-  {
+  public String getTitle() {
     return this.title;
   }
 
-  public void setXml(String xml)
-  {
+  public void setXml(String xml) {
     this.xml = xml;
   }
 
-  public String getXml()
-  {
+  public String getXml() {
     return this.xml;
   }
 
-  public void setRead(boolean read)
-  {
+  public void setRead(boolean read) {
     this.read = read;
   }
 
-  public boolean getRead()
-  {
+  public boolean getRead() {
     return this.read;
   }
 
-  public void setAck(boolean ack)
-  {
+  public void setAck(boolean ack) {
     this.ack = ack;
   }
 
-  public boolean getAck()
-  {
+  public boolean getAck() {
     return this.ack;
   }
 
-  public void setActioned(boolean actioned)
-  {
+  public void setActioned(boolean actioned) {
     this.actioned = actioned;
   }
 
-  public boolean getActioned()
-  {
+  public boolean getActioned() {
     return this.actioned;
   }
 
@@ -115,5 +104,4 @@ public class Message
   private boolean actioned;
 
   private static final int PRIMENO = 37;
-
 }

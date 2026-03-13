@@ -15,39 +15,31 @@
 
 package EPPClient.domains;
 
-public class ListEntry
-{
+public class ListEntry {
 
-  /**
-   * Creates a new instance of ListEntry
-   */
-  public ListEntry()
-  {
+  /** Creates a new instance of ListEntry */
+  public ListEntry() {
     this("");
   }
 
-  public ListEntry(String domainName)
-  {
+  public ListEntry(String domainName) {
     this.domainName = domainName;
-//        this.firstName = firstName;
-//        this.middleName = middleName;
+    //        this.firstName = firstName;
+    //        this.middleName = middleName;
   }
 
-  public String getDomainName()
-  {
+  public String getDomainName() {
     return domainName;
   }
 
-  public void setDomainName(String domainName)
-  {
+  public void setDomainName(String domainName) {
     this.domainName = domainName;
   }
 
-  public String toString()
-  {
-    String value = domainName; // + ": " + contactId; //+ ", " + firstName + " " + middleName + ": " + id;
+  public String toString() {
+    String value =
+        domainName; // + ": " + contactId; //+ ", " + firstName + " " + middleName + ": " + id;
     return value;
-
   }
 
   private String domainName;

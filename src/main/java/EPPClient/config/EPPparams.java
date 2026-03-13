@@ -21,8 +21,7 @@ import java.util.prefs.Preferences;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EPPparams
-{
+public class EPPparams {
   private static final Logger log = LoggerFactory.getLogger(EPPparams.class);
   private static final String BUNDLE_NAME = "EPPClient.config.EPPparams";
 
@@ -32,93 +31,70 @@ public class EPPparams
 
   private static String paramPrefix = "";
 
-  static
-  {
-    try
-    {
+  static {
+    try {
       thisClass = Class.forName("EPPClient.config.EPPparams");
-    }
-    catch (ClassNotFoundException e)
-    {
+    } catch (ClassNotFoundException e) {
       log.error("Class not found", e);
     }
   }
 
   private static final Preferences prefs = Preferences.userNodeForPackage(thisClass);
 
-  public static void setPrefix(String INparamPrefix)
-  {
+  public static void setPrefix(String INparamPrefix) {
     paramPrefix = INparamPrefix;
   }
 
-  public static String getParameter(String key)
-  {
+  public static String getParameter(String key) {
     String parameterValue = "";
-    
-    try
-    {
-      try
-      {
+
+    try {
+      try {
         prefs.sync();
-      }
-      catch (java.util.prefs.BackingStoreException ex)
-      {
+      } catch (java.util.prefs.BackingStoreException ex) {
         log.error("BackingStoreException in getParameter", ex);
       }
 
       String storedValue = new String(prefs.getByteArray(paramPrefix + key, new byte[0]));
-      
-      if (storedValue.length() > 0)
-      {
-        try
-        {
+
+      if (storedValue.length() > 0) {
+        try {
           String decryptedValue = CryptoUtils.decrypt(storedValue);
-          if (decryptedValue != null && !decryptedValue.isEmpty())
-          {
+          if (decryptedValue != null && !decryptedValue.isEmpty()) {
             parameterValue = decryptedValue;
             log.debug("Successfully decrypted parameter: {}", key);
-          }
-          else
-          {
+          } else {
             log.warn("Decrypted value is empty for key {}, falling back to resource bundle", key);
             throw new Exception("Decrypted value is empty");
           }
-        }
-        catch (Exception decryptEx)
-        {
-          log.warn("Decryption failed for key {}, falling back to resource bundle: {}", key, decryptEx.getMessage());
+        } catch (Exception decryptEx) {
+          log.warn(
+              "Decryption failed for key {}, falling back to resource bundle: {}",
+              key,
+              decryptEx.getMessage());
           // Fall through to load from resource bundle
         }
       }
-      
+
       // Final check: if parameterValue is still empty, use resource bundle
-      if (parameterValue.isEmpty())
-      {
+      if (parameterValue.isEmpty()) {
         log.debug("Parameter value is empty for key {}, loading from resource bundle", key);
-        try
-        {
+        try {
           parameterValue = RESOURCE_BUNDLE.getString(key);
           log.debug("Loaded parameter from resource bundle: {}", key);
           // Save the fallback value to preferences
           setParameter(key, parameterValue);
-        }
-        catch (MissingResourceException e)
-        {
+        } catch (MissingResourceException e) {
           log.error("Missing parameter in resource bundle: {}", key);
           parameterValue = "";
         }
       }
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       log.error("Error in getParameter for key {}: {}", key, e.getMessage(), e);
       // Final fallback attempt
-      try
-      {
+      try {
         parameterValue = RESOURCE_BUNDLE.getString(key);
-      }
-      catch (MissingResourceException ex)
-      {
+      } catch (MissingResourceException ex) {
         parameterValue = "";
       }
     }
@@ -126,34 +102,24 @@ public class EPPparams
     return parameterValue;
   }
 
-  public static void setParameter(String key, String value)
-  {
+  public static void setParameter(String key, String value) {
     key = paramPrefix + key;
 
-    try
-    {
+    try {
       prefs.putByteArray(key, CryptoUtils.encrypt(value).getBytes());
-      try
-      {
+      try {
         prefs.sync();
-      }
-      catch (java.util.prefs.BackingStoreException ex)
-      {
+      } catch (java.util.prefs.BackingStoreException ex) {
         log.error("BackingStoreException in setParameter", ex);
       }
-    }
-    catch (MissingResourceException e)
-    {
+    } catch (MissingResourceException e) {
       log.error("MissingResourceException in setParameter", e);
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       log.error("Error in setParameter", e);
     }
   }
 
-  public static String getKey()
-  {
+  public static String getKey() {
     return "D6B80943CCE0F1C049D9A39094FB4FA1";
   }
 }

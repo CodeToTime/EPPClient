@@ -31,17 +31,13 @@ import javax.swing.JFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TxtImport extends JFrame
-{
+public class TxtImport extends JFrame {
   private static final Logger log = LoggerFactory.getLogger(TxtImport.class);
 
   private main mainFrame;
 
-  /**
-   * Creates new form TxtImport
-   */
-  public TxtImport(main mainFrame)
-  {
+  /** Creates new form TxtImport */
+  public TxtImport(main mainFrame) {
     initComponents();
 
     this.mainFrame = mainFrame;
@@ -50,104 +46,111 @@ public class TxtImport extends JFrame
 
   @SuppressWarnings("unchecked")
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-  private void initComponents()
-  {
+  private void initComponents() {
     jFileChooser1 = new JFileChooser();
     textArea1 = new TextArea();
 
-    //======== this ========
+    // ======== this ========
     setTitle("Importazione Domini da file");
     setMinimumSize(new Dimension(600, 500));
     Container contentPane = getContentPane();
 
-    //---- jFileChooser1 ----
+    // ---- jFileChooser1 ----
     jFileChooser1.addActionListener(e -> jFileChooser1ActionPerformed(e));
 
-    //---- textArea1 ----
+    // ---- textArea1 ----
     textArea1.setEditable(false);
-    textArea1.setText("Questa procedura permette di acquisire nel database locale eventuali domini gi\u00e0 presenti sul server EPP del Registro.\nPer poter procedere occorre predisporre un file .txt contenente l'elenco dei domini, uno per riga.\n");
+    textArea1.setText(
+        "Questa procedura permette di acquisire nel database locale eventuali domini gi\u00e0 presenti sul server EPP del Registro.\nPer poter procedere occorre predisporre un file .txt contenente l'elenco dei domini, uno per riga.\n");
 
     GroupLayout contentPaneLayout = new GroupLayout(contentPane);
     contentPane.setLayout(contentPaneLayout);
     contentPaneLayout.setHorizontalGroup(
-            contentPaneLayout.createParallelGroup()
-                    .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                    .addComponent(textArea1, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 723, Short.MAX_VALUE)
-                                    .addComponent(jFileChooser1, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 723, Short.MAX_VALUE))
-                            .addContainerGap())
-    );
+        contentPaneLayout
+            .createParallelGroup()
+            .addGroup(
+                GroupLayout.Alignment.TRAILING,
+                contentPaneLayout
+                    .createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(
+                        contentPaneLayout
+                            .createParallelGroup(GroupLayout.Alignment.TRAILING)
+                            .addComponent(
+                                textArea1,
+                                GroupLayout.Alignment.LEADING,
+                                GroupLayout.DEFAULT_SIZE,
+                                723,
+                                Short.MAX_VALUE)
+                            .addComponent(
+                                jFileChooser1,
+                                GroupLayout.Alignment.LEADING,
+                                GroupLayout.DEFAULT_SIZE,
+                                723,
+                                Short.MAX_VALUE))
+                    .addContainerGap()));
     contentPaneLayout.setVerticalGroup(
-            contentPaneLayout.createParallelGroup()
-                    .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
-                            .addComponent(textArea1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addGap(20, 20, 20)
-                            .addComponent(jFileChooser1, GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
-                            .addContainerGap())
-    );
+        contentPaneLayout
+            .createParallelGroup()
+            .addGroup(
+                GroupLayout.Alignment.TRAILING,
+                contentPaneLayout
+                    .createSequentialGroup()
+                    .addComponent(
+                        textArea1,
+                        GroupLayout.PREFERRED_SIZE,
+                        GroupLayout.DEFAULT_SIZE,
+                        GroupLayout.PREFERRED_SIZE)
+                    .addGap(20, 20, 20)
+                    .addComponent(jFileChooser1, GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                    .addContainerGap()));
     pack();
     setLocationRelativeTo(getOwner());
-  }// </editor-fold>//GEN-END:initComponents
+  } // </editor-fold>//GEN-END:initComponents
 
-  private void jFileChooser1ActionPerformed(java.awt.event.ActionEvent evt)
-  {//GEN-FIRST:event_jFileChooser1ActionPerformed
-    if (evt.getActionCommand().equals("ApproveSelection"))
-    {
-      if (jFileChooser1.getSelectedFile() != null)
-      {
+  private void jFileChooser1ActionPerformed(
+      java.awt.event.ActionEvent evt) { // GEN-FIRST:event_jFileChooser1ActionPerformed
+    if (evt.getActionCommand().equals("ApproveSelection")) {
+      if (jFileChooser1.getSelectedFile() != null) {
         File file = jFileChooser1.getSelectedFile();
 
-        try
-        {
+        try {
           BufferedReader in = new BufferedReader(new FileReader(file));
           String str;
           textArea1.setText(textArea1.getText() + "\n======LOG IMPORTAZIONE======");
           ImportDomain domainImporter = new ImportDomain(mainFrame, true);
-          while ((str = in.readLine()) != null)
-          {
+          while ((str = in.readLine()) != null) {
             textArea1.setText(textArea1.getText() + "\n" + str);
-            if (domainImporter.execute(str))
-            {
+            if (domainImporter.execute(str)) {
               textArea1.setText(textArea1.getText() + " IMPORTATO;");
-            }
-            else
-            {
+            } else {
               textArea1.setText(textArea1.getText() + " NON IMPORTATO;");
             }
           }
           textArea1.setText(textArea1.getText() + "\n======FINE IMPORTAZIONE======");
           in.close();
-        }
-        catch (FileNotFoundException e)
-        {
+        } catch (FileNotFoundException e) {
           textArea1.setText(textArea1.getText() + "\n++++++Impossibile aprire il file++++++");
-        }
-        catch (IOException e)
-        {
-          textArea1.setText(textArea1.getText() + "\n++++++Errore sconosciuto durante l'apertura del file++++++");
+        } catch (IOException e) {
+          textArea1.setText(
+              textArea1.getText() + "\n++++++Errore sconosciuto durante l'apertura del file++++++");
         }
 
-
-      }
-      else
-      {
+      } else {
         log.info("TxtImport: non è stato selezionato alcun file...");
       }
-    }
-    else
-    {
+    } else {
       this.setVisible(false);
     }
-  }//GEN-LAST:event_jFileChooser1ActionPerformed
+  } // GEN-LAST:event_jFileChooser1ActionPerformed
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private JFileChooser jFileChooser1;
   private TextArea textArea1;
+
   // End of variables declaration//GEN-END:variables
 
-  public void setEPPEnablement(boolean EPPstatus)
-  {
+  public void setEPPEnablement(boolean EPPstatus) {
     jFileChooser1.setEnabled(EPPstatus);
   }
 

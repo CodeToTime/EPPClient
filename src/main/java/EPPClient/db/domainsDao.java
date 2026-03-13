@@ -36,116 +36,129 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class domainsDao
-{
+public class domainsDao {
   private static final Logger log = LoggerFactory.getLogger(domainsDao.class);
 
   private static final String BUNDLE_NAME = "EPPClient.db.domains";
 
   private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
-  public static String getString(String key)
-  {
-    try
-    {
+  public static String getString(String key) {
+    try {
       return RESOURCE_BUNDLE.getString(key);
-    }
-    catch (MissingResourceException e)
-    {
+    } catch (MissingResourceException e) {
       return '!' + key + '!';
     }
   }
 
-
-  /**
-   * Creates a new instance of AddressDao
-   */
-  public domainsDao()
-  {
+  /** Creates a new instance of AddressDao */
+  public domainsDao() {
     this("domains");
   }
 
-  public domainsDao(String addressBookName)
-  {
+  public domainsDao(String addressBookName) {
     this.dbName = addressBookName;
 
     setDBSystemDir();
     dbProperties = loadDBProperties();
 
-    if (dbProperties.getProperty("derby.url").contains("postgresql"))
-    {
+    if (dbProperties.getProperty("derby.url").contains("postgresql")) {
       dbProperties.put("db.schema", "public");
     }
 
-    strDropDomainTable = "drop table " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table");
+    strDropDomainTable =
+        "drop table "
+            + dbProperties.getProperty("db.schema")
+            + "."
+            + dbProperties.getProperty("db.table");
 
     strCreateAddressTable =
-            "create table " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " (" +
-                    "    DOMAINNAME     VARCHAR(255) NOT NULL PRIMARY KEY," +
-                    "    REGISTRANT     VARCHAR(255), " +
-                    "    ADMIN          VARCHAR(255), " +
-                    "    TECH           VARCHAR(255), " +
-                    "    NAMESERVER     VARCHAR(255), " +
-                    "    AUTHINFO       VARCHAR(255), " +
-                    "    STATUS         VARCHAR(255), " +
-                    "    EXPIRE         DATE, " +
-                    "    VALIDATIONCODE VARCHAR(255), " +
-                    "    ISDNSSEC       SMALLINT, " +
-                    "    DNSSECKEYTAG   VARCHAR(255), " +
-                    "    DNSSECALG      INTEGER, " +
-                    "    DNSSECDIGESTTYPE INTEGER, " +
-                    "    DNSSECDIGEST   VARCHAR(255) " +
-                    ")";
+        "create table "
+            + dbProperties.getProperty("db.schema")
+            + "."
+            + dbProperties.getProperty("db.table")
+            + " ("
+            + "    DOMAINNAME     VARCHAR(255) NOT NULL PRIMARY KEY,"
+            + "    REGISTRANT     VARCHAR(255), "
+            + "    ADMIN          VARCHAR(255), "
+            + "    TECH           VARCHAR(255), "
+            + "    NAMESERVER     VARCHAR(255), "
+            + "    AUTHINFO       VARCHAR(255), "
+            + "    STATUS         VARCHAR(255), "
+            + "    EXPIRE         DATE, "
+            + "    VALIDATIONCODE VARCHAR(255), "
+            + "    ISDNSSEC       SMALLINT, "
+            + "    DNSSECKEYTAG   VARCHAR(255), "
+            + "    DNSSECALG      INTEGER, "
+            + "    DNSSECDIGESTTYPE INTEGER, "
+            + "    DNSSECDIGEST   VARCHAR(255) "
+            + ")";
 
     strGetAddress =
-            "SELECT * FROM " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " " +
-                    "WHERE DOMAINNAME = ?";
+        "SELECT * FROM "
+            + dbProperties.getProperty("db.schema")
+            + "."
+            + dbProperties.getProperty("db.table")
+            + " "
+            + "WHERE DOMAINNAME = ?";
 
     strSaveAddress =
-            "INSERT INTO " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " " +
-                    "   (DOMAINNAME, REGISTRANT, ADMIN, TECH, NAMESERVER, AUTHINFO, STATUS, EXPIRE, VALIDATIONCODE, ISDNSSEC, DNSSECKEYTAG, DNSSECALG, DNSSECDIGESTTYPE, DNSSECDIGEST) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        "INSERT INTO "
+            + dbProperties.getProperty("db.schema")
+            + "."
+            + dbProperties.getProperty("db.table")
+            + " "
+            + "   (DOMAINNAME, REGISTRANT, ADMIN, TECH, NAMESERVER, AUTHINFO, STATUS, EXPIRE, VALIDATIONCODE, ISDNSSEC, DNSSECKEYTAG, DNSSECALG, DNSSECDIGESTTYPE, DNSSECDIGEST) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     strGetListEntries =
-            "SELECT DOMAINNAME FROM " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " " +
-                    "ORDER BY DOMAINNAME ASC";
+        "SELECT DOMAINNAME FROM "
+            + dbProperties.getProperty("db.schema")
+            + "."
+            + dbProperties.getProperty("db.table")
+            + " "
+            + "ORDER BY DOMAINNAME ASC";
 
     strUpdateAddress =
-            "UPDATE " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " " +
-                    "SET REGISTRANT = ?, " +
-                    "    ADMIN = ?, " +
-                    "    TECH = ?, " +
-                    "    NAMESERVER = ?, " +
-                    "    AUTHINFO = ?, " +
-                    "    STATUS = ?, " +
-                    "    EXPIRE = ?, " +
-                    "    VALIDATIONCODE = ?, " +
-                    "    ISDNSSEC = ?, " +
-                    "    DNSSECKEYTAG = ?, " +
-                    "    DNSSECALG = ?, " +
-                    "    DNSSECDIGESTTYPE = ?, " +
-                    "    DNSSECDIGEST = ? " +
-                    "WHERE DOMAINNAME = ?";
+        "UPDATE "
+            + dbProperties.getProperty("db.schema")
+            + "."
+            + dbProperties.getProperty("db.table")
+            + " "
+            + "SET REGISTRANT = ?, "
+            + "    ADMIN = ?, "
+            + "    TECH = ?, "
+            + "    NAMESERVER = ?, "
+            + "    AUTHINFO = ?, "
+            + "    STATUS = ?, "
+            + "    EXPIRE = ?, "
+            + "    VALIDATIONCODE = ?, "
+            + "    ISDNSSEC = ?, "
+            + "    DNSSECKEYTAG = ?, "
+            + "    DNSSECALG = ?, "
+            + "    DNSSECDIGESTTYPE = ?, "
+            + "    DNSSECDIGEST = ? "
+            + "WHERE DOMAINNAME = ?";
 
     strDeleteAddress =
-            "DELETE FROM " + dbProperties.getProperty("db.schema") + "." + dbProperties.getProperty("db.table") + " " +
-                    "WHERE DOMAINNAME = ?";
+        "DELETE FROM "
+            + dbProperties.getProperty("db.schema")
+            + "."
+            + dbProperties.getProperty("db.table")
+            + " "
+            + "WHERE DOMAINNAME = ?";
 
     String driverName = dbProperties.getProperty("derby.driver");
     loadDatabaseDriver(driverName);
-    if (!dbExists() && !dbProperties.getProperty("derby.url").contains("mariadb") && !dbProperties.getProperty("derby.url").contains("postgresql"))
-    {
+    if (!dbExists()
+        && !dbProperties.getProperty("derby.url").contains("mariadb")
+        && !dbProperties.getProperty("derby.url").contains("postgresql")) {
       createDatabase();
-    }
-    else
-    {
+    } else {
       connect();
-      if (!tableExists(dbConnection, dbProperties.getProperty("db.table")))
-      {
+      if (!tableExists(dbConnection, dbProperties.getProperty("db.table"))) {
         createTables(dbConnection);
-      }
-      else
-      {
+      } else {
         // Update schema: add missing columns if they don't exist
         String tableName = dbProperties.getProperty("db.table");
 
@@ -161,19 +174,16 @@ public class domainsDao
   }
 
   /**
-   * Checks if a column exists in the specified table.
-   * Handles case-sensitivity differences between Derby (uppercase) and MySQL/MariaDB/PostgreSQL (lowercase).
+   * Checks if a column exists in the specified table. Handles case-sensitivity differences between
+   * Derby (uppercase) and MySQL/MariaDB/PostgreSQL (lowercase).
    */
-  private boolean columnExists(Connection conn, String tableName, String columnName)
-  {
-    try
-    {
-      // Try first with original table name (works for MySQL/MariaDB/PostgreSQL with lowercase names)
+  private boolean columnExists(Connection conn, String tableName, String columnName) {
+    try {
+      // Try first with original table name (works for MySQL/MariaDB/PostgreSQL with lowercase
+      // names)
       ResultSet columns = conn.getMetaData().getColumns(null, null, tableName, null);
-      while (columns.next())
-      {
-        if (columns.getString("COLUMN_NAME").equalsIgnoreCase(columnName))
-        {
+      while (columns.next()) {
+        if (columns.getString("COLUMN_NAME").equalsIgnoreCase(columnName)) {
           columns.close();
           return true;
         }
@@ -182,95 +192,79 @@ public class domainsDao
 
       // Try with uppercase table name (works for Derby)
       columns = conn.getMetaData().getColumns(null, null, tableName.toUpperCase(), null);
-      while (columns.next())
-      {
-        if (columns.getString("COLUMN_NAME").equalsIgnoreCase(columnName))
-        {
+      while (columns.next()) {
+        if (columns.getString("COLUMN_NAME").equalsIgnoreCase(columnName)) {
           columns.close();
           return true;
         }
       }
       columns.close();
-    }
-    catch (SQLException ex)
-    {
+    } catch (SQLException ex) {
       log.error("Error checking column existence", ex);
     }
     return false;
   }
 
-  /**
-   * Adds a column to the table if it doesn't already exist.
-   */
-  private void addColumnIfNotExists(Connection conn, String tableName, String columnName, String columnType)
-  {
-    if (columnExists(conn, tableName, columnName))
-    {
+  /** Adds a column to the table if it doesn't already exist. */
+  private void addColumnIfNotExists(
+      Connection conn, String tableName, String columnName, String columnType) {
+    if (columnExists(conn, tableName, columnName)) {
       return; // Column already exists, nothing to do
     }
 
     String fullTableName = dbProperties.getProperty("db.schema") + "." + tableName;
     Statement statement = null;
-    try
-    {
+    try {
       statement = conn.createStatement();
-      statement.execute("ALTER TABLE " + fullTableName + " ADD COLUMN " + columnName + " " + columnType);
+      statement.execute(
+          "ALTER TABLE " + fullTableName + " ADD COLUMN " + columnName + " " + columnType);
       log.debug("Added column {} to table {}", columnName, fullTableName);
-    }
-    catch (SQLException ex)
-    {
+    } catch (SQLException ex) {
       // Column may already exist (race condition) or other error
       log.error("Error adding column to table", ex);
-    }
-    finally
-    {
-      if (statement != null)
-      {
-        try { statement.close(); } catch (SQLException e) { /* ignore */ }
+    } finally {
+      if (statement != null) {
+        try {
+          statement.close();
+        } catch (SQLException e) {
+          /* ignore */
+        }
       }
     }
   }
 
-  private boolean tableExists(Connection dbConnection, String tableName)
-  {
+  private boolean tableExists(Connection dbConnection, String tableName) {
     boolean tableExists = false;
 
     Statement statement = null;
-    try
-    {
-      ResultSet rs = dbConnection.getMetaData().getTables(dbProperties.getProperty("db.schema"), null, "%", null);
-      while (rs.next())
-      {
-        if (rs.getString(3).toLowerCase().equals(tableName.toLowerCase()))
-          tableExists = true;
+    try {
+      ResultSet rs =
+          dbConnection
+              .getMetaData()
+              .getTables(dbProperties.getProperty("db.schema"), null, "%", null);
+      while (rs.next()) {
+        if (rs.getString(3).toLowerCase().equals(tableName.toLowerCase())) tableExists = true;
       }
-    }
-    catch (SQLException ex)
-    {
+    } catch (SQLException ex) {
       log.error("Error checking table existence", ex);
-    }
-    catch (Exception ex)
-    {
+    } catch (Exception ex) {
       log.error("Error checking table existence", ex);
     }
 
     return tableExists;
   }
 
-  private boolean dbExists()
-  {
+  private boolean dbExists() {
     boolean bExists = false;
     String dbLocation = getDatabaseLocation();
     File dbFileDir = new File(dbLocation);
-    if (dbFileDir.exists())
-    {
+    if (dbFileDir.exists()) {
       bExists = true;
     }
     return bExists;
   }
 
-  private void setDBSystemDir()
-  {
+  private void setDBSystemDir() {
     // decide on the db system directory
     String userHomeDir = System.getProperty("user.home", ".");
     String systemDir = userHomeDir + "/.eppclient";
@@ -281,53 +275,36 @@ public class domainsDao
     fileSystemDir.mkdir();
   }
 
-  private void loadDatabaseDriver(String driverName)
-  {
-    try
-    {
+  private void loadDatabaseDriver(String driverName) {
+    try {
       Class.forName(driverName);
-    }
-    catch (ClassNotFoundException ex)
-    {
-      if ("org.mariadb.jdbc.Driver".equals(driverName) || "org.postgresql.Driver".equals(driverName))
-      {
-        try
-        {
+    } catch (ClassNotFoundException ex) {
+      if ("org.mariadb.jdbc.Driver".equals(driverName)
+          || "org.postgresql.Driver".equals(driverName)) {
+        try {
           Class.forName(driverName);
-        }
-        catch (ClassNotFoundException e)
-        {
+        } catch (ClassNotFoundException e) {
           log.error("Database driver not found: {}", e.getMessage(), e);
         }
-      }
-      else
-      {
+      } else {
         log.error("Database driver not found", ex);
       }
     }
-
   }
 
-  private Properties loadDBProperties()
-  {
+  private Properties loadDBProperties() {
     InputStream dbPropInputStream = null;
     dbPropInputStream = domainsDao.class.getResourceAsStream("domains.properties");
     dbProperties = new Properties();
-    try
-    {
+    try {
       dbProperties.load(dbPropInputStream);
 
       String dbUrl = EPPparams.getParameter("EppClient.dburl");
-      if (dbUrl.contains("mariadb"))
-      {
+      if (dbUrl.contains("mariadb")) {
         dbProperties.put("derby.driver", "org.mariadb.jdbc.Driver");
-      }
-      else if (dbUrl.contains("postgresql"))
-      {
+      } else if (dbUrl.contains("postgresql")) {
         dbProperties.put("derby.driver", "org.postgresql.Driver");
-      }
-      else
-      {
+      } else {
         dbProperties.put("derby.driver", "org.apache.derby.jdbc.EmbeddedDriver");
       }
       dbProperties.put("derby.url", dbUrl);
@@ -335,142 +312,113 @@ public class domainsDao
 
       dbProperties.put("user", EPPparams.getParameter("EppClient.dbuid"));
       dbProperties.put("password", EPPparams.getParameter("EppClient.dbpwd"));
-    }
-    catch (IOException ex)
-    {
+    } catch (IOException ex) {
       log.error("Error loading database properties", ex);
     }
     return dbProperties;
   }
 
-
-  private boolean createTables(Connection dbConnection)
-  {
+  private boolean createTables(Connection dbConnection) {
     boolean bCreatedTables = false;
     Statement statement = null;
-    try
-    {
+    try {
       statement = dbConnection.createStatement();
       String createTableSql = strCreateAddressTable;
-      if (dbProperties.getProperty("derby.url").contains("mariadb") || dbProperties.getProperty("derby.url").contains("postgresql"))
-      {
-        createTableSql = strCreateAddressTable.replace("create table ", "create table IF NOT EXISTS ");
+      if (dbProperties.getProperty("derby.url").contains("mariadb")
+          || dbProperties.getProperty("derby.url").contains("postgresql")) {
+        createTableSql =
+            strCreateAddressTable.replace("create table ", "create table IF NOT EXISTS ");
       }
       statement.execute(createTableSql);
       bCreatedTables = true;
       EPPparams.setParameter("EppClient.dblevel", "1");
-    }
-    catch (SQLException ex)
-    {
+    } catch (SQLException ex) {
       if (ex.getSQLState().equals("X0Y32") || ex.getMessage().contains("already exists")) {
         bCreatedTables = true;
       } else {
-          log.error("Error creating tables", ex);
+        log.error("Error creating tables", ex);
       }
     }
 
     return bCreatedTables;
   }
 
-  public boolean dropTables()
-  {
+  public boolean dropTables() {
     boolean bDroppedTables = false;
-    try
-    {
+    try {
       stmtDropDomainTable.clearParameters();
       stmtDropDomainTable.execute();
       bDroppedTables = true;
-    }
-    catch (SQLException ex)
-    {
+    } catch (SQLException ex) {
       log.error("Error dropping tables", ex);
     }
     return bDroppedTables;
   }
 
-  private boolean createDatabase()
-  {
+  private boolean createDatabase() {
     boolean bCreated = false;
     Connection dbConnection = null;
 
     String dbUrl = getDatabaseUrl();
     dbProperties.put("create", "true");
-    try
-    {
+    try {
       dbConnection = DriverManager.getConnection(dbUrl, dbProperties);
       bCreated = createTables(dbConnection);
-    }
-    catch (SQLException ex)
-    {
+    } catch (SQLException ex) {
     }
     dbProperties.remove("create");
     return bCreated;
   }
 
-  public boolean connect()
-  {
+  public boolean connect() {
     String dbUrl = getDatabaseUrl();
-    try
-    {
+    try {
       dbProperties.put("shutdown", "false");
       dbConnection = DriverManager.getConnection(dbUrl, dbProperties);
-      stmtSaveNewRecord = dbConnection.prepareStatement(strSaveAddress, Statement.RETURN_GENERATED_KEYS);
+      stmtSaveNewRecord =
+          dbConnection.prepareStatement(strSaveAddress, Statement.RETURN_GENERATED_KEYS);
       stmtUpdateExistingRecord = dbConnection.prepareStatement(strUpdateAddress);
       stmtGetAddress = dbConnection.prepareStatement(strGetAddress);
       stmtDeleteAddress = dbConnection.prepareStatement(strDeleteAddress);
       stmtDropDomainTable = dbConnection.prepareStatement(strDropDomainTable);
 
       isConnected = dbConnection != null;
-    }
-    catch (SQLException ex)
-    {
+    } catch (SQLException ex) {
       isConnected = false;
       log.error("Failed to connect to database: {}", ex.getMessage(), ex);
     }
     return isConnected;
   }
 
-  private String getHomeDir()
-  {
+  private String getHomeDir() {
     return System.getProperty("user.home");
   }
 
-  public void disconnect()
-  {
-    if (isConnected)
-    {
+  public void disconnect() {
+    if (isConnected) {
       String dbUrl = getDatabaseUrl();
       dbProperties.put("shutdown", "true");
-      try
-      {
+      try {
         DriverManager.getConnection(dbUrl, dbProperties);
-      }
-      catch (SQLException ex)
-      {
+      } catch (SQLException ex) {
       }
       isConnected = false;
     }
   }
 
-  public String getDatabaseLocation()
-  {
+  public String getDatabaseLocation() {
     String dbLocation = System.getProperty("derby.system.home") + "/" + dbName;
     return dbLocation;
   }
 
-  public String getDatabaseUrl()
-  {
+  public String getDatabaseUrl() {
     String dbUrl = dbProperties.getProperty("derby.url");
-    if (!dbUrl.contains("mariadb") && !dbUrl.contains("postgresql"))
-      dbUrl += dbName;
+    if (!dbUrl.contains("mariadb") && !dbUrl.contains("postgresql")) dbUrl += dbName;
     return dbUrl;
   }
 
-
-  public String saveRecord(Domain record)
-  {
-    try
-    {
+  public String saveRecord(Domain record) {
+    try {
       stmtSaveNewRecord.clearParameters();
 
       stmtSaveNewRecord.setString(1, record.getDomainName());
@@ -478,10 +426,8 @@ public class domainsDao
 
       String newAdmin = "";
       String[] newAdmins = record.getAdmin();
-      if (newAdmins != null)
-      {
-        for (int adminIndex = 0; adminIndex < newAdmins.length; adminIndex++)
-        {
+      if (newAdmins != null) {
+        for (int adminIndex = 0; adminIndex < newAdmins.length; adminIndex++) {
           if (newAdmin.length() > 0) newAdmin = newAdmin + ";";
           newAdmin = newAdmin + newAdmins[adminIndex];
         }
@@ -490,64 +436,51 @@ public class domainsDao
 
       String newTech = "";
       String[] newTechs = record.getTech();
-      if (newTechs != null)
-      {
-        for (int techIndex = 0; techIndex < newTechs.length; techIndex++)
-        {
+      if (newTechs != null) {
+        for (int techIndex = 0; techIndex < newTechs.length; techIndex++) {
           if (newTech.length() > 0) newTech = newTech + ";";
           newTech = newTech + newTechs[techIndex];
         }
       }
       stmtSaveNewRecord.setString(4, newTech);
 
-
       String newNameServer = "";
       String[] newNameServers = record.getNameServer();
-      if (newNameServers != null)
-      {
-        for (int nameServerIndex = 0; nameServerIndex < newNameServers.length; nameServerIndex++)
-        {
+      if (newNameServers != null) {
+        for (int nameServerIndex = 0; nameServerIndex < newNameServers.length; nameServerIndex++) {
           if (newNameServer.length() > 0) newNameServer = newNameServer + ";";
           newNameServer = newNameServer + newNameServers[nameServerIndex];
         }
       }
-
 
       stmtSaveNewRecord.setString(5, newNameServer);
       stmtSaveNewRecord.setString(6, record.getAuthInfo());
 
       String newStatus = "";
       if (record.getNewStatusV() != null)
-        for (int statusIndex = 0; statusIndex < record.getNewStatusV().size(); statusIndex++)
-        {
+        for (int statusIndex = 0; statusIndex < record.getNewStatusV().size(); statusIndex++) {
           if (newStatus.length() > 0) newStatus = newStatus + ",";
           newStatus += record.getNewStatusV().get(statusIndex);
         }
 
-/*            int[] newStatuses = record.getNewStatus();
-            if (newStatuses != null) {
-                for (int statusIndex = 0; statusIndex < newStatuses.length; statusIndex++) {
-                    if (newStatus.length() > 0) newStatus = newStatus + ",";
-                    newStatus = newStatus + String.valueOf(newStatuses[statusIndex]);
-                }
-            }*/
+      /*            int[] newStatuses = record.getNewStatus();
+      if (newStatuses != null) {
+          for (int statusIndex = 0; statusIndex < newStatuses.length; statusIndex++) {
+              if (newStatus.length() > 0) newStatus = newStatus + ",";
+              newStatus = newStatus + String.valueOf(newStatuses[statusIndex]);
+          }
+      }*/
       stmtSaveNewRecord.setString(7, newStatus);
 
-      if (record.getExpire() instanceof java.util.Date)
-      {
+      if (record.getExpire() instanceof java.util.Date) {
         stmtSaveNewRecord.setDate(8, new java.sql.Date(record.getExpire().getTime()));
-      }
-      else
-      {
+      } else {
         stmtSaveNewRecord.setNull(8, java.sql.Types.DATE);
       }
       stmtSaveNewRecord.setString(9, record.getValidationCode());
-      if (dbProperties.getProperty("derby.url").contains("postgresql"))
-      {
+      if (dbProperties.getProperty("derby.url").contains("postgresql")) {
         stmtSaveNewRecord.setShort(10, (short) (record.isDNSSec() ? 1 : 0));
-      }
-      else
-      {
+      } else {
         stmtSaveNewRecord.setInt(10, record.isDNSSec() ? 1 : 0);
       }
       stmtSaveNewRecord.setString(11, record.getKeyTag());
@@ -556,30 +489,23 @@ public class domainsDao
       stmtSaveNewRecord.setString(14, record.getDigest());
       int rowCount = stmtSaveNewRecord.executeUpdate();
 
-    }
-    catch (SQLException sqle)
-    {
+    } catch (SQLException sqle) {
       log.error("Error saving domain record", sqle);
     }
     return record.getDomainName();
   }
 
-  public boolean editRecord(Domain record)
-  {
+  public boolean editRecord(Domain record) {
     boolean bEdited = false;
-    try
-    {
+    try {
       stmtUpdateExistingRecord.clearParameters();
-
 
       stmtUpdateExistingRecord.setString(1, record.getRegistrant());
 
       String newAdmin = "";
       String[] newAdmins = record.getAdmin();
-      if (newAdmins != null)
-      {
-        for (int adminIndex = 0; adminIndex < newAdmins.length; adminIndex++)
-        {
+      if (newAdmins != null) {
+        for (int adminIndex = 0; adminIndex < newAdmins.length; adminIndex++) {
           if (newAdmin.length() > 0) newAdmin = newAdmin + ";";
           newAdmin = newAdmin + newAdmins[adminIndex];
         }
@@ -588,10 +514,8 @@ public class domainsDao
 
       String newTech = "";
       String[] newTechs = record.getTech();
-      if (newTechs != null)
-      {
-        for (int techIndex = 0; techIndex < newTechs.length; techIndex++)
-        {
+      if (newTechs != null) {
+        for (int techIndex = 0; techIndex < newTechs.length; techIndex++) {
           if (newTech.length() > 0) newTech = newTech + ";";
           newTech = newTech + newTechs[techIndex];
         }
@@ -600,10 +524,8 @@ public class domainsDao
 
       String newNameServer = "";
       String[] newNameServers = record.getNameServer();
-      if (newNameServers != null)
-      {
-        for (int nameServerIndex = 0; nameServerIndex < newNameServers.length; nameServerIndex++)
-        {
+      if (newNameServers != null) {
+        for (int nameServerIndex = 0; nameServerIndex < newNameServers.length; nameServerIndex++) {
           if (newNameServer.length() > 0) newNameServer = newNameServer + ";";
           newNameServer = newNameServer + newNameServers[nameServerIndex];
         }
@@ -613,39 +535,31 @@ public class domainsDao
       stmtUpdateExistingRecord.setString(5, record.getAuthInfo());
 
       String newStatus = "";
-      for (int statusIndex = 0; statusIndex < record.getNewStatusV().size(); statusIndex++)
-      {
+      for (int statusIndex = 0; statusIndex < record.getNewStatusV().size(); statusIndex++) {
         if (newStatus.length() > 0) newStatus = newStatus + ",";
         newStatus += record.getNewStatusV().get(statusIndex);
       }
 
-
-/*            int[] newStatuses = record.getNewStatus();
-            if (newStatuses != null) {
-                for (int statusIndex = 0; statusIndex < newStatuses.length; statusIndex++) {
-                    if (newStatus.length() > 0) newStatus = newStatus + ",";
-                    newStatus = newStatus + String.valueOf(newStatuses[statusIndex]);
-                }
-            }*/
+      /*            int[] newStatuses = record.getNewStatus();
+      if (newStatuses != null) {
+          for (int statusIndex = 0; statusIndex < newStatuses.length; statusIndex++) {
+              if (newStatus.length() > 0) newStatus = newStatus + ",";
+              newStatus = newStatus + String.valueOf(newStatuses[statusIndex]);
+          }
+      }*/
 
       stmtUpdateExistingRecord.setString(6, newStatus);
-      if (record.getExpire() instanceof java.util.Date)
-      {
+      if (record.getExpire() instanceof java.util.Date) {
         stmtUpdateExistingRecord.setDate(7, new java.sql.Date(record.getExpire().getTime()));
-      }
-      else
-      {
+      } else {
         stmtUpdateExistingRecord.setNull(7, java.sql.Types.DATE);
       }
 
       stmtUpdateExistingRecord.setString(8, record.getValidationCode());
 
-      if (dbProperties.getProperty("derby.url").contains("postgresql"))
-      {
+      if (dbProperties.getProperty("derby.url").contains("postgresql")) {
         stmtUpdateExistingRecord.setShort(9, (short) (record.isDNSSec() ? 1 : 0));
-      }
-      else
-      {
+      } else {
         stmtUpdateExistingRecord.setInt(9, record.isDNSSec() ? 1 : 0);
       }
       stmtUpdateExistingRecord.setString(10, record.getKeyTag());
@@ -655,51 +569,40 @@ public class domainsDao
       stmtUpdateExistingRecord.setString(14, record.getDomainName());
       stmtUpdateExistingRecord.executeUpdate();
       bEdited = true;
-    }
-    catch (SQLException sqle)
-    {
+    } catch (SQLException sqle) {
       log.error("Error editing domain record", sqle);
     }
     return bEdited;
-
   }
 
-  public boolean deleteRecord(String domainName)
-  {
+  public boolean deleteRecord(String domainName) {
     boolean bDeleted = false;
-    try
-    {
+    try {
       stmtDeleteAddress.clearParameters();
       stmtDeleteAddress.setString(1, domainName);
       stmtDeleteAddress.executeUpdate();
       bDeleted = true;
-    }
-    catch (SQLException sqle)
-    {
+    } catch (SQLException sqle) {
       log.error("Error deleting domain record", sqle);
     }
 
     return bDeleted;
   }
 
-  public boolean deleteRecord(Domain record)
-  {
+  public boolean deleteRecord(Domain record) {
     String domainName = record.getDomainName();
     return deleteRecord(domainName);
   }
 
-  public List<ListEntry> getListEntries()
-  {
+  public List<ListEntry> getListEntries() {
     List<ListEntry> listEntries = new ArrayList<ListEntry>();
     Statement queryStatement = null;
     ResultSet results = null;
 
-    try
-    {
+    try {
       queryStatement = dbConnection.createStatement();
       results = queryStatement.executeQuery(strGetListEntries);
-      while (results.next())
-      {
+      while (results.next()) {
         String domainName = results.getString(1);
 
         ListEntry entry = new ListEntry(domainName);
@@ -707,125 +610,91 @@ public class domainsDao
       }
       results.close();
 
-    }
-    catch (SQLException sqle)
-    {
+    } catch (SQLException sqle) {
       log.error("Error getting domain list entries", sqle);
-
     }
 
     return listEntries;
   }
 
-  public Domain getDomain(String domainName)
-  {
+  public Domain getDomain(String domainName) {
     Domain address = null;
-    try
-    {
+    try {
       stmtGetAddress.clearParameters();
       stmtGetAddress.setString(1, domainName);
       ResultSet result = stmtGetAddress.executeQuery();
-      if (result.next())
-      {
+      if (result.next()) {
         String registrant = result.getString("REGISTRANT");
 
         String[] oldAdmin;
-        if (result.getString("ADMIN") != null)
-        {
-          if (result.getString("ADMIN").length() > 0)
-          {
+        if (result.getString("ADMIN") != null) {
+          if (result.getString("ADMIN").length() > 0) {
             String[] oldAdmins = result.getString("ADMIN").split(";");
             oldAdmin = new String[oldAdmins.length];
-            for (int adminIndex = 0; adminIndex < oldAdmins.length; adminIndex++)
-            {
+            for (int adminIndex = 0; adminIndex < oldAdmins.length; adminIndex++) {
               oldAdmin[adminIndex] = oldAdmins[adminIndex];
             }
-          }
-          else
-          {
+          } else {
             oldAdmin = null;
           }
-        }
-        else
-        {
+        } else {
           oldAdmin = null;
         }
 
         String[] oldTech;
-        if (result.getString("TECH") != null)
-        {
-          if (result.getString("TECH").length() > 0)
-          {
+        if (result.getString("TECH") != null) {
+          if (result.getString("TECH").length() > 0) {
             String[] oldTechs = result.getString("TECH").split(";");
             oldTech = new String[oldTechs.length];
-            for (int techIndex = 0; techIndex < oldTechs.length; techIndex++)
-            {
+            for (int techIndex = 0; techIndex < oldTechs.length; techIndex++) {
               oldTech[techIndex] = oldTechs[techIndex];
             }
-          }
-          else
-          {
+          } else {
             oldTech = null;
           }
-        }
-        else
-        {
+        } else {
           oldTech = null;
         }
 
         String[] oldNameServer;
-        if (result.getString("NAMESERVER") != null)
-        {
-          if (result.getString("NAMESERVER").length() > 0)
-          {
+        if (result.getString("NAMESERVER") != null) {
+          if (result.getString("NAMESERVER").length() > 0) {
             String[] oldNameServers = result.getString("NAMESERVER").split(";");
             oldNameServer = new String[oldNameServers.length];
-            for (int nameServerIndex = 0; nameServerIndex < oldNameServers.length; nameServerIndex++)
-            {
+            for (int nameServerIndex = 0;
+                nameServerIndex < oldNameServers.length;
+                nameServerIndex++) {
               oldNameServer[nameServerIndex] = oldNameServers[nameServerIndex];
             }
-          }
-          else
-          {
+          } else {
             oldNameServer = null;
           }
-        }
-        else
-        {
+        } else {
           oldNameServer = null;
         }
-
 
         String authInfo = result.getString("AUTHINFO");
         int[] oldStatus;
         Vector oldStatusV = new Vector();
-        if (result.getString("STATUS") != null)
-        {
-          if (result.getString("STATUS").length() > 0)
-          {
-            for (String oldStatusTA : result.getString("STATUS").split(","))
-            {
+        if (result.getString("STATUS") != null) {
+          if (result.getString("STATUS").length() > 0) {
+            for (String oldStatusTA : result.getString("STATUS").split(",")) {
               oldStatusV.add(Integer.parseInt(oldStatusTA));
             }
-/*                        String[] oldStatuses = result.getString("STATUS").split(",");
-                        oldStatus = new int[oldStatuses.length];
-                        for (int statusIndex = 0; statusIndex < oldStatuses.length; statusIndex++) {
-                            oldStatus[statusIndex] = Integer.valueOf(oldStatuses[statusIndex]);
-                        }*/
-          }
-          else
-          {
+            /*                        String[] oldStatuses = result.getString("STATUS").split(",");
+            oldStatus = new int[oldStatuses.length];
+            for (int statusIndex = 0; statusIndex < oldStatuses.length; statusIndex++) {
+                oldStatus[statusIndex] = Integer.valueOf(oldStatuses[statusIndex]);
+            }*/
+          } else {
             oldStatus = null;
           }
-        }
-        else
-        {
+        } else {
           oldStatus = null;
         }
 
         java.util.Date expireDate = null;
-        if (result.getDate("EXPIRE") instanceof java.sql.Date)
-        {
+        if (result.getDate("EXPIRE") instanceof java.sql.Date) {
           expireDate = new java.util.Date(result.getDate("EXPIRE").getTime());
         }
         String validationCode = result.getString("VALIDATIONCODE");
@@ -835,19 +704,30 @@ public class domainsDao
         int dnsSecAlg = result.getInt("DNSSECALG");
         int dnsSecDigestType = result.getInt("DNSSECDIGESTTYPE");
         String dnsSecDigest = result.getString("DNSSECDIGEST");
-        address = new Domain(domainName, registrant, oldAdmin, oldTech, oldNameServer, authInfo, oldStatusV, expireDate, validationCode, isDnsSec, dnsSecKeyTag, dnsSecAlg, dnsSecDigestType, dnsSecDigest);
+        address =
+            new Domain(
+                domainName,
+                registrant,
+                oldAdmin,
+                oldTech,
+                oldNameServer,
+                authInfo,
+                oldStatusV,
+                expireDate,
+                validationCode,
+                isDnsSec,
+                dnsSecKeyTag,
+                dnsSecAlg,
+                dnsSecDigestType,
+                dnsSecDigest);
       }
       result.close();
-    }
-    catch (SQLException sqle)
-    {
+    } catch (SQLException sqle) {
       log.error("Error getting domain", sqle);
     }
 
     return address;
   }
-
-
 
   private Connection dbConnection;
   private Properties dbProperties;
@@ -867,6 +747,4 @@ public class domainsDao
   private final String strGetListEntries;
   private final String strUpdateAddress;
   private final String strDeleteAddress;
-
-
 }

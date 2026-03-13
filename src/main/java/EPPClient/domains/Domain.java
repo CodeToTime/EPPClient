@@ -17,24 +17,32 @@ package EPPClient.domains;
 
 import it.nic.epp.client.commands.converters.AbstractHostsConverter;
 import it.nic.epp.client.commands.converters.AbstractHostsConverter.Host;
-
 import java.util.Date;
 import java.util.Vector;
 
-public class Domain
-{
+public class Domain {
 
-  /**
-   * Creates a new instance of Address
-   */
-  public Domain()
-  {
+  /** Creates a new instance of Address */
+  public Domain() {
     this.oldStatusV = new Vector();
     this.newStatusV = new Vector();
   }
 
-  public Domain(String domainName, String registrant, String[] admin, String[] tech, String[] nameServer, String authInfo, Vector oldStatus, Date expire, String validationCode, boolean isDNSSec, String keyTag, int alg, int digestType, String digest)
-  {
+  public Domain(
+      String domainName,
+      String registrant,
+      String[] admin,
+      String[] tech,
+      String[] nameServer,
+      String authInfo,
+      Vector oldStatus,
+      Date expire,
+      String validationCode,
+      boolean isDNSSec,
+      String keyTag,
+      int alg,
+      int digestType,
+      String digest) {
 
     this.domainName = domainName;
     this.registrant = registrant;
@@ -43,12 +51,9 @@ public class Domain
     this.tech = tech;
     this.oldTech = tech;
 
-    if (nameServer instanceof String[])
-    {
-      for (int i = 0; i < nameServer.length; i++)
-      {
-        if (nameServer[i].contains(":") && !nameServer[i].contains("@"))
-        {
+    if (nameServer instanceof String[]) {
+      for (int i = 0; i < nameServer.length; i++) {
+        if (nameServer[i].contains(":") && !nameServer[i].contains("@")) {
           nameServer[i] = nameServer[i].replace(":", "@");
         }
       }
@@ -66,52 +71,44 @@ public class Domain
     this.keyTag = keyTag;
     this.alg = alg;
     this.digestType = digestType;
-    this.digest =digest;
+    this.digest = digest;
   }
 
-  public Domain(String domainName, String registrant, String[] admin, String[] tech, AbstractHostsConverter.Host[] nameServer, String authInfo, String[] oldStatus, Date expire)
-  {
+  public Domain(
+      String domainName,
+      String registrant,
+      String[] admin,
+      String[] tech,
+      AbstractHostsConverter.Host[] nameServer,
+      String authInfo,
+      String[] oldStatus,
+      Date expire) {
     String[] nameServerStr;
-    if (nameServer != null)
-    {
+    if (nameServer != null) {
       nameServerStr = new String[nameServer.length];
-      for (int i = 0; i < nameServer.length; i++)
-      {
+      for (int i = 0; i < nameServer.length; i++) {
         AbstractHostsConverter.Host ns = nameServer[i];
         nameServerStr[i] = ns.getName();
-        for (int j = 0; j < ns.getIpSize(); j++)
-        {
+        for (int j = 0; j < ns.getIpSize(); j++) {
           nameServerStr[i] += "@" + ns.getIp(j).address;
         }
       }
-    }
-    else
-    {
+    } else {
       nameServerStr = new String[0];
     }
 
-
     this.oldStatusV = new Vector();
-    for (int i = 0; i < oldStatus.length; i++)
-    {
-      if (oldStatus[i].equals("clientDeleteProhibited"))
-      {
+    for (int i = 0; i < oldStatus.length; i++) {
+      if (oldStatus[i].equals("clientDeleteProhibited")) {
         this.oldStatusV.add(0);
-      }
-      else if (oldStatus[i].equals("clientTransferProhibited"))
-      {
+      } else if (oldStatus[i].equals("clientTransferProhibited")) {
         this.oldStatusV.add(1);
-      }
-      else if (oldStatus[i].equals("clientUpdateProhibited"))
-      {
+      } else if (oldStatus[i].equals("clientUpdateProhibited")) {
         this.oldStatusV.add(2);
-      }
-      else if (oldStatus[i].equals("pendingDelete"))
-      {
+      } else if (oldStatus[i].equals("pendingDelete")) {
         this.oldStatusV.add(99);
       }
     }
-
 
     this.domainName = domainName;
     this.registrant = registrant;
@@ -127,73 +124,59 @@ public class Domain
     this.expire = expire;
   }
 
-  public void setDomainName(String domainName)
-  {
+  public void setDomainName(String domainName) {
     this.domainName = domainName;
   }
 
-  public String getDomainName()
-  {
+  public String getDomainName() {
     return this.domainName;
   }
 
-  public void setRegistrant(String registrant)
-  {
+  public void setRegistrant(String registrant) {
     this.registrant = registrant;
   }
 
-  public String getRegistrant()
-  {
+  public String getRegistrant() {
     return this.registrant;
   }
 
-  public void setOldAdmin(String[] oldAdmin)
-  {
+  public void setOldAdmin(String[] oldAdmin) {
     this.oldAdmin = oldAdmin;
   }
 
-  public String[] getOldAdmin()
-  {
+  public String[] getOldAdmin() {
     return this.oldAdmin;
   }
 
-  public void setAdmin(String[] admin)
-  {
+  public void setAdmin(String[] admin) {
     this.admin = admin;
   }
 
-  public String[] getAdmin()
-  {
+  public String[] getAdmin() {
     return this.admin;
   }
 
-  public void setOldTech(String[] oldTech)
-  {
+  public void setOldTech(String[] oldTech) {
     this.oldTech = oldTech;
   }
 
-  public String[] getOldTech()
-  {
+  public String[] getOldTech() {
     return this.oldTech;
   }
 
-  public void setTech(String[] tech)
-  {
+  public void setTech(String[] tech) {
     this.tech = tech;
   }
 
-  public String[] getTech()
-  {
+  public String[] getTech() {
     return this.tech;
   }
 
-  public void setNameServer(String[] nameServer)
-  {
+  public void setNameServer(String[] nameServer) {
     this.nameServer = nameServer;
   }
 
-  public String[] getNameServer()
-  {
+  public String[] getNameServer() {
     return this.nameServer;
   }
 
@@ -237,113 +220,93 @@ public class Domain
     this.keyTag = keyTag;
   }
 
-  public void setNameServer(Host[] nameServers)
-  {
-    if (nameServers != null)
-    {
+  public void setNameServer(Host[] nameServers) {
+    if (nameServers != null) {
       String[] newNameServer = new String[nameServers.length];
-      for (int i = 0; i < nameServers.length; i++)
-      {
+      for (int i = 0; i < nameServers.length; i++) {
         newNameServer[i] = nameServers[i].name + ":" + nameServers[i].getIps()[0].address;
       }
       setNameServer(newNameServer);
     }
   }
 
-  public void setOldNameServer(String[] oldNameServer)
-  {
+  public void setOldNameServer(String[] oldNameServer) {
     this.oldNameServer = oldNameServer;
   }
 
-  public String[] getOldNameServer()
-  {
+  public String[] getOldNameServer() {
     return this.oldNameServer;
   }
 
-  public void setAuthInfo(String authInfo)
-  {
+  public void setAuthInfo(String authInfo) {
     this.authInfo = authInfo;
   }
 
-  public void setOldAuthInfo(String oldAuthInfo)
-  {
+  public void setOldAuthInfo(String oldAuthInfo) {
     this.oldAuthInfo = oldAuthInfo;
   }
 
-  public String getAuthInfo()
-  {
+  public String getAuthInfo() {
     return this.authInfo;
   }
 
-  public String getOldAuthInfo()
-  {
+  public String getOldAuthInfo() {
     return this.oldAuthInfo;
   }
 
-/*    public void setOldStatus(int[] oldStatus) {
-        this.oldStatus = oldStatus;
-    }*/
+  /*    public void setOldStatus(int[] oldStatus) {
+      this.oldStatus = oldStatus;
+  }*/
 
-  public void setOldStatus(Vector oldStatus)
-  {
+  public void setOldStatus(Vector oldStatus) {
     this.oldStatusV = oldStatus;
   }
 
-/*    public int[] getOldStatus() {
-        return this.oldStatus;
-    }*/
+  /*    public int[] getOldStatus() {
+      return this.oldStatus;
+  }*/
 
-  public Vector getOldStatusV()
-  {
+  public Vector getOldStatusV() {
     return this.oldStatusV;
   }
 
-/*    public void setNewStatus(int[] newStatus) {
-        this.newStatus = newStatus;
-    }*/
+  /*    public void setNewStatus(int[] newStatus) {
+      this.newStatus = newStatus;
+  }*/
 
-  public void setNewStatus(Vector newStatus)
-  {
+  public void setNewStatus(Vector newStatus) {
     this.newStatusV = newStatus;
   }
 
-/*    public int[] getNewStatus() {
-        return this.newStatus;
-    }*/
+  /*    public int[] getNewStatus() {
+      return this.newStatus;
+  }*/
 
-  public Vector getNewStatusV()
-  {
+  public Vector getNewStatusV() {
     return this.newStatusV;
   }
 
-
-  public void setExpire(Date expire)
-  {
+  public void setExpire(Date expire) {
     this.expire = expire;
   }
 
-  public Date getExpire()
-  {
+  public Date getExpire() {
     return this.expire;
   }
 
-  public void setOpType(int opType)
-  {
+  public void setOpType(int opType) {
     this.opType = opType;
   }
 
-  public int getOpType()
-  {
+  public int getOpType() {
     return this.opType;
   }
 
-  public void setIsRegistrantChanged(boolean isRegistrantChanged)
-  {
+  public void setIsRegistrantChanged(boolean isRegistrantChanged) {
     this.isRegistrantChanged = isRegistrantChanged;
   }
 
-  public boolean getIsRegistrantChanged()
-  {
+  public boolean getIsRegistrantChanged() {
     return this.isRegistrantChanged;
   }
 
@@ -371,8 +334,8 @@ public class Domain
   private int opType;
   private boolean isRegistrantChanged;
 
-/*    private int[] newStatus;
-    private int[] oldStatus;*/
+  /*    private int[] newStatus;
+  private int[] oldStatus;*/
 
   private Vector newStatusV;
   private Vector oldStatusV;

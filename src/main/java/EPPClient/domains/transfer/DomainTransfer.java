@@ -15,18 +15,18 @@
 
 package EPPClient.domains.transfer;
 
-public class DomainTransfer
-{
+public class DomainTransfer {
 
-  /**
-   * Creates a new instance of Address
-   */
-  public DomainTransfer()
-  {
-  }
+  /** Creates a new instance of Address */
+  public DomainTransfer() {}
 
-  public DomainTransfer(String domainName, String registrant, String authInfo, String newAuthInfo, boolean isTrade, boolean isCancel)
-  {
+  public DomainTransfer(
+      String domainName,
+      String registrant,
+      String authInfo,
+      String newAuthInfo,
+      boolean isTrade,
+      boolean isCancel) {
 
     this.domainName = domainName;
     this.registrant = registrant;
@@ -36,63 +36,51 @@ public class DomainTransfer
     this.isCancel = isCancel;
   }
 
-  public void setDomainName(String domainName)
-  {
+  public void setDomainName(String domainName) {
     this.domainName = domainName;
   }
 
-  public String getDomainName()
-  {
+  public String getDomainName() {
     return this.domainName;
   }
 
-  public void setRegistrant(String registrant)
-  {
+  public void setRegistrant(String registrant) {
     this.registrant = registrant;
   }
 
-  public String getRegistrant()
-  {
+  public String getRegistrant() {
     return this.registrant;
   }
 
-  public void setAuthInfo(String authInfo)
-  {
+  public void setAuthInfo(String authInfo) {
     this.authInfo = authInfo;
   }
 
-  public String getAuthInfo()
-  {
+  public String getAuthInfo() {
     return this.authInfo;
   }
 
-  public void setNewAuthInfo(String newAuthInfo)
-  {
+  public void setNewAuthInfo(String newAuthInfo) {
     this.newAuthInfo = newAuthInfo;
   }
 
-  public String getNewAuthInfo()
-  {
+  public String getNewAuthInfo() {
     return this.newAuthInfo;
   }
 
-  public void setIsTrade(boolean isTrade)
-  {
+  public void setIsTrade(boolean isTrade) {
     this.isTrade = isTrade;
   }
 
-  public boolean getIsTrade()
-  {
+  public boolean getIsTrade() {
     return this.isTrade;
   }
 
-  public void setIsCancel(boolean isCancel)
-  {
+  public void setIsCancel(boolean isCancel) {
     this.isCancel = isCancel;
   }
 
-  public boolean getIsCancel()
-  {
+  public boolean getIsCancel() {
     return this.isCancel;
   }
 
@@ -106,5 +94,4 @@ public class DomainTransfer
   private boolean isCancel;
 
   private static final int PRIMENO = 37;
-
 }

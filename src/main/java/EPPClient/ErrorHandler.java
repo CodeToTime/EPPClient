@@ -20,28 +20,26 @@ import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 
 /**
- * Centralized error handling utility class.
- * Provides dialog display for errors - logging is done directly via SLF4J.
+ * Centralized error handling utility class. Provides dialog display for errors - logging is done
+ * directly via SLF4J.
  */
-public class ErrorHandler
-{
+public class ErrorHandler {
+
+  /** Default message shown to users when an error occurs. */
+  public static final String DEFAULT_USER_MESSAGE =
+      "Si è verificato un errore durante l'operazione.\n\n"
+          + "Consultare i log per maggiori dettagli.";
 
   /**
-   * Default message shown to users when an error occurs.
-   */
-  public static final String DEFAULT_USER_MESSAGE = "Si è verificato un errore durante l'operazione.\n\n" + "Consultare i log per maggiori dettagli.";
-
-  /**
-   * Logs an error and shows a dialog to the user.
-   * The exception is logged at ERROR level with full stack trace.
+   * Logs an error and shows a dialog to the user. The exception is logged at ERROR level with full
+   * stack trace.
    *
    * @param logger The SLF4J logger instance
    * @param exception The exception that occurred
    * @param userTitle The title for the error dialog
    * @param parent The parent frame for the dialog
    */
-  public static void error(Logger logger, Exception exception, String userTitle, JFrame parent)
-  {
+  public static void error(Logger logger, Exception exception, String userTitle, JFrame parent) {
     logger.error("Error occurred: {}", exception.getMessage(), exception);
     showErrorDialog(parent, userTitle);
   }
@@ -52,8 +50,7 @@ public class ErrorHandler
    * @param logger The SLF4J logger instance
    * @param exception The exception that occurred
    */
-  public static void logError(Logger logger, Exception exception)
-  {
+  public static void logError(Logger logger, Exception exception) {
     logger.error("Error occurred: {}", exception.getMessage(), exception);
   }
 
@@ -64,14 +61,14 @@ public class ErrorHandler
    * @param title The title of the dialog
    */
   public static void showErrorDialog(Component parent, String title, String message) {
-    JOptionPane optionPane = new JOptionPane(
+    JOptionPane optionPane =
+        new JOptionPane(
             message,
             JOptionPane.ERROR_MESSAGE,
             JOptionPane.DEFAULT_OPTION,
             null,
-            new Object[]{"OK"},
-            "OK"
-    );
+            new Object[] {"OK"},
+            "OK");
 
     JDialog dialog = optionPane.createDialog(parent, title);
     dialog.setResizable(false);
@@ -80,14 +77,13 @@ public class ErrorHandler
   }
 
   /**
-   * Shows an error dialog to the user with the default message.
-   * Delegates to {@link #showErrorDialog(Component, String, String)}.
+   * Shows an error dialog to the user with the default message. Delegates to {@link
+   * #showErrorDialog(Component, String, String)}.
    *
    * @param parent The parent component for the dialog
    * @param title The title of the dialog
    */
-  public static void showErrorDialog(Component parent, String title)
-  {
+  public static void showErrorDialog(Component parent, String title) {
     showErrorDialog(parent, title, DEFAULT_USER_MESSAGE);
   }
 }

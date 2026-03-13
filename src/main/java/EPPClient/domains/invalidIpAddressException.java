@@ -14,6 +14,5 @@
  */
 
 package EPPClient.domains;
-class invalidIpAddressException extends Exception
-{
-}
+
+class invalidIpAddressException extends Exception {}

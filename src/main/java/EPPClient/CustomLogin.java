@@ -19,24 +19,24 @@ import it.nic.epp.client.commands.session.Login;
 
 public class CustomLogin extends Login {
 
-    static {
-        configureDNSSEC();
-    }
+  static {
+    configureDNSSEC();
+  }
 
-    public CustomLogin() {
-        super();
-    }
+  public CustomLogin() {
+    super();
+  }
 
-    public CustomLogin(String clID, String pw) {
-        super(clID, pw);
-    }
+  public CustomLogin(String clID, String pw) {
+    super(clID, pw);
+  }
 
-    private static void configureDNSSEC() {
-        String dnssecEnabled = EPPparams.getParameter("EppClient.implement.DNSSEC");
+  private static void configureDNSSEC() {
+    String dnssecEnabled = EPPparams.getParameter("EppClient.implement.DNSSEC");
 
-        boolean isDNSSECEnabled = Boolean.parseBoolean(dnssecEnabled);
+    boolean isDNSSECEnabled = Boolean.parseBoolean(dnssecEnabled);
 
-        System.setProperty("EppClient.implement.secDNS", String.valueOf(isDNSSECEnabled));
-        System.setProperty("EppClient.implement.extsecDNS", String.valueOf(isDNSSECEnabled));
-    }
+    System.setProperty("EppClient.implement.secDNS", String.valueOf(isDNSSECEnabled));
+    System.setProperty("EppClient.implement.extsecDNS", String.valueOf(isDNSSECEnabled));
+  }
 }
