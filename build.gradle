@@ -134,4 +134,5 @@ tasks.withType(Checkstyle).configureEach {
         html.required = true
         sarif.required = true
     }
+    classpath = files()  // don't need compiled classes to check style
 }
