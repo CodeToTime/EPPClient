@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 public class contactsDao {
   private static final Logger log = LoggerFactory.getLogger(contactsDao.class);
 
-  private static final String BUNDLE_NAME = "EPPClient.db.contacts";
+  private static final String BUNDLE_NAME = "com.codetotime.eppclient.db.contacts";
 
   private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 

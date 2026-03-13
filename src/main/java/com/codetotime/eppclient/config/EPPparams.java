@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 public class EPPparams {
   private static final Logger log = LoggerFactory.getLogger(EPPparams.class);
-  private static final String BUNDLE_NAME = "EPPClient.config.EPPparams";
+  private static final String BUNDLE_NAME = "com.codetotime.eppclient.config.EPPparams";
 
   private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 

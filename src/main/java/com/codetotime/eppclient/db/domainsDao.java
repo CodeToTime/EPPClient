@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 public class domainsDao {
   private static final Logger log = LoggerFactory.getLogger(domainsDao.class);
 
-  private static final String BUNDLE_NAME = "EPPClient.db.domains";
+  private static final String BUNDLE_NAME = "com.codetotime.eppclient.db.domains";
 
   private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
