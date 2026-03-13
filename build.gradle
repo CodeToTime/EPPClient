@@ -36,6 +36,7 @@ dependencies {
     implementation('net.logstash.logback:logstash-logback-encoder:9.0')
     implementation('org.slf4j:slf4j-api:2.0.17')
     implementation(files('libs/epp-client-cmd-line-1.19.1.jar'))
+    implementation("org.postgresql:postgresql:42.7.10")
 
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
