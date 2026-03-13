@@ -1,0 +1,49 @@
+name: Checkstyle
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  checkstyle:
+    name: Checkstyle
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write   # required for upload-sarif
+      pull-requests: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run Spotless check
+        run: ./gradlew spotlessCheck
+
+      - name: Run Checkstyle
+        if: always()   # run even if spotless failed
+        run: ./gradlew checkstyleMain checkstyleTest
+
+      - name: Upload SARIF to GitHub code scanning
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: build/reports/checkstyle/
+          category: checkstyle
+
+      - name: Upload Checkstyle HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: checkstyle-report
+          path: build/reports/checkstyle/
+          retention-days: 14
