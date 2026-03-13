@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 public class DomainFrame extends JFrame implements ActionListener, ListSelectionListener {
   private static final Logger log = LoggerFactory.getLogger(DomainFrame.class);
 
-  /** Creates new form AddressFrame */
+  /** Creates new form AddressFrame. */
   public DomainFrame() {
     initComponents();
     loadFrameIcon();

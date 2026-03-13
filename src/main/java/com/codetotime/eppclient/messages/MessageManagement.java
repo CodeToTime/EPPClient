@@ -43,7 +43,7 @@ public class MessageManagement extends JFrame {
   Vector messageDetailWindows = new Vector();
   private main mainFrame;
 
-  /** Creates new form MessageManagement */
+  /** Creates new form MessageManagement. */
   public MessageManagement(main mainFrame) {
     initComponents();
     this.mainFrame = mainFrame;

@@ -25,7 +25,7 @@ import javax.swing.*;
 
 public class BulkTransferPanel extends JPanel {
 
-  /** Creates new form AddressPanel */
+  /** Creates new form AddressPanel. */
   public BulkTransferPanel() {
     initComponents();
     domain = new DomainTransfer();

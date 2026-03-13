@@ -35,7 +35,7 @@ public class DomainPanel extends JPanel {
   boolean dnsSecEnabled =
       Boolean.parseBoolean(EPPparams.getParameter("EppClient.implement.DNSSEC"));
 
-  /** Creates new form AddressPanel */
+  /** Creates new form AddressPanel. */
   private void createUIComponents() {
     // TODO: add custom component creation code here
   }

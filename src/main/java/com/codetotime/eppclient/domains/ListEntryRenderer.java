@@ -24,7 +24,7 @@ import javax.swing.*;
 
 public class ListEntryRenderer extends DefaultListCellRenderer {
 
-  /** Creates a new instance of ListEntryRenderer */
+  /** Creates a new instance of ListEntryRenderer. */
   public ListEntryRenderer() {}
 
   public Component getListCellRendererComponent(

@@ -33,7 +33,7 @@ import javax.swing.event.ListSelectionListener;
 
 public class AddressFrame extends JFrame implements ActionListener, ListSelectionListener {
 
-  /** Creates new form AddressFrame */
+  /** Creates new form AddressFrame. */
   public AddressFrame() {
     initComponents();
     loadFrameIcon();

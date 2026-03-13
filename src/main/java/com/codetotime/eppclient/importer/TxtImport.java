@@ -40,7 +40,7 @@ public class TxtImport extends JFrame {
 
   private main mainFrame;
 
-  /** Creates new form TxtImport */
+  /** Creates new form TxtImport. */
   public TxtImport(main mainFrame) {
     initComponents();
 

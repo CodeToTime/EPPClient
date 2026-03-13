@@ -54,7 +54,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
 
   private main mainFrame;
 
-  /** Creates new form ContactsManagement */
+  /** Creates new form ContactsManagement. */
   public ContactsManagement(main mainFrame) {
     initComponents();
 

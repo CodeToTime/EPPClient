@@ -59,7 +59,7 @@ public class ErrorHandler {
   }
 
   /**
-   * Shows an error dialog to the user
+   * Shows an error dialog to the user.
    *
    * @param parent The parent component for the dialog
    * @param title The title of the dialog

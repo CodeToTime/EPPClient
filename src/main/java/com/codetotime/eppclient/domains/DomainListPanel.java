@@ -25,7 +25,7 @@ import javax.swing.event.ListSelectionListener;
 
 public class DomainListPanel extends JPanel {
 
-  /** Creates new form AddressListPanel */
+  /** Creates new form AddressListPanel. */
   public DomainListPanel() {
     renderer = new ListEntryRenderer();
     model = new DefaultListModel();

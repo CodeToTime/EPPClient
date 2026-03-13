@@ -27,7 +27,7 @@ import javax.swing.event.EventListenerList;
 
 public class AddressActionPanel extends JPanel {
 
-  /** Creates new form AddressActionPanel */
+  /** Creates new form AddressActionPanel. */
   public AddressActionPanel() {
     initComponents();
     listeners = new EventListenerList();

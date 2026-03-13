@@ -57,7 +57,7 @@ public class manageParameters extends JFrame implements WindowListener {
   private boolean isKillRequired;
   private boolean killOnClose;
 
-  /** Creates new form manageParameters2 */
+  /** Creates new form manageParameters2. */
   public manageParameters(main mainFrame) {
     initComponents();
     this.mainFrame = mainFrame;

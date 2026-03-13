@@ -24,7 +24,7 @@ import javax.swing.*;
 
 public class AddressPanel2 extends JPanel {
 
-  /** Creates new form AddressPanel */
+  /** Creates new form AddressPanel. */
   public AddressPanel2() {
     initComponents();
     address = new Address();

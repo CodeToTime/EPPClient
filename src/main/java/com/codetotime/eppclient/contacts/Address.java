@@ -23,7 +23,7 @@ import com.codetotime.eppclient.config.EPPparams;
 
 public class Address {
 
-  /** Creates a new instance of Address */
+  /** Creates a new instance of Address. */
   public Address() {}
 
   public Address(

@@ -62,7 +62,7 @@ public class MessageDetail extends JFrame {
   PollingResponseResData resData;
   PollingResponseExt extData;
 
-  /** Creates new form MessageDetail */
+  /** Creates new form MessageDetail. */
   public MessageDetail(main mainFrame, MessageManagement parentFrame, Message messageIn) {
     initComponents();
 

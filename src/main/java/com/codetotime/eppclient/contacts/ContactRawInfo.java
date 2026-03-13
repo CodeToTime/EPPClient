@@ -24,7 +24,7 @@ import javax.swing.*;
 
 public class ContactRawInfo extends JFrame {
 
-  /** Creates new form DomainRawInfo */
+  /** Creates new form DomainRawInfo. */
   public ContactRawInfo(String domainName, String domainRawInfo) {
     initComponents();
 

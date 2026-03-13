@@ -27,7 +27,7 @@ import javax.swing.border.SoftBevelBorder;
 
 public class TransferPanel extends JPanel {
 
-  /** Creates new form AddressPanel */
+  /** Creates new form AddressPanel. */
   public TransferPanel() {
     initComponents();
     domain = new DomainTransfer();

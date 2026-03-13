@@ -66,7 +66,7 @@ public class main extends JFrame implements WindowListener {
         });
   }
 
-  /** Creates new form mainFrame */
+  /** Creates new form mainFrame. */
   public main() {
     System.setProperty(
         "org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");

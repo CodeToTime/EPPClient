@@ -21,7 +21,7 @@ package com.codetotime.eppclient.domains;
 
 public class ListEntry {
 
-  /** Creates a new instance of ListEntry */
+  /** Creates a new instance of ListEntry. */
   public ListEntry() {
     this("");
   }

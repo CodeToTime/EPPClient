@@ -54,7 +54,7 @@ public class contactsDao {
     }
   }
 
-  /** Creates a new instance of AddressDao */
+  /** Creates a new instance of AddressDao. */
   public contactsDao() {
     this("contacts");
   }

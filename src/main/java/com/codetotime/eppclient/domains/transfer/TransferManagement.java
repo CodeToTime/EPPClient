@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 public class TransferManagement extends JFrame implements ActionListener {
   private static final Logger log = LoggerFactory.getLogger(TransferManagement.class);
 
-  /** Creates new form DomainTransferFrame */
+  /** Creates new form DomainTransferFrame. */
   public TransferManagement(EPPuplink EPPuplink) {
     initComponents();
 

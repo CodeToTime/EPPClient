@@ -26,7 +26,7 @@ import java.util.Vector;
 
 public class Domain {
 
-  /** Creates a new instance of Address */
+  /** Creates a new instance of Address. */
   public Domain() {
     this.oldStatusV = new Vector();
     this.newStatusV = new Vector();

@@ -61,7 +61,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
 
   private main mainFrame;
 
-  /** Creates new form ContactsManagement */
+  /** Creates new form ContactsManagement. */
   public DomainsManagement(main mainFrame) {
     initComponents();
 

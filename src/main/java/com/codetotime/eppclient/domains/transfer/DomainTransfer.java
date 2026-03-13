@@ -21,7 +21,7 @@ package com.codetotime.eppclient.domains.transfer;
 
 public class DomainTransfer {
 
-  /** Creates a new instance of Address */
+  /** Creates a new instance of Address. */
   public DomainTransfer() {}
 
   public DomainTransfer(
