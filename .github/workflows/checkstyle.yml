@@ -45,5 +45,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: checkstyle-report
-          path: build/reports/checkstyle/
+          path: build/reports/checkstyle/main.html
           retention-days: 14
