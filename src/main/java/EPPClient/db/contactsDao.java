@@ -382,7 +382,6 @@ public class contactsDao
           log.error("Error creating tables", ex);
       }
     }
-    disconnect();
     return bCreatedTables;
   }
 
