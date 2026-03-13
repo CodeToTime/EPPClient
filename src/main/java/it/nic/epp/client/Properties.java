@@ -18,27 +18,27 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 public class Properties {
-    private static final String BUNDLE_NAME = "eppClient";
-    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
-    
-    public static String getString(String key) {
-        // Check system properties first
-        String sysProp = System.getProperty(key);
-        if (sysProp != null) {
-            return sysProp;
-        }
-        try {
-            return RESOURCE_BUNDLE.getString(key);
-        } catch (MissingResourceException e) {
-            return '!' + key + '!';
-        }
+  private static final String BUNDLE_NAME = "eppClient";
+  private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
+
+  public static String getString(String key) {
+    // Check system properties first
+    String sysProp = System.getProperty(key);
+    if (sysProp != null) {
+      return sysProp;
     }
-    
-    public static Boolean getBoolean(String key) {
-        try {
-            return Boolean.parseBoolean(getString(key));
-        } catch (Exception e) {
-            return Boolean.FALSE;
-        }
+    try {
+      return RESOURCE_BUNDLE.getString(key);
+    } catch (MissingResourceException e) {
+      return '!' + key + '!';
     }
+  }
+
+  public static Boolean getBoolean(String key) {
+    try {
+      return Boolean.parseBoolean(getString(key));
+    } catch (Exception e) {
+      return Boolean.FALSE;
+    }
+  }
 }
