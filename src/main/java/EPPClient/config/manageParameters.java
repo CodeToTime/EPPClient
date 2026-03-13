@@ -16,24 +16,39 @@
 package EPPClient.config;
 
 import EPPClient.CustomLogin;
+import EPPClient.ErrorHandler;
 import EPPClient.main;
-import it.nic.epp.client.commands.session.Login;
 import it.nic.epp.client.commands.session.Logout;
 import it.nic.epp.client.httpClient.Client;
 import it.nic.epp.client.responses.HttpBaseResponse;
-import java.net.URI;
-import java.net.URISyntaxException;
-import org.apache.xmlbeans.XmlException;
-
-import javax.swing.*;
-import javax.swing.border.EtchedBorder;
-import java.awt.*;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.WindowConstants;
+import javax.swing.border.EtchedBorder;
+import org.apache.xmlbeans.XmlException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class manageParameters extends JFrame implements WindowListener
 {
+  private static final Logger log = LoggerFactory.getLogger(manageParameters.class);
 
   main mainFrame;
   private boolean isKillRequired;
@@ -401,16 +416,15 @@ public class manageParameters extends JFrame implements WindowListener
           login.setNewPW(newPassword);
 
           // send the login command
-          //System.out.println("CLIENT: "+ login.toString() + "\n");
-          System.out.println("CLIENT: *LOGIN w/CHANGE PWD COMMAND OMITTED*\n");
+          log.info("CLIENT: *LOGIN w/CHANGE PWD COMMAND OMITTED*");
           HttpBaseResponse response = client.sendCommand(login);
-          System.out.println("SERVER: " + response.toString());
+          log.info("SERVER: {}", response.toString());
 
           // send the logout command with verbose interaction
           Logout logout = new Logout();
-          System.out.println("CLIENT: " + logout.toString() + "\n");
+          log.info("CLIENT: {}", logout.toString());
           response = client.sendCommand(logout);
-          System.out.println("SERVER: " + response.toString());
+          log.info("SERVER logout: {}", response.toString());
 
           defaultPassword.setText(newPassword);
           EPPparams.setParameter("EppClient.defaultPassword", defaultPassword.getText());
@@ -420,15 +434,19 @@ public class manageParameters extends JFrame implements WindowListener
         }
         catch (NullPointerException v)
         {
+          ErrorHandler.error(log, v, "Error changing password", this);
         }
         catch (URISyntaxException v)
         {
+          ErrorHandler.error(log, v, "Error changing password", this);
         }
         catch (XmlException v)
         {
+          ErrorHandler.error(log, v, "Error changing password", this);
         }
         catch (IOException v)
         {
+          ErrorHandler.error(log, v, "Error changing password", this);
         }
       }
     }
@@ -516,29 +534,33 @@ public class manageParameters extends JFrame implements WindowListener
 
     EPPparams.setParameter("EppClient.proxyHost", proxyHost.getText());
 
+    // Handle proxyPort - save as string, validate if numeric
+    String proxyPortValue = proxyPort.getText().trim();
     try
     {
-      EPPparams.setParameter("EppClient.proxyPort", Integer.toString(Integer.parseInt(proxyPort.getText())));
+      Integer.parseInt(proxyPortValue);
     }
-    catch (Exception ex)
+    catch (NumberFormatException ex)
     {
-      //do nothing... don't save this parameter!
-      proxyPort.setText(EPPparams.getParameter("EppClient.proxyPort"));
+      proxyPortValue = ""; // Treat invalid numeric values as empty string
     }
+    EPPparams.setParameter("EppClient.proxyPort", proxyPortValue);
 
     EPPparams.setParameter("EppClient.contactPrefix", contactPrefix.getText());
     EPPparams.setParameter("EppClient.defaultTech", defaultTech.getText());
     EPPparams.setParameter("EppClient.defaultNS", defaultNS.getText());
 
+    // Handle refreshInterval - save as string, validate if numeric
+    String refreshValue = refreshInterval.getText().trim();
     try
     {
-      EPPparams.setParameter("EppClient.refreshInterval", Integer.toString(Integer.parseInt(refreshInterval.getText())));
+      Integer.parseInt(refreshValue);
     }
-    catch (Exception ex)
+    catch (NumberFormatException ex)
     {
-      //do nothing... don't save this parameter!
-      refreshInterval.setText(EPPparams.getParameter("EppClient.refreshInterval"));
+      refreshValue = ""; // Treat invalid numeric values as empty string
     }
+    EPPparams.setParameter("EppClient.refreshInterval", refreshValue);
 
     EPPparams.setParameter("EppClient.dbengine", Integer.toString(dbengine.getSelectedIndex()));
     EPPparams.setParameter("EppClient.dbname", dbname.getText());

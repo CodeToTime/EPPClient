@@ -15,20 +15,23 @@
 
 package EPPClient.importer;
 
+import EPPClient.main;
 import EPPClient.contacts.Address;
 import EPPClient.db.contactsDao;
-import EPPClient.main;
 import EPPClient.uplink.EPPuplink;
 import it.nic.epp.client.commands.query.ContactInfo;
 import it.nic.epp.client.responses.HttpBaseResponse;
 import it.nic.epp.client.responses.ext.ContactInfoResponseExt;
 import it.nic.epp.client.responses.resData.ContactInfoResponseResData;
-import org.apache.xmlbeans.XmlException;
-
 import java.io.IOException;
+import org.apache.xmlbeans.XmlException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ImportContact
 {
+  private static final Logger log = LoggerFactory.getLogger(ImportContact.class);
+
   public ImportContact(main mainFrame, String contactId)
   {
     this.EPPuplink = mainFrame.EPPuplink;
@@ -231,11 +234,11 @@ public class ImportContact
     }
     catch (XmlException v)
     {
-      v.printStackTrace();
+      log.error("XmlException in execute", v);
     }
     catch (IOException v)
     {
-      v.printStackTrace();
+      log.error("IOException in execute", v);
     }
 
     return importStatus;

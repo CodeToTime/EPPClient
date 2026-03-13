@@ -15,18 +15,26 @@
 
 package EPPClient.messages;
 
-import EPPClient.db.messagesDao;
 import EPPClient.main;
+import EPPClient.db.messagesDao;
 import EPPClient.uplink.EPPuplink;
-
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
+import java.awt.Container;
 import java.util.ListIterator;
 import java.util.Vector;
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.LayoutStyle;
+import javax.swing.table.DefaultTableModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MessageManagement extends JFrame
 {
+
+  private static final Logger log = LoggerFactory.getLogger(MessageManagement.class);
 
   java.text.SimpleDateFormat dateFormatter = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
   Vector messageDetailWindows = new Vector();
@@ -176,7 +184,7 @@ public class MessageManagement extends JFrame
     }
     catch (Exception ex)
     {
-      ex.printStackTrace();
+      log.error("Error in ackAllMessages", ex);
     }
 
   }

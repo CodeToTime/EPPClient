@@ -15,31 +15,41 @@
 
 package EPPClient.messages;
 
+import EPPClient.main;
 import EPPClient.config.EPPparams;
 import EPPClient.db.messagesDao;
-import EPPClient.logger;
-import EPPClient.main;
-import EPPClient.uplink.EPPuplink;
 import EPPClient.importer.ImportDomain;
+import EPPClient.uplink.EPPuplink;
 import it.nic.epp.client.commands.query.Poll;
 import it.nic.epp.client.commands.transform.DomainTransfer;
 import it.nic.epp.client.exceptions.EppSchemaException;
 import it.nic.epp.client.responses.HttpBaseResponse;
 import it.nic.epp.client.responses.ext.PollingResponseExt;
 import it.nic.epp.client.responses.resData.PollingResponseResData;
-import org.apache.xmlbeans.XmlException;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Container;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.LayoutStyle;
+import org.apache.xmlbeans.XmlException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MessageDetail extends JFrame
 {
 
   private EPPuplink EPPuplink;
-  private logger logger;
+  private Logger log;
   private Message message;
   private messagesDao db;
   private MessageManagement parentFrame;
@@ -62,7 +72,7 @@ public class MessageDetail extends JFrame
     this.db = mainFrame.messagesDao;
 
 
-    logger = new logger("MESSAGE");
+    log = LoggerFactory.getLogger(MessageDetail.class);
     java.text.SimpleDateFormat dateFormatter = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
     this.message = messageIn;
@@ -78,7 +88,7 @@ public class MessageDetail extends JFrame
     }
     catch (XmlException e)
     {
-      e.printStackTrace();
+      log.error("XmlException in constructor", e);
     }
 
     resData = (PollingResponseResData) response.getResponseResData();
@@ -470,20 +480,20 @@ public class MessageDetail extends JFrame
             case 0:
               domainTransfer = new DomainTransfer(resData.getTranferMsgName());
               domainTransfer.setTransferApprove();
-              logger.logmessage(domainTransfer.toString());
+              log.debug("Transfer approve: {}", domainTransfer);
               try
               {
                 response = EPPuplink.sendCommand(domainTransfer);
               }
               catch (XmlException e)
               {
-                e.printStackTrace();
+                log.error("XmlException in btnTransferMouseReleased", e);
               }
               catch (IOException e)
               {
-                e.printStackTrace();
+                log.error("IOException in btnTransferMouseReleased", e);
               }
-              logger.logmessage(response.toString());
+              log.debug("Transfer response: {}", response);
               if (response.isSuccessfully())
               {
                 txtTransfer.setText(txtTransfer.getText() + "\n============\nThe transfer has been successfully Acknowledged!");
@@ -509,20 +519,20 @@ public class MessageDetail extends JFrame
             case 1:
               domainTransfer = new DomainTransfer(resData.getTranferMsgName());
               domainTransfer.setTransferReject();
-              logger.logmessage(domainTransfer.toString());
+              log.debug("Transfer reject: {}", domainTransfer);
               try
               {
                 response = EPPuplink.sendCommand(domainTransfer);
               }
               catch (XmlException e)
               {
-                e.printStackTrace();
+                log.error("XmlException in btnTransferMouseReleased reject", e);
               }
               catch (IOException e)
               {
-                e.printStackTrace();
+                log.error("IOException in btnTransferMouseReleased reject", e);
               }
-              logger.logmessage(response.toString());
+              log.debug("Transfer reject response: {}", response);
               if (response.isSuccessfully())
               {
                 txtTransfer.setText(txtTransfer.getText() + "\n============\nThe transfer has been successfully Rejected!");
@@ -751,7 +761,7 @@ public class MessageDetail extends JFrame
     {
       Poll pollCmd = new Poll();
       pollCmd.setAck(msgQid);
-      logger.logmessage("ACK: " + pollCmd.toString());
+      log.debug("ACK: {}", pollCmd);
       response = EPPuplink.sendCommand(pollCmd);
       if (response.isSuccessfully())
       {
@@ -772,15 +782,15 @@ public class MessageDetail extends JFrame
     }
     catch (EppSchemaException v)
     {
-      v.printStackTrace();
+      log.error("EppSchemaException in ackMessage", v);
     }
     catch (XmlException v)
     {
-      v.printStackTrace();
+      log.error("XmlException in ackMessage", v);
     }
     catch (IOException v)
     {
-      v.printStackTrace();
+      log.error("IOException in ackMessage", v);
     }
 
     return ackStatus;

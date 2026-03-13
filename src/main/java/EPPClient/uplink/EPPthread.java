@@ -16,31 +16,32 @@
 package EPPClient.uplink;
 
 import EPPClient.CustomLogin;
-import EPPClient.config.EPPparams;
-import EPPClient.logger;
+import EPPClient.ErrorHandler;
 import EPPClient.main;
+import EPPClient.config.EPPparams;
 import EPPClient.messages.Message;
 import it.nic.epp.client.commands.interfaces.IEppRequest;
 import it.nic.epp.client.commands.query.Poll;
-import it.nic.epp.client.commands.session.Login;
 import it.nic.epp.client.commands.session.Logout;
 import it.nic.epp.client.exceptions.EppSchemaException;
 import it.nic.epp.client.httpClient.Client;
 import it.nic.epp.client.responses.HttpBaseResponse;
 import it.nic.epp.client.responses.ext.LoginResponseExt;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import javax.swing.JOptionPane;
 import org.apache.xmlbeans.XmlException;
-
-import javax.swing.*;
-import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class EPPthread extends Thread
 {
+  private static final Logger log = LoggerFactory.getLogger(EPPthread.class);
+
   public EPPthread(main mainFrame)
   {
     this.mainFrame = mainFrame;
-    logger = new logger("SESSION");
   }
 
   @Override
@@ -70,10 +71,9 @@ class EPPthread extends Thread
 //            logger.logmessage("HELLO: " + client.sendHello().toString());
 
 
-      logger.logmessage("CLIENT login request:\n" + login.toString() + "\n");
-      //logger.logmessage("CLIENT: *LOGIN COMMAND OMITTED*\n");
+      log.info("CLIENT login request: *REQUEST*");
       response = client.sendCommand(login);
-      logger.logmessage("SERVER login response:\n" + response.toString());
+      log.info("SERVER login response: *RESPONSE*");
       if (response.isSuccessfully())
       {
         EPPclosable = false;
@@ -138,15 +138,15 @@ class EPPthread extends Thread
     }
     catch (IOException v)
     {
-      v.printStackTrace();
+      ErrorHandler.error(log, v, "Errore di Connessione", mainFrame);
     }
     catch (URISyntaxException v)
     {
-      v.printStackTrace();
+      ErrorHandler.error(log, v, "Errore di Configurazione", mainFrame);
     }
     catch (XmlException v)
     {
-      v.printStackTrace();
+      ErrorHandler.error(log, v, "Errore XML", mainFrame);
     }
     finally
     {
@@ -158,9 +158,9 @@ class EPPthread extends Thread
           if (!EPPclosable)
           {
             Logout logout = new Logout();
-            logger.logmessage("CLIENT: " + logout.toString() + "\n");
+            log.info("CLIENT logout command: {}", logout.toString());
             response = client.sendCommand(logout);
-            logger.logmessage("SERVER: " + response.toString());
+            log.info("SERVER logout response: {}", response.toString());
             if (response.isSuccessfully())
             {
               EPPclosable = true;
@@ -179,11 +179,11 @@ class EPPthread extends Thread
         }
         catch (IOException v)
         {
-          v.printStackTrace();
+          ErrorHandler.logError(log, v);
         }
         catch (XmlException v)
         {
-          v.printStackTrace();
+          ErrorHandler.logError(log, v);
         }
       }
     }
@@ -237,13 +237,17 @@ class EPPthread extends Thread
       }
       catch (EppSchemaException ex)
       {
-        ex.printStackTrace();
+        ErrorHandler.logError(log, ex);
       }
 
       HttpBaseResponse response = this.sendCommand(pollCmd);
-      logger.logmessage("CLIENT: " + pollCmd.toString());
-      logger.logmessage("SERVER: " + response.toString());
-
+      if (response == null)
+      {
+        log.warn("Poll command returned null response - connection may have been interrupted");
+        return false;
+      }
+      log.info("CLIENT poll: {}", pollCmd.toString());
+      log.info("SERVER poll response: {}", response.toString());
       if (response.isSuccessfully())
       {
         mainFrame.setMSGQ(Integer.toString(response.getMsgQCount()));
@@ -273,9 +277,8 @@ class EPPthread extends Thread
               pollCmd.setAck(response.getMsgQId());
 
               HttpBaseResponse ackResponse = this.sendCommand(pollCmd);
-              logger.logmessage("CLIENT: " + pollCmd.toString());
-              logger.logmessage("SERVER: " + ackResponse.toString());
-
+              log.info("CLIENT poll ack: {}", pollCmd.toString());
+              log.info("SERVER poll ack response: {}", ackResponse.toString());
               if (ackResponse.isSuccessfully())
               {
                 Message message = mainFrame.messagesDao.getMessage(response.getMsgQId());
@@ -285,7 +288,7 @@ class EPPthread extends Thread
             }
             catch (EppSchemaException ex)
             {
-              ex.printStackTrace();
+              ErrorHandler.logError(log, ex);
             }
           }
           else
@@ -343,7 +346,7 @@ class EPPthread extends Thread
     }
     catch (InterruptedException ex)
     {
-      System.out.println("Interrupted while waiting for EPP uplink availability.");
+      log.debug("Interrupted while waiting for EPP uplink availability.");
     }
 
     return response;
@@ -359,6 +362,5 @@ class EPPthread extends Thread
   private boolean isClosing = false;
   private boolean isRunning = false;
   private boolean isWaitingEPPresponse = false;
-  private logger logger;
   private main mainFrame;
 }

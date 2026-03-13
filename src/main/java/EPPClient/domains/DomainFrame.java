@@ -16,22 +16,26 @@
 package EPPClient.domains;
 
 import EPPClient.db.domainsDao;
-
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URL;
 import java.util.List;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.WindowConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class DomainFrame
-        extends JFrame
-        implements ActionListener, ListSelectionListener
+public class DomainFrame extends JFrame implements ActionListener, ListSelectionListener
 {
+  private static final Logger log = LoggerFactory.getLogger(DomainFrame.class);
 
   /**
    * Creates new form AddressFrame
@@ -187,7 +191,7 @@ public class DomainFrame
   public void actionPerformed(ActionEvent e)
   {
     String actionCommand = e.getActionCommand();
-    System.out.println("ActionEvent: " + actionCommand);
+    log.debug("ActionEvent: {}", actionCommand);
     if (actionCommand.equalsIgnoreCase("CANCEL_ADDRESS"))
     {
       cancelAddress();

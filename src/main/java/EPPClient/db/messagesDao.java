@@ -17,18 +17,25 @@ package EPPClient.db;
 
 import EPPClient.config.EPPparams;
 import EPPClient.messages.Message;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Vector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class messagesDao
 {
+  private static final Logger log = LoggerFactory.getLogger(messagesDao.class);
 
   private static final String BUNDLE_NAME = "EPPClient.db.messages";
 
@@ -142,11 +149,11 @@ public class messagesDao
     }
     catch (SQLException ex)
     {
-      ex.printStackTrace();
+      log.error("Error checking table existence", ex);
     }
     catch (Exception ex)
     {
-      ex.printStackTrace();
+      log.error("Error checking table existence", ex);
     }
 
     return tableExists;
@@ -192,12 +199,12 @@ public class messagesDao
         }
         catch (ClassNotFoundException e)
         {
-          ex.printStackTrace();
+          log.error("Database driver not found: {}", e.getMessage(), e);
         }
       }
       else
       {
-        ex.printStackTrace();
+        log.error("Database driver not found", ex);
       }
     }
 
@@ -215,6 +222,7 @@ public class messagesDao
       dbProperties.put("derby.locks.deadlockTrace", "true");
       dbProperties.put("derby.language.logStatementText", "true");
       String dbUrl = EPPparams.getParameter("EppClient.dburl");
+      log.debug("Loaded dbUrl from EPPparams: [{}]", dbUrl);
       if (dbUrl.contains("mariadb"))
       {
         dbProperties.put("derby.driver", "org.mariadb.jdbc.Driver");
@@ -224,14 +232,20 @@ public class messagesDao
         dbProperties.put("derby.driver", "org.apache.derby.jdbc.EmbeddedDriver");
       }
       dbProperties.put("derby.url", dbUrl);
-      dbProperties.put("db.schema", EPPparams.getParameter("EppClient.dbname"));
-      dbProperties.put("user", EPPparams.getParameter("EppClient.dbuid"));
-      dbProperties.put("password", EPPparams.getParameter("EppClient.dbpwd"));
+      String dbSchema = EPPparams.getParameter("EppClient.dbname");
+      String dbUser = EPPparams.getParameter("EppClient.dbuid");
+      String dbPwd = EPPparams.getParameter("EppClient.dbpwd");
+      log.debug("Loaded dbSchema: [{}]", dbSchema);
+      log.debug("Loaded dbUser: [{}]", dbUser);
+      log.debug("Loaded dbPwd: [{}]", dbPwd);
+      dbProperties.put("db.schema", dbSchema);
+      dbProperties.put("user", dbUser);
+      dbProperties.put("password", dbPwd);
 
     }
     catch (IOException ex)
     {
-      ex.printStackTrace();
+      log.error("Error loading database properties", ex);
     }
     return dbProperties;
   }
@@ -239,7 +253,7 @@ public class messagesDao
 
   private boolean createTables(Connection dbConnection)
   {
-    System.out.println("Creazione tabelle in corso...");
+    log.info("Creazione tabelle in corso...");
     boolean bCreatedTables = false;
     Statement statement = null;
     try
@@ -260,12 +274,12 @@ public class messagesDao
       }
       catch (InterruptedException e)
       {
-        e.printStackTrace();
+        log.error("Thread interrupted during table creation", e);
       }
     }
     catch (SQLException ex)
     {
-      ex.printStackTrace();
+      log.error("Error creating tables", ex);
     }
     return bCreatedTables;
   }
@@ -281,7 +295,7 @@ public class messagesDao
     }
     catch (SQLException ex)
     {
-      ex.printStackTrace();
+      log.error("Error dropping tables", ex);
     }
     return bDroppedTables;
   }
@@ -300,7 +314,7 @@ public class messagesDao
     }
     catch (SQLException ex)
     {
-      ex.printStackTrace();
+      log.error("Error creating database", ex);
     }
     dbProperties.remove("create");
     return bCreated;
@@ -326,8 +340,10 @@ public class messagesDao
     catch (SQLException ex)
     {
       isConnected = false;
-      System.out.println("errore!!");
-      ex.printStackTrace();
+      log.error("Failed to connect to database: {}", ex.getMessage(), ex);
+      log.error("DB URL: [{}]", dbUrl);
+      log.error("DB Schema: [{}]", dbProperties.getProperty("db.schema"));
+      log.error("DB User: [{}]", dbProperties.getProperty("user"));
     }
     return isConnected;
   }
@@ -387,7 +403,7 @@ public class messagesDao
     }
     catch (SQLException sqle)
     {
-      sqle.printStackTrace();
+      log.error("Error saving message record", sqle);
     }
     return record.getMsgId();
   }
@@ -410,7 +426,7 @@ public class messagesDao
     }
     catch (SQLException sqle)
     {
-      sqle.printStackTrace();
+      log.error("Error editing message record", sqle);
     }
     return bEdited;
   }
@@ -427,7 +443,7 @@ public class messagesDao
     }
     catch (SQLException sqle)
     {
-      sqle.printStackTrace();
+      log.error("Error deleting message record", sqle);
     }
 
     return bDeleted;
@@ -465,7 +481,7 @@ public class messagesDao
     }
     catch (SQLException sqle)
     {
-      sqle.printStackTrace();
+      log.error("Error getting message list entries", sqle);
 
     }
 
@@ -494,7 +510,7 @@ public class messagesDao
     }
     catch (SQLException sqle)
     {
-      sqle.printStackTrace();
+      log.error("Error getting message", sqle);
     }
 
     return message;

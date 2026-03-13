@@ -18,15 +18,26 @@ package EPPClient.db;
 import EPPClient.config.EPPparams;
 import EPPClient.contacts.Address;
 import EPPClient.contacts.ListEntry;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.MissingResourceException;
+import java.util.Properties;
+import java.util.ResourceBundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class contactsDao
 {
+  private static final Logger log = LoggerFactory.getLogger(contactsDao.class);
 
   private static final String BUNDLE_NAME = "EPPClient.db.contacts";
 
@@ -148,7 +159,7 @@ public class contactsDao
       }
       else
       {
-        // Aggiorna lo schema: aggiunge le colonne mancanti se non esistono
+        // Update schema: add missing columns if they don't exist
         String tableName = dbProperties.getProperty("db.table");
         String fullTableName = dbProperties.getProperty("db.schema") + "." + tableName;
 
@@ -160,14 +171,14 @@ public class contactsDao
   }
 
   /**
-   * Verifica se una colonna esiste nella tabella specificata.
-   * Gestisce le differenze di case-sensitivity tra Derby (maiuscolo) e MySQL/MariaDB (minuscolo).
+   * Checks if a column exists in the specified table.
+   * Handles case-sensitivity differences between Derby (uppercase) and MySQL (lowercase).
    */
   private boolean columnExists(Connection conn, String tableName, String columnName)
   {
     try
     {
-      // Prova prima con il nome tabella originale (funziona per MySQL/MariaDB con nomi minuscoli)
+      // Try first with original table name (works for MySQL with lowercase names)
       ResultSet columns = conn.getMetaData().getColumns(null, null, tableName, null);
       while (columns.next())
       {
@@ -179,7 +190,7 @@ public class contactsDao
       }
       columns.close();
 
-      // Prova con il nome tabella in maiuscolo (funziona per Derby)
+      // Try with uppercase table name (works for Derby)
       columns = conn.getMetaData().getColumns(null, null, tableName.toUpperCase(), null);
       while (columns.next())
       {
@@ -193,19 +204,19 @@ public class contactsDao
     }
     catch (SQLException ex)
     {
-      ex.printStackTrace();
+      log.error("Error checking column existence", ex);
     }
     return false;
   }
 
   /**
-   * Aggiunge una colonna alla tabella se non esiste già.
+   * Adds a column to the table if it doesn't already exist.
    */
   private void addColumnIfNotExists(Connection conn, String tableName, String columnName, String columnType)
   {
     if (columnExists(conn, tableName, columnName))
     {
-      return; // La colonna esiste già, niente da fare
+      return; // Column already exists, nothing to do
     }
 
     String fullTableName = dbProperties.getProperty("db.schema") + "." + tableName;
@@ -214,12 +225,12 @@ public class contactsDao
     {
       statement = conn.createStatement();
       statement.execute("ALTER TABLE " + fullTableName + " ADD COLUMN " + columnName + " " + columnType);
-      System.out.println("Aggiunta colonna " + columnName + " alla tabella " + fullTableName);
+      log.debug("Added column {} to table {}", columnName, fullTableName);
     }
     catch (SQLException ex)
     {
-      // La colonna potrebbe già esistere (race condition) o altro errore
-      ex.printStackTrace();
+      // Column may already exist (race condition) or other error
+      log.error("Error adding column to table", ex);
     }
     finally
     {
@@ -246,11 +257,11 @@ public class contactsDao
     }
     catch (SQLException ex)
     {
-      ex.printStackTrace();
+      log.error("Error checking table existence", ex);
     }
     catch (Exception ex)
     {
-      ex.printStackTrace();
+      log.error("Error checking table existence", ex);
     }
 
     return tableExists;
@@ -296,12 +307,12 @@ public class contactsDao
         }
         catch (ClassNotFoundException e)
         {
-          ex.printStackTrace();
+          log.error("Database driver not found: {}", e.getMessage(), e);
         }
       }
       else
       {
-        ex.printStackTrace();
+        log.error("Database driver not found", ex);
       }
     }
 
@@ -333,7 +344,7 @@ public class contactsDao
     }
     catch (IOException ex)
     {
-      ex.printStackTrace();
+      log.error("Error loading database properties", ex);
     }
     return dbProperties;
   }
@@ -352,7 +363,7 @@ public class contactsDao
     }
     catch (SQLException ex)
     {
-      ex.printStackTrace();
+      log.error("Error creating tables", ex);
     }
     disconnect();
     return bCreatedTables;
@@ -369,7 +380,7 @@ public class contactsDao
     }
     catch (SQLException ex)
     {
-      ex.printStackTrace();
+      log.error("Error dropping tables", ex);
     }
     return bDroppedTables;
   }
@@ -413,8 +424,7 @@ public class contactsDao
     catch (SQLException ex)
     {
       isConnected = false;
-      System.out.println("errore!!");
-      ex.printStackTrace();
+      log.error("Failed to connect to database: {}", ex.getMessage(), ex);
     }
     return isConnected;
   }
@@ -491,7 +501,7 @@ public class contactsDao
     }
     catch (SQLException sqle)
     {
-      sqle.printStackTrace();
+      log.error("Error saving contact record", sqle);
     }
     return record.getContactId();
   }
@@ -543,7 +553,7 @@ public class contactsDao
     }
     catch (SQLException sqle)
     {
-      sqle.printStackTrace();
+      log.error("Error editing contact record", sqle);
     }
     return bEdited;
 
@@ -561,7 +571,7 @@ public class contactsDao
     }
     catch (SQLException sqle)
     {
-      sqle.printStackTrace();
+      log.error("Error deleting contact record", sqle);
     }
 
     return bDeleted;
@@ -605,7 +615,7 @@ public class contactsDao
     }
     catch (SQLException sqle)
     {
-      sqle.printStackTrace();
+      log.error("Error getting contact list entries", sqle);
 
     }
 
@@ -673,7 +683,7 @@ public class contactsDao
     }
     catch (SQLException sqle)
     {
-      sqle.printStackTrace();
+      log.error("Error getting address", sqle);
     }
 
     return address;

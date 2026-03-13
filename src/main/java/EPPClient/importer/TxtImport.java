@@ -17,13 +17,23 @@ package EPPClient.importer;
 
 import EPPClient.main;
 import EPPClient.uplink.EPPuplink;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.*;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.TextArea;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import javax.swing.GroupLayout;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TxtImport extends JFrame
 {
+  private static final Logger log = LoggerFactory.getLogger(TxtImport.class);
 
   private main mainFrame;
 
@@ -122,7 +132,7 @@ public class TxtImport extends JFrame
       }
       else
       {
-        System.out.println("non è stato selezionato alcun file...");
+        log.info("TxtImport: non è stato selezionato alcun file...");
       }
     }
     else
