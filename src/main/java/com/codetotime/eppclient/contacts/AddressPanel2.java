@@ -22,6 +22,10 @@ package com.codetotime.eppclient.contacts;
 import java.awt.*;
 import javax.swing.*;
 
+/**
+ * Alternative contact detail panel with a different layout, editing the same EPP contact fields as
+ * {@link AddressPanel} including Italian registry-specific fields.
+ */
 public class AddressPanel2 extends JPanel {
 
   /** Creates new form AddressPanel. */
@@ -901,6 +905,11 @@ public class AddressPanel2 extends JPanel {
     return newStatus;
   }
 
+  /**
+   * Populates all panel fields from the given address object.
+   *
+   * @param address the contact whose data should be displayed
+   */
   public void setAddress(Address address) {
     if (address != null) {
       setContactName(address.getContactName());
@@ -929,6 +938,11 @@ public class AddressPanel2 extends JPanel {
     }
   }
 
+  /**
+   * Reads all panel fields and returns an {@link Address} populated with the current input.
+   *
+   * @return the contact built from the current field values
+   */
   public Address getAddress() {
     getContactName();
     getOrg();
@@ -952,6 +966,7 @@ public class AddressPanel2 extends JPanel {
     return address;
   }
 
+  /** Clears all input fields and resets the internal address object. */
   public void clear() {
     txtContactId.setText(null);
     txtAutoContactId.setSelected(true);
@@ -976,6 +991,11 @@ public class AddressPanel2 extends JPanel {
     txtStatus.clearSelection();
   }
 
+  /**
+   * Enables or disables all input fields.
+   *
+   * @param bEditable {@code true} to allow editing
+   */
   public void setEditable(boolean bEditable) {
     txtAutoContactId.setVisible(bEditable && (contactId.equals("")) && getIsNewContact());
     txtAutoContactId.setEnabled(bEditable && (contactId.equals("")) && getIsNewContact());

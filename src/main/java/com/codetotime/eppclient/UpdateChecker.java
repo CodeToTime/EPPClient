@@ -33,6 +33,10 @@ import javax.swing.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Queries the GitHub Releases API to detect versions newer than the one currently running and
+ * prompts the user with a dialog listing what changed in each missed release.
+ */
 public class UpdateChecker {
 
   private static final Logger log = LoggerFactory.getLogger(UpdateChecker.class);
@@ -40,6 +44,14 @@ public class UpdateChecker {
   private static final String GITHUB_API_URL =
       "https://api.github.com/repos/CodeToTime/EPPClient/releases";
 
+  /**
+   * Spawns a background thread to check for newer releases; shows an update dialog if any are
+   * found. SNAPSHOT builds are skipped entirely. Network errors are logged and silently swallowed
+   * to avoid disrupting startup.
+   *
+   * @param parent the parent component used to anchor the update dialog
+   * @param currentVersion the running application version (e.g. {@code "1.2.3"})
+   */
   public static void checkForUpdates(Component parent, String currentVersion) {
     // Non controllare se è una versione SNAPSHOT
     if (currentVersion.contains("SNAPSHOT")) {

@@ -22,11 +22,13 @@ package com.codetotime.eppclient.contacts;
 import java.awt.*;
 import javax.swing.*;
 
+/** List cell renderer that displays a contact entry as {@code "contactId name"}. */
 public class ListEntryRenderer extends DefaultListCellRenderer {
 
   /** Creates a new instance of ListEntryRenderer. */
   public ListEntryRenderer() {}
 
+  /** {@inheritDoc} */
   public Component getListCellRendererComponent(
       JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
     super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);

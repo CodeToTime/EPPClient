@@ -31,6 +31,10 @@ import javax.swing.border.SoftBevelBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+/**
+ * Panel for viewing and editing all fields of an EPP domain object, including registrant, contacts,
+ * name servers, auth-info, status, validation code and DNSSec configuration.
+ */
 public class DomainPanel extends JPanel {
   boolean dnsSecEnabled =
       Boolean.parseBoolean(EPPparams.getParameter("EppClient.implement.DNSSEC"));
@@ -44,6 +48,7 @@ public class DomainPanel extends JPanel {
     // TODO add your code here
   }
 
+  /** Creates a new DomainPanel with an empty domain object. */
   public DomainPanel() {
     initComponents();
     domain = new Domain();
@@ -1076,18 +1081,33 @@ public class DomainPanel extends JPanel {
     return validationCode;
   }
 
+  /**
+   * Returns whether DNSSec is currently enabled in the panel.
+   *
+   * @return {@code true} if the DNSSec checkbox is selected
+   */
   public boolean isDnsSecEnabled() {
     boolean enabled = chkDNSSEC.isSelected();
     domain.setDNSSec(enabled);
     return enabled;
   }
 
+  /**
+   * Returns the DNSSec key tag from the panel, or an empty string if DNSSec is disabled.
+   *
+   * @return the key tag string
+   */
   public String getDnsSecKeyTag() {
     String keyTag = chkDNSSEC.isSelected() ? txtAlg.getText().trim() : "";
     domain.setKeyTag(keyTag);
     return keyTag;
   }
 
+  /**
+   * Returns the selected DNSSec algorithm identifier, or {@code -1} if DNSSec is disabled.
+   *
+   * @return the algorithm ID
+   */
   public int getDnsSecAlgorithm() {
     int alg = -1;
     if (chkDNSSEC.isSelected()) {
@@ -1100,6 +1120,11 @@ public class DomainPanel extends JPanel {
     return alg;
   }
 
+  /**
+   * Returns the selected DNSSec digest type, or {@code -1} if DNSSec is disabled.
+   *
+   * @return the digest type ID
+   */
   public int getDnsSecDigestType() {
     int digestType = -1;
     if (chkDNSSEC.isSelected()) {
@@ -1112,6 +1137,11 @@ public class DomainPanel extends JPanel {
     return digestType;
   }
 
+  /**
+   * Returns the DNSSec digest value from the panel, or an empty string if DNSSec is disabled.
+   *
+   * @return the digest string
+   */
   public String getDnsSecDigest() {
     String digest = chkDNSSEC.isSelected() ? txtDigest.getText().trim() : "";
     domain.setDigest(digest);
@@ -1377,6 +1407,11 @@ public class DomainPanel extends JPanel {
     return newStatus;
   }
 
+  /**
+   * Populates all panel fields from the given domain object.
+   *
+   * @param domain the domain whose data should be displayed
+   */
   public void setAddress(Domain domain) {
     if (domain != null) {
       setDomainName(domain.getDomainName());
@@ -1406,6 +1441,11 @@ public class DomainPanel extends JPanel {
     }
   }
 
+  /**
+   * Reads all panel fields and returns a {@link Domain} populated with the current input.
+   *
+   * @return the domain built from the current field values
+   */
   public Domain getAddress() {
     getDomainName();
     getRegistrant();
@@ -1430,6 +1470,7 @@ public class DomainPanel extends JPanel {
     return domain;
   }
 
+  /** Clears all input fields and resets the internal domain object. */
   public void clear() {
     txtDomainName.setText(null);
     txtPunyDomainName.setText(null);
@@ -1446,6 +1487,11 @@ public class DomainPanel extends JPanel {
     domain = new Domain();
   }
 
+  /**
+   * Enables or disables all input fields.
+   *
+   * @param bEditable {@code true} to allow editing
+   */
   public void setEditable(boolean bEditable) {
     txtDomainName.setEditable(bEditable && (getOpType() == 1));
     txtPunyDomainName.setEditable(false);

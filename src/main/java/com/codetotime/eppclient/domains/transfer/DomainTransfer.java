@@ -19,11 +19,24 @@
 
 package com.codetotime.eppclient.domains.transfer;
 
+/**
+ * Data holder for an EPP domain transfer or trade request, including auth-info and operation flags.
+ */
 public class DomainTransfer {
 
   /** Creates a new instance of Address. */
   public DomainTransfer() {}
 
+  /**
+   * Creates a fully populated transfer request.
+   *
+   * @param domainName the domain to transfer
+   * @param registrant the new registrant contact handle (for trade operations)
+   * @param authInfo the current auth-info token
+   * @param newAuthInfo the new auth-info token to set after transfer
+   * @param isTrade {@code true} if this is a registrant trade rather than a plain transfer
+   * @param isCancel {@code true} if this request cancels a pending transfer
+   */
   public DomainTransfer(
       String domainName,
       String registrant,

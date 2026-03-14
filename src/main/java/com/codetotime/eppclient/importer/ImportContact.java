@@ -32,15 +32,27 @@ import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/** Imports a single EPP contact from the registry and saves it to the local database. */
 public class ImportContact {
   private static final Logger log = LoggerFactory.getLogger(ImportContact.class);
 
+  /**
+   * Creates an import task for the given contact ID.
+   *
+   * @param mainFrame the application main frame providing the EPP connection
+   * @param contactId the EPP contact handle to import
+   */
   public ImportContact(main mainFrame, String contactId) {
     this.EPPuplink = mainFrame.EPPuplink;
     this.contactdb = mainFrame.contactsDao;
     this.contactId = contactId;
   }
 
+  /**
+   * Fetches the contact info from the registry and stores it in the local database.
+   *
+   * @return {@code true} if the contact was imported successfully
+   */
   public boolean execute() {
     boolean importStatus = false;
 

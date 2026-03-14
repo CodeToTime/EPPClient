@@ -21,10 +21,26 @@ package com.codetotime.eppclient.messages;
 
 import java.util.Date;
 
+/**
+ * Data holder for an EPP poll message, including its ID, timestamp, title, raw XML, and status
+ * flags.
+ */
 public class Message {
 
+  /** Creates an empty message. */
   public Message() {}
 
+  /**
+   * Creates a fully populated message.
+   *
+   * @param msgId the EPP message ID
+   * @param datetime the message timestamp
+   * @param title the message title/subject
+   * @param xml the raw XML response
+   * @param read whether the message has been read
+   * @param ack whether the message has been acknowledged
+   * @param actioned whether the message has been acted upon
+   */
   public Message(
       String msgId,
       Date datetime,

@@ -32,8 +32,17 @@ import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Imports a domain and optionally its linked contacts from the registry into the local database.
+ */
 public class ImportDomain {
 
+  /**
+   * Creates an import task using the given main frame's EPP connection.
+   *
+   * @param mainFrame the application main frame providing the EPP connection
+   * @param recurseContacts {@code true} to also import all contacts linked to the domain
+   */
   public ImportDomain(main mainFrame, boolean recurseContacts) {
     this.mainFrame = mainFrame;
     this.EPPuplink = mainFrame.EPPuplink;
@@ -44,6 +53,12 @@ public class ImportDomain {
     log = LoggerFactory.getLogger(ImportDomain.class);
   }
 
+  /**
+   * Fetches the domain info from the registry and stores it in the local database.
+   *
+   * @param domainName the fully qualified domain name to import
+   * @return {@code true} if the domain was imported successfully
+   */
   public boolean execute(String domainName) {
     boolean importStatus = true;
 

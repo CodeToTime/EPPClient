@@ -31,6 +31,10 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+/**
+ * Frame combining the contact list, detail panel, and action toolbar to provide a local view of
+ * cached EPP contact records stored in the embedded database.
+ */
 public class AddressFrame extends JFrame implements ActionListener, ListSelectionListener {
 
   /** Creates new form AddressFrame. */
@@ -147,6 +151,7 @@ public class AddressFrame extends JFrame implements ActionListener, ListSelectio
     }
   }
 
+  /** {@inheritDoc} */
   public void actionPerformed(ActionEvent e) {
     String actionCommand = e.getActionCommand();
     if (actionCommand.equalsIgnoreCase("CANCEL_ADDRESS")) {
@@ -162,6 +167,7 @@ public class AddressFrame extends JFrame implements ActionListener, ListSelectio
     }
   }
 
+  /** {@inheritDoc} */
   public void valueChanged(ListSelectionEvent e) {
     if (e.getValueIsAdjusting()) {
       return;

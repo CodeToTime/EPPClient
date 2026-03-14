@@ -24,6 +24,10 @@ import it.nic.epp.client.commands.converters.AbstractHostsConverter.Host;
 import java.util.Date;
 import java.util.Vector;
 
+/**
+ * Holds all fields for an EPP domain object, including registrant, contacts, name servers, auth
+ * info, status vectors, and DNSSec data, with old/new field pairs for building update commands.
+ */
 public class Domain {
 
   /** Creates a new instance of Address. */
@@ -32,6 +36,24 @@ public class Domain {
     this.newStatusV = new Vector();
   }
 
+  /**
+   * Creates a fully populated domain including DNSSec fields.
+   *
+   * @param domainName the fully qualified domain name
+   * @param registrant the registrant contact handle
+   * @param admin admin contact handles
+   * @param tech tech contact handles
+   * @param nameServer name server strings (name optionally followed by {@code @ip})
+   * @param authInfo the domain auth-info token
+   * @param oldStatus current status vector
+   * @param expire the domain expiry date
+   * @param validationCode Italian registry validation code
+   * @param isDNSSec whether DNSSec is enabled
+   * @param keyTag DNSSec key tag
+   * @param alg DNSSec algorithm identifier
+   * @param digestType DNSSec digest type
+   * @param digest DNSSec digest value
+   */
   public Domain(
       String domainName,
       String registrant,
@@ -78,6 +100,19 @@ public class Domain {
     this.digest = digest;
   }
 
+  /**
+   * Creates a domain from a Host array response, converting name servers and status strings to
+   * their internal representations.
+   *
+   * @param domainName the fully qualified domain name
+   * @param registrant the registrant contact handle
+   * @param admin admin contact handles
+   * @param tech tech contact handles
+   * @param nameServer name server Host objects from the EPP response
+   * @param authInfo the domain auth-info token
+   * @param oldStatus current status strings from the EPP response
+   * @param expire the domain expiry date
+   */
   public Domain(
       String domainName,
       String registrant,
@@ -224,6 +259,11 @@ public class Domain {
     this.keyTag = keyTag;
   }
 
+  /**
+   * Sets name servers from a Host array, converting each entry to {@code "name@ip"} format.
+   *
+   * @param nameServers the Host objects from an EPP response
+   */
   public void setNameServer(Host[] nameServers) {
     if (nameServers != null) {
       String[] newNameServer = new String[nameServers.length];

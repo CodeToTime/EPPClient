@@ -37,6 +37,10 @@ import javax.swing.event.ListSelectionListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Frame combining the domain list, domain detail panel, and action toolbar to provide a local view
+ * of cached EPP domain records stored in the embedded database.
+ */
 public class DomainFrame extends JFrame implements ActionListener, ListSelectionListener {
   private static final Logger log = LoggerFactory.getLogger(DomainFrame.class);
 
@@ -154,6 +158,7 @@ public class DomainFrame extends JFrame implements ActionListener, ListSelection
     }
   }
 
+  /** {@inheritDoc} */
   public void actionPerformed(ActionEvent e) {
     String actionCommand = e.getActionCommand();
     log.debug("ActionEvent: {}", actionCommand);
@@ -170,6 +175,7 @@ public class DomainFrame extends JFrame implements ActionListener, ListSelection
     }
   }
 
+  /** {@inheritDoc} */
   public void valueChanged(ListSelectionEvent e) {
     if (e.getValueIsAdjusting()) {
       return;

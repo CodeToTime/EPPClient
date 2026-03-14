@@ -21,10 +21,20 @@ package it.nic.epp.client;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+/**
+ * Overrides the nic library's default {@code Properties} class, which only supports configuration
+ * via resource bundle, to allow runtime toggling of DNSSec by checking system properties first.
+ */
 public class Properties {
   private static final String BUNDLE_NAME = "eppClient";
   private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
+  /**
+   * Returns the string value for the given key, checking system properties first.
+   *
+   * @param key the property key to look up
+   * @return the string value, or {@code !key!} if not found
+   */
   public static String getString(String key) {
     // Check system properties first
     String sysProp = System.getProperty(key);
@@ -38,6 +48,12 @@ public class Properties {
     }
   }
 
+  /**
+   * Returns the boolean value for the given key.
+   *
+   * @param key the property key to look up
+   * @return the boolean value, or {@code false} if not found or unparseable
+   */
   public static Boolean getBoolean(String key) {
     try {
       return Boolean.parseBoolean(getString(key));

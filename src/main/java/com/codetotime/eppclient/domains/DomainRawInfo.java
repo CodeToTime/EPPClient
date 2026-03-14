@@ -22,6 +22,7 @@ package com.codetotime.eppclient.domains;
 import java.awt.*;
 import javax.swing.*;
 
+/** Frame that displays the raw EPP info response for a domain. */
 public class DomainRawInfo extends JFrame {
 
   /** Creates new form DomainRawInfo. */

@@ -41,6 +41,10 @@ import java.util.Date;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+/**
+ * Application main frame: initialises the EPP connection, DAOs, and all management panels, and
+ * wires together the UI lifecycle with the EPP session lifecycle.
+ */
 public class main extends JFrame implements WindowListener {
   public EPPuplink EPPuplink;
 
@@ -51,8 +55,11 @@ public class main extends JFrame implements WindowListener {
   public String paramPrefix;
 
   /**
+   * Application entry point.
+   *
    * @param args the command line arguments
    */
+  @SuppressWarnings("unused")
   public static void main(String[] args) {
     if (args.length > 0) {
       EPPparams.setPrefix(args[0]);
@@ -110,6 +117,7 @@ public class main extends JFrame implements WindowListener {
     UpdateChecker.checkForUpdates(this, com.codetotime.eppclient.BuildInfo.BUILD_VERSION);
   }
 
+  /** Reinitialises the DAO connections and refreshes the UI after a configuration change. */
   public void windowReset() {
     messagesDao = new messagesDao();
     messagesDao.connect();
@@ -126,10 +134,12 @@ public class main extends JFrame implements WindowListener {
     importMenu = new TxtImport(this);
   }
 
+  /** {@inheritDoc} */
   public void windowOpened(WindowEvent e) {
     EPPuplink.start();
   }
 
+  /** {@inheritDoc} */
   public void windowClosing(WindowEvent e) {
     if (EPPuplink == null) {
       System.exit(0);
@@ -168,18 +178,23 @@ public class main extends JFrame implements WindowListener {
     }
   }
 
+  /** {@inheritDoc} */
   public void windowActivated(WindowEvent e) {}
 
+  /** {@inheritDoc} */
   public void windowClosed(WindowEvent e) {}
 
+  /** {@inheritDoc} */
   public void windowDeactivated(WindowEvent e) {}
 
+  /** {@inheritDoc} */
   public void windowDeiconified(WindowEvent e) {}
 
   private void btnInformazioni(ActionEvent e) {
     InfoDialog.show(null);
   }
 
+  /** {@inheritDoc} */
   public void windowIconified(WindowEvent e) {}
 
   /**
@@ -704,22 +719,47 @@ public class main extends JFrame implements WindowListener {
     }
   } // GEN-LAST:event_btnImportFromTxtActionPerformed
 
+  /**
+   * Updates the message queue count label in the status bar.
+   *
+   * @param txt the text to display
+   */
   public void setMSGQ(String txt) {
     msgQ.setText(txt);
   }
 
+  /**
+   * Updates the residual credit label in the status bar.
+   *
+   * @param txt the text to display
+   */
   public void setResCredit(String txt) {
     resCredit.setText(txt);
   }
 
+  /**
+   * Updates the next message timestamp label in the status bar.
+   *
+   * @param txt the text to display
+   */
   public void setNextMsg(String txt) {
     nextMsg.setText(txt);
   }
 
+  /**
+   * Appends a received EPP poll message to the messages panel.
+   *
+   * @param message the message to add
+   */
   public void addMsgtoList(Message message) {
     messagesMenu.addMessage(message);
   }
 
+  /**
+   * Enables or disables EPP-dependent controls based on the connection state.
+   *
+   * @param enableFlag {@code 1} to enable, {@code 0} to disable
+   */
   public void setActiveEPP(int enableFlag) {
     isActiveEPP = enableFlag == 1;
     if (enableFlag == 1) {

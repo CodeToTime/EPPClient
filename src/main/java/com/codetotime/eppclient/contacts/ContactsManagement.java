@@ -50,6 +50,10 @@ import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Main frame for managing EPP contacts: lists cached contacts from the local database and
+ * dispatches create, update, delete, info, check and sync commands to the registry.
+ */
 public class ContactsManagement extends JFrame implements ActionListener, ListSelectionListener {
 
   private main mainFrame;
@@ -172,6 +176,11 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
     addressListPanel.addListEntries(entries);
   }
 
+  /**
+   * Shows or hides the action toolbar based on whether the EPP connection is active.
+   *
+   * @param EPPstatus {@code true} if the EPP connection is active
+   */
   public void setEPPEnablement(boolean EPPstatus) {
     addressActionPanel.setVisible(EPPstatus);
   }
@@ -211,7 +220,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
     if (!contactId.equals("")) {
 
       try {
-        /** Delete the contact The contact MUSTN'T BE LINKED with any domain name */
+        // Delete the contact — the contact must not be linked with any domain name
         ContactDelete contactDelete = new ContactDelete();
         contactDelete.setId(contactId);
         log.debug("CLIENT: {}", contactDelete);
@@ -587,6 +596,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
     }
   }
 
+  /** Fetches the current contact info from the registry and updates the local database record. */
   public void syncContactInfo() {
     String contactId =
         (String)
@@ -658,6 +668,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
     }
   }
 
+  /** {@inheritDoc} */
   public void actionPerformed(ActionEvent e) {
     String actionCommand = e.getActionCommand();
     if (actionCommand.equalsIgnoreCase("CANCEL_ADDRESS")) {
@@ -683,6 +694,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
     }
   }
 
+  /** {@inheritDoc} */
   public void valueChanged(ListSelectionEvent e) {
     cancelAddress();
     if (e.getValueIsAdjusting()) {
@@ -709,6 +721,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
   private contactsDao db;
   private WindowAdapter windowAdapter;
 
+  /** {@inheritDoc} */
   public void setVisible(boolean b) {
     super.setVisible(b);
     if (b) {

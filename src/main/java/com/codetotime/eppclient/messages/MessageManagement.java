@@ -35,6 +35,7 @@ import javax.swing.table.DefaultTableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/** Frame for browsing, reading and acknowledging EPP poll messages stored in the local database. */
 public class MessageManagement extends JFrame {
 
   private static final Logger log = LoggerFactory.getLogger(MessageManagement.class);
@@ -146,6 +147,11 @@ public class MessageManagement extends JFrame {
     setLocationRelativeTo(getOwner());
   } // </editor-fold>//GEN-END:initComponents
 
+  /**
+   * Stores the EPP connection status so message actions can be enabled or disabled accordingly.
+   *
+   * @param EPPstatus {@code true} if the EPP connection is active
+   */
   public void setEPPEnablement(boolean EPPstatus) {
     this.EPPstatus = EPPstatus;
     for (int i = 0; i < messageDetailWindows.size(); i++) {
@@ -210,6 +216,7 @@ public class MessageManagement extends JFrame {
     }
   }
 
+  /** Reloads all messages from the local database and refreshes the table. */
   public void updateTableContent() {
     while (model.getRowCount() > 0) {
       model.removeRow(0);
@@ -222,6 +229,11 @@ public class MessageManagement extends JFrame {
     }
   }
 
+  /**
+   * Inserts a newly received poll message at the top of the table.
+   *
+   * @param message the message to add
+   */
   public void addMessage(Message message) {
     model.insertRow(
         0,

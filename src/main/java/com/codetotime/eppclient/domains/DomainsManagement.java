@@ -57,6 +57,10 @@ import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Main frame for managing EPP domains: lists cached domains from the local database and dispatches
+ * create, update, delete, info, check, sync, restore and transfer commands to the registry.
+ */
 public class DomainsManagement extends JFrame implements ActionListener, ListSelectionListener {
 
   private main mainFrame;
@@ -174,6 +178,11 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
     setLocationRelativeTo(getOwner());
   } // </editor-fold>//GEN-END:initComponents
 
+  /**
+   * Shows or hides the action toolbar based on whether the EPP connection is active.
+   *
+   * @param EPPstatus {@code true} if the EPP connection is active
+   */
   public void setEPPEnablement(boolean EPPstatus) {
     addressActionPanel.setVisible(EPPstatus);
   }
@@ -741,6 +750,12 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
     }
   }
 
+  /**
+   * Converts a hex string to a byte array.
+   *
+   * @param hex the hex-encoded string (must have even length)
+   * @return the decoded byte array
+   */
   public static byte[] parseHex(String hex) {
     if ((hex.length() & 1) != 0) {
       throw new IllegalArgumentException("Hex string must have even length");
@@ -802,6 +817,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
     }
   }
 
+  /** {@inheritDoc} */
   public void actionPerformed(ActionEvent e) {
     String actionCommand = e.getActionCommand();
     if (actionCommand.equalsIgnoreCase("CANCEL_ADDRESS")) {
@@ -827,6 +843,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
     }
   }
 
+  /** {@inheritDoc} */
   public void valueChanged(ListSelectionEvent e) {
     cancelAddress();
     if (e.getValueIsAdjusting()) {
@@ -847,6 +864,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
     }
   }
 
+  /** Fetches the current domain info from the registry and updates the local database record. */
   public void syncDomainInfo() {
     String domainName =
         (String)
@@ -954,6 +972,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
     }
   }
 
+  /** Sends a restore request to the registry for a domain in pendingDelete status. */
   public void restoreDomain() {
     String domainName =
         (String)
@@ -1059,6 +1078,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
     }
   }
 
+  /** {@inheritDoc} */
   public void setVisible(boolean b) {
     super.setVisible(b);
     if (b) {

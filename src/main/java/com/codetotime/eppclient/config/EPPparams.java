@@ -25,6 +25,10 @@ import java.util.prefs.Preferences;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Reads and writes application configuration parameters, storing them encrypted in the Java
+ * Preferences store and falling back to the resource bundle when no stored value exists.
+ */
 public class EPPparams {
   private static final Logger log = LoggerFactory.getLogger(EPPparams.class);
   private static final String BUNDLE_NAME = "com.codetotime.eppclient.config.EPPparams";
@@ -49,6 +53,13 @@ public class EPPparams {
     paramPrefix = INparamPrefix;
   }
 
+  /**
+   * Returns the value for the given parameter key, decrypting from preferences or falling back to
+   * the resource bundle.
+   *
+   * @param key the parameter key
+   * @return the parameter value, or an empty string if not found
+   */
   public static String getParameter(String key) {
     String parameterValue = "";
 
@@ -106,6 +117,12 @@ public class EPPparams {
     return parameterValue;
   }
 
+  /**
+   * Encrypts and stores the given value in the preferences store under the given key.
+   *
+   * @param key the parameter key
+   * @param value the value to store
+   */
   public static void setParameter(String key, String value) {
     key = paramPrefix + key;
 

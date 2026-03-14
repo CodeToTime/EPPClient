@@ -23,6 +23,7 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 
+/** Scrollable list panel showing contact entries loaded from the local database. */
 public class AddressListPanel extends JPanel {
 
   /** Creates new form AddressListPanel. */
@@ -57,10 +58,20 @@ public class AddressListPanel extends JPanel {
     add(scrollPane);
   } // </editor-fold>//GEN-END:initComponents
 
+  /**
+   * Appends a single entry to the list.
+   *
+   * @param entry the contact list entry to add
+   */
   public void addListEntry(ListEntry entry) {
     model.addElement(entry);
   }
 
+  /**
+   * Appends all entries from the given list.
+   *
+   * @param list the contact list entries to add
+   */
   public void addListEntries(List<ListEntry> list) {
     for (ListEntry entry : list) {
       addListEntry(entry);
@@ -71,6 +82,12 @@ public class AddressListPanel extends JPanel {
     return addressList.getSelectedIndex();
   }
 
+  /**
+   * Selects the entry at the given index, clamping to the last entry if out of range.
+   *
+   * @param index the desired selection index
+   * @return the actual index that was selected
+   */
   public int setSelectedIndex(int index) {
     assert (index >= -1);
     DefaultListModel model = (DefaultListModel) addressList.getModel();
@@ -84,11 +101,21 @@ public class AddressListPanel extends JPanel {
     return index;
   }
 
+  /**
+   * Returns the currently selected list entry, or {@code null} if nothing is selected.
+   *
+   * @return the selected {@link ListEntry}
+   */
   public ListEntry getSelectedListEntry() {
     ListEntry entry = (ListEntry) addressList.getSelectedValue();
     return entry;
   }
 
+  /**
+   * Removes the currently selected entry from the list.
+   *
+   * @return the index of the removed entry, or {@code -1} if nothing was selected
+   */
   public int deleteSelectedEntry() {
     int selectedIndex = addressList.getSelectedIndex();
     if (selectedIndex >= 0) {
@@ -98,15 +125,26 @@ public class AddressListPanel extends JPanel {
     return selectedIndex;
   }
 
+  /** Removes all entries from the list. */
   public void deleteAllEntries() {
     DefaultListModel model = (DefaultListModel) addressList.getModel();
     model.removeAllElements();
   }
 
+  /**
+   * Registers a selection listener on the underlying list.
+   *
+   * @param listener the listener to add
+   */
   public void addListSelectionListener(ListSelectionListener listener) {
     addressList.addListSelectionListener(listener);
   }
 
+  /**
+   * Removes a previously registered selection listener.
+   *
+   * @param listener the listener to remove
+   */
   public void removeListSelectionListener(ListSelectionListener listener) {
     addressList.removeListSelectionListener(listener);
   }

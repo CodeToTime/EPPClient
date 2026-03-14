@@ -19,6 +19,7 @@
 
 package com.codetotime.eppclient.domains;
 
+/** A domain list item holding a domain name. */
 public class ListEntry {
 
   /** Creates a new instance of ListEntry. */
@@ -26,6 +27,11 @@ public class ListEntry {
     this("");
   }
 
+  /**
+   * Creates a list entry for the given domain name.
+   *
+   * @param domainName the fully qualified domain name
+   */
   public ListEntry(String domainName) {
     this.domainName = domainName;
     //        this.firstName = firstName;
@@ -40,6 +46,11 @@ public class ListEntry {
     this.domainName = domainName;
   }
 
+  /**
+   * Returns the domain name as the string representation.
+   *
+   * @return the domain name
+   */
   public String toString() {
     String value =
         domainName; // + ": " + contactId; //+ ", " + firstName + " " + middleName + ": " + id;

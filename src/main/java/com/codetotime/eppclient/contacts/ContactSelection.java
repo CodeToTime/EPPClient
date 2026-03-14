@@ -29,6 +29,10 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+/**
+ * Dialog for selecting a contact from the local database to assign to a domain field (registrant,
+ * admin, or tech contact).
+ */
 public class ContactSelection extends JDialog
     implements ActionListener, ListSelectionListener, PropertyChangeListener {
   private String typedText = null;
@@ -50,10 +54,25 @@ public class ContactSelection extends JDialog
     return typedText;
   }
 
+  /**
+   * Creates a contact selection dialog for the given domain, defaulting to contact type 0.
+   *
+   * @param aFrame the parent frame
+   * @param parent the panel that will receive the selected contact ID
+   * @param domainName the domain name context for the selection
+   */
   public ContactSelection(Frame aFrame, JPanel parent, String domainName) {
     this(aFrame, parent, domainName, 0);
   }
 
+  /**
+   * Creates a contact selection dialog for the given domain and contact type.
+   *
+   * @param aFrame the parent frame
+   * @param parent the panel that will receive the selected contact ID
+   * @param domainName the domain name context for the selection
+   * @param contactType the contact role: 0 = registrant, 1 = admin, 2 = tech
+   */
   public ContactSelection(Frame aFrame, JPanel parent, String domainName, int contactType) {
     super(aFrame, true);
     dd = parent;
@@ -185,6 +204,7 @@ public class ContactSelection extends JDialog
     }
   }
 
+  /** {@inheritDoc} */
   public void valueChanged(ListSelectionEvent e) {
     if (e.getValueIsAdjusting()) {
       return;

@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+/** Validates an IP address string and returns whether it is IPv4 or IPv6. */
 public class ipAddressValidator {
 
   private static Pattern VALID_IPV4_PATTERN = null;
@@ -41,6 +42,13 @@ public class ipAddressValidator {
     }
   }
 
+  /**
+   * Validates the given IP address and returns its version type.
+   *
+   * @param ipAddress the IP address string to validate
+   * @return {@link HostIpType#V_4} for IPv4 or {@link HostIpType#V_6} for IPv6
+   * @throws invalidIpAddressException if the address matches neither format
+   */
   public static HostIpType validateIpAddress(String ipAddress) throws invalidIpAddressException {
     Matcher m1 = VALID_IPV4_PATTERN.matcher(ipAddress);
     if (m1.matches()) {

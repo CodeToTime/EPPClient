@@ -36,6 +36,10 @@ import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Frame for submitting EPP domain transfer and trade requests, supporting both single and bulk
+ * modes via a tabbed panel, and dispatching commands through the active EPP connection.
+ */
 public class TransferManagement extends JFrame implements ActionListener {
   private static final Logger log = LoggerFactory.getLogger(TransferManagement.class);
 
@@ -238,6 +242,7 @@ public class TransferManagement extends JFrame implements ActionListener {
     this.dispose();
   }
 
+  /** {@inheritDoc} */
   public void actionPerformed(ActionEvent e) {
     String actionCommand = e.getActionCommand();
     log.debug("ActionEvent: {}", actionCommand);

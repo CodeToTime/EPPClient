@@ -37,6 +37,7 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/** DAO for persisting and retrieving EPP poll messages from the local database. */
 public class messagesDao {
   private static final Logger log = LoggerFactory.getLogger(messagesDao.class);
 
@@ -44,6 +45,12 @@ public class messagesDao {
 
   private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
+  /**
+   * Returns the string value for the given resource bundle key.
+   *
+   * @param key the property key
+   * @return the value, or {@code !key!} if not found
+   */
   public static String getString(String key) {
     try {
       return RESOURCE_BUNDLE.getString(key);
@@ -57,6 +64,11 @@ public class messagesDao {
     this("messages");
   }
 
+  /**
+   * Creates a DAO bound to the given database name.
+   *
+   * @param addressBookName the Derby database name to use
+   */
   public messagesDao(String addressBookName) {
     this.dbName = addressBookName;
 
@@ -279,6 +291,11 @@ public class messagesDao {
     return bCreatedTables;
   }
 
+  /**
+   * Drops all message tables from the database.
+   *
+   * @return {@code true} if the tables were dropped successfully
+   */
   public boolean dropTables() {
     boolean bDroppedTables = false;
     try {
@@ -307,6 +324,11 @@ public class messagesDao {
     return bCreated;
   }
 
+  /**
+   * Opens a connection to the database, creating it if it does not exist.
+   *
+   * @return {@code true} if the connection was established successfully
+   */
   public boolean connect() {
     String dbUrl = getDatabaseUrl();
 
@@ -335,6 +357,7 @@ public class messagesDao {
     return System.getProperty("user.home");
   }
 
+  /** Closes the database connection. */
   public void disconnect() {
     if (isConnected) {
       String dbUrl = getDatabaseUrl();
@@ -347,17 +370,33 @@ public class messagesDao {
     }
   }
 
+  /**
+   * Returns the filesystem path of the Derby database directory.
+   *
+   * @return the absolute database path
+   */
   public String getDatabaseLocation() {
     String dbLocation = System.getProperty("derby.system.home") + "/" + dbName;
     return dbLocation;
   }
 
+  /**
+   * Returns the JDBC URL for the Derby database.
+   *
+   * @return the JDBC connection URL
+   */
   public String getDatabaseUrl() {
     String dbUrl = dbProperties.getProperty("derby.url");
     if (!dbUrl.contains("mariadb") && !dbUrl.contains("postgresql")) dbUrl += dbName;
     return dbUrl;
   }
 
+  /**
+   * Inserts a new message record into the database.
+   *
+   * @param record the message to save
+   * @return the generated message ID, or {@code null} on failure
+   */
   public String saveRecord(Message record) {
     try {
       stmtSaveNewRecord.clearParameters();
@@ -387,6 +426,12 @@ public class messagesDao {
     return record.getMsgId();
   }
 
+  /**
+   * Updates an existing message record in the database.
+   *
+   * @param record the message with updated fields
+   * @return {@code true} if the record was updated successfully
+   */
   public boolean editRecord(Message record) {
     boolean bEdited = false;
     try {
@@ -411,6 +456,12 @@ public class messagesDao {
     return bEdited;
   }
 
+  /**
+   * Deletes the message with the given ID from the database.
+   *
+   * @param msgId the message ID to delete
+   * @return {@code true} if the record was deleted successfully
+   */
   public boolean deleteRecord(String msgId) {
     boolean bDeleted = false;
     try {
@@ -425,6 +476,12 @@ public class messagesDao {
     return bDeleted;
   }
 
+  /**
+   * Deletes the given message record from the database.
+   *
+   * @param record the message to delete
+   * @return {@code true} if the record was deleted successfully
+   */
   public boolean deleteRecord(Message record) {
     String contactId = record.getMsgId();
     return deleteRecord(contactId);
@@ -434,6 +491,12 @@ public class messagesDao {
     return getSelectiveEntries(strGetListEntries);
   }
 
+  /**
+   * Executes the given prepared statement and returns matching message entries.
+   *
+   * @param preparedStatement the SQL query to execute
+   * @return a vector of matching {@link com.codetotime.eppclient.messages.Message} objects
+   */
   public Vector getSelectiveEntries(String preparedStatement) {
     Vector listEntries = new Vector();
 
@@ -464,6 +527,13 @@ public class messagesDao {
     return listEntries;
   }
 
+  /**
+   * Retrieves the message with the given ID from the database.
+   *
+   * @param msgId the message ID to look up
+   * @return the matching {@link com.codetotime.eppclient.messages.Message}, or {@code null} if not
+   *     found
+   */
   public Message getMessage(String msgId) {
     Message message = null;
     try {

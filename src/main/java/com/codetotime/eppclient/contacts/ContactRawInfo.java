@@ -22,6 +22,7 @@ package com.codetotime.eppclient.contacts;
 import java.awt.*;
 import javax.swing.*;
 
+/** Frame that displays the raw EPP info response for a contact. */
 public class ContactRawInfo extends JFrame {
 
   /** Creates new form DomainRawInfo. */

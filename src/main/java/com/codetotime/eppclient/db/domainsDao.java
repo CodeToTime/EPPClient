@@ -40,6 +40,7 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/** DAO for persisting and retrieving EPP domain records from the local database. */
 public class domainsDao {
   private static final Logger log = LoggerFactory.getLogger(domainsDao.class);
 
@@ -47,6 +48,12 @@ public class domainsDao {
 
   private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
+  /**
+   * Returns the string value for the given resource bundle key.
+   *
+   * @param key the property key
+   * @return the value, or {@code !key!} if not found
+   */
   public static String getString(String key) {
     try {
       return RESOURCE_BUNDLE.getString(key);
@@ -60,6 +67,11 @@ public class domainsDao {
     this("domains");
   }
 
+  /**
+   * Creates a DAO bound to the given database name.
+   *
+   * @param addressBookName the Derby database name to use
+   */
   public domainsDao(String addressBookName) {
     this.dbName = addressBookName;
 
@@ -347,6 +359,11 @@ public class domainsDao {
     return bCreatedTables;
   }
 
+  /**
+   * Drops all domain tables from the database.
+   *
+   * @return {@code true} if the tables were dropped successfully
+   */
   public boolean dropTables() {
     boolean bDroppedTables = false;
     try {
@@ -374,6 +391,11 @@ public class domainsDao {
     return bCreated;
   }
 
+  /**
+   * Opens a connection to the database, creating it if it does not exist.
+   *
+   * @return {@code true} if the connection was established successfully
+   */
   public boolean connect() {
     String dbUrl = getDatabaseUrl();
     try {
@@ -398,6 +420,7 @@ public class domainsDao {
     return System.getProperty("user.home");
   }
 
+  /** Closes the database connection. */
   public void disconnect() {
     if (isConnected) {
       String dbUrl = getDatabaseUrl();
@@ -410,17 +433,33 @@ public class domainsDao {
     }
   }
 
+  /**
+   * Returns the filesystem path of the Derby database directory.
+   *
+   * @return the absolute database path
+   */
   public String getDatabaseLocation() {
     String dbLocation = System.getProperty("derby.system.home") + "/" + dbName;
     return dbLocation;
   }
 
+  /**
+   * Returns the JDBC URL for the Derby database.
+   *
+   * @return the JDBC connection URL
+   */
   public String getDatabaseUrl() {
     String dbUrl = dbProperties.getProperty("derby.url");
     if (!dbUrl.contains("mariadb") && !dbUrl.contains("postgresql")) dbUrl += dbName;
     return dbUrl;
   }
 
+  /**
+   * Inserts a new domain record into the database.
+   *
+   * @param record the domain to save
+   * @return the domain name used as the record key
+   */
   public String saveRecord(Domain record) {
     try {
       stmtSaveNewRecord.clearParameters();
@@ -499,6 +538,12 @@ public class domainsDao {
     return record.getDomainName();
   }
 
+  /**
+   * Updates an existing domain record in the database.
+   *
+   * @param record the domain with updated fields
+   * @return {@code true} if the record was updated successfully
+   */
   public boolean editRecord(Domain record) {
     boolean bEdited = false;
     try {
@@ -579,6 +624,12 @@ public class domainsDao {
     return bEdited;
   }
 
+  /**
+   * Deletes the domain with the given name from the database.
+   *
+   * @param domainName the domain name to delete
+   * @return {@code true} if the record was deleted successfully
+   */
   public boolean deleteRecord(String domainName) {
     boolean bDeleted = false;
     try {
@@ -593,11 +644,22 @@ public class domainsDao {
     return bDeleted;
   }
 
+  /**
+   * Deletes the given domain record from the database.
+   *
+   * @param record the domain to delete
+   * @return {@code true} if the record was deleted successfully
+   */
   public boolean deleteRecord(Domain record) {
     String domainName = record.getDomainName();
     return deleteRecord(domainName);
   }
 
+  /**
+   * Returns all domain entries from the database as a list of {@link ListEntry} objects.
+   *
+   * @return the list of domain entries
+   */
   public List<ListEntry> getListEntries() {
     List<ListEntry> listEntries = new ArrayList<ListEntry>();
     Statement queryStatement = null;
@@ -621,6 +683,12 @@ public class domainsDao {
     return listEntries;
   }
 
+  /**
+   * Retrieves the domain with the given name from the database.
+   *
+   * @param domainName the domain name to look up
+   * @return the matching {@link Domain}, or {@code null} if not found
+   */
   public Domain getDomain(String domainName) {
     Domain address = null;
     try {

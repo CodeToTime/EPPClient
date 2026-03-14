@@ -35,6 +35,7 @@ import javax.swing.JFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/** Frame for importing contacts or domains in bulk from a plain-text file. */
 public class TxtImport extends JFrame {
   private static final Logger log = LoggerFactory.getLogger(TxtImport.class);
 
@@ -154,6 +155,11 @@ public class TxtImport extends JFrame {
 
   // End of variables declaration//GEN-END:variables
 
+  /**
+   * Enables or disables the file chooser based on whether the EPP connection is active.
+   *
+   * @param EPPstatus {@code true} if the EPP connection is active
+   */
   public void setEPPEnablement(boolean EPPstatus) {
     jFileChooser1.setEnabled(EPPstatus);
   }

@@ -26,11 +26,22 @@ import it.nic.epp.client.responses.HttpBaseResponse;
 import java.io.IOException;
 import org.apache.xmlbeans.XmlException;
 
+/**
+ * Manages the EPP connection lifecycle: starts, restarts, and stops the underlying {@link
+ * EPPthread}, configures proxy settings from application parameters, and delegates command dispatch
+ * and poll operations to the active thread.
+ */
 public class EPPuplink {
+  /**
+   * Constructs a new EPPuplink bound to the given application main frame.
+   *
+   * @param mainFrame the application main frame, passed through to the EPP thread
+   */
   public EPPuplink(main mainFrame) {
     this.mainFrame = mainFrame;
   }
 
+  /** Applies proxy settings from application parameters and starts the EPP thread. */
   public void start() {
     if (EPPparams.getParameter("EppClient.proxyHost").length() > 0
         && EPPparams.getParameter("EppClient.proxyPort").length() > 0) {
@@ -44,6 +55,7 @@ public class EPPuplink {
     EPPthread.start();
   }
 
+  /** Restarts the EPP thread if one exists, or starts a new one. */
   public void restart() {
     if (EPPthread != null) {
       EPPthread.restart();
@@ -52,18 +64,32 @@ public class EPPuplink {
     }
   }
 
+  /** Interrupts the EPP thread to trigger an immediate poll cycle. */
   public void doPoll() {
     EPPthread.interrupt();
   }
 
+  /**
+   * Polls the EPP server for a pending message.
+   *
+   * @return {@code true} if a message was retrieved, {@code false} otherwise
+   * @throws XmlException if the server response cannot be parsed
+   * @throws IOException if a network error occurs
+   */
   public Boolean pollMsg() throws XmlException, IOException {
     return EPPthread.doPoll(true);
   }
 
+  /** Reserved for future listener registration; currently a no-op. */
   public void registerListener() {
     // EPPthread
   }
 
+  /**
+   * Attempts a graceful shutdown of the EPP thread.
+   *
+   * @return {@code true} if the thread was stopped successfully or was already null
+   */
   public boolean gracefulStop() {
     boolean isStopped = false;
     if (EPPthread == null) {
@@ -77,10 +103,16 @@ public class EPPuplink {
     return isStopped;
   }
 
+  /** Immediately discards the EPP thread reference without waiting for it to finish. */
   public void stop() {
     EPPthread = null;
   }
 
+  /**
+   * Checks whether the EPP connection is currently active.
+   *
+   * @return {@code true} if the EPP thread exists and reports itself as active
+   */
   public boolean isActive() {
     boolean isActive = false;
     if (EPPthread instanceof EPPthread) {
@@ -89,6 +121,14 @@ public class EPPuplink {
     return isActive;
   }
 
+  /**
+   * Sends an EPP command through the active thread and returns the server response.
+   *
+   * @param command the EPP request to send
+   * @return the server's response
+   * @throws XmlException if the response cannot be parsed
+   * @throws IOException if a network error occurs
+   */
   public HttpBaseResponse sendCommand(IEppRequest command)
       throws org.apache.xmlbeans.XmlException, IOException {
     return EPPthread.sendCommand(command);

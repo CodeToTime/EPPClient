@@ -21,16 +21,27 @@ package com.codetotime.eppclient;
 import com.codetotime.eppclient.config.EPPparams;
 import it.nic.epp.client.commands.session.Login;
 
+/**
+ * Extends {@link Login} to apply the DNSSec system properties from application parameters before
+ * the EPP session is established.
+ */
 public class CustomLogin extends Login {
 
   static {
     configureDNSSEC();
   }
 
+  /** Creates a login command using the default credentials from application parameters. */
   public CustomLogin() {
     super();
   }
 
+  /**
+   * Creates a login command with explicit credentials.
+   *
+   * @param clID the registrar client ID
+   * @param pw the password
+   */
   public CustomLogin(String clID, String pw) {
     super(clID, pw);
   }

@@ -22,8 +22,14 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.*;
 
+/** Modal dialog showing build-time info: company, VAT number, registrar tag and build date. */
 public class InfoDialog {
 
+  /**
+   * Opens the build info dialog, modal over the given parent frame.
+   *
+   * @param parent the parent frame used to centre the dialog
+   */
   public static void show(Frame parent) {
 
     JDialog dialog = new JDialog(parent, "EPP Client - Informazioni compilazione", true);

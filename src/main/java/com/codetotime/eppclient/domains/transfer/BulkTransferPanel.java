@@ -23,6 +23,10 @@ import com.codetotime.eppclient.domains.Domain;
 import java.awt.*;
 import javax.swing.*;
 
+/**
+ * Panel for submitting bulk domain transfer requests; accepts a list of {@code domain;authinfo}
+ * lines and displays the results of each transfer attempt.
+ */
 public class BulkTransferPanel extends JPanel {
 
   /** Creates new form AddressPanel. */
@@ -119,6 +123,11 @@ public class BulkTransferPanel extends JPanel {
     return bulkRequest;
   }
 
+  /**
+   * Populates the panel fields from the given domain object.
+   *
+   * @param domain the domain whose data should be displayed
+   */
   public void setAddress(Domain domain) {
     if (domain != null) {
       //            setDomainName(domain.getDomainName());
@@ -137,6 +146,7 @@ public class BulkTransferPanel extends JPanel {
     return domain;
   }
 
+  /** Clears all input fields and resets the transfer data object. */
   public void clear() {
     //        txtDomainName.setText(null);
     //        txtAuthInfo.setText(null);

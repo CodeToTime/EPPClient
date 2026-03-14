@@ -25,6 +25,10 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
 
+/**
+ * Toolbar panel with buttons for contact operations (New, Clone, Delete, Edit, Save, Sync, Cancel,
+ * Check, Info). Each button fires an {@link ActionEvent} to registered listeners.
+ */
 public class AddressActionPanel extends JPanel {
 
   /** Creates new form AddressActionPanel. */
@@ -161,10 +165,20 @@ public class AddressActionPanel extends JPanel {
     }
   }
 
+  /**
+   * Registers a listener to receive action events from all buttons in this panel.
+   *
+   * @param listener the listener to add
+   */
   public void addActionListener(ActionListener listener) {
     listeners.add(ActionListener.class, listener);
   }
 
+  /**
+   * Removes a previously registered action listener.
+   *
+   * @param listener the listener to remove
+   */
   public void removeActionListener(ActionListener listener) {
     if (listeners != null) {
       listeners.remove(ActionListener.class, listener);

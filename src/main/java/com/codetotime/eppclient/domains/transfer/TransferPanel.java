@@ -25,6 +25,10 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.SoftBevelBorder;
 
+/**
+ * Panel for entering domain transfer or trade request details: domain name, auth-info, new
+ * auth-info, registrant (for trades), and operation type flags.
+ */
 public class TransferPanel extends JPanel {
 
   /** Creates new form AddressPanel. */
@@ -343,6 +347,11 @@ public class TransferPanel extends JPanel {
     return isCancel;
   }
 
+  /**
+   * Populates the panel fields from the given domain object.
+   *
+   * @param domain the domain whose name, registrant and auth-info should be pre-filled
+   */
   public void setAddress(Domain domain) {
     if (domain != null) {
       setDomainName(domain.getDomainName());
@@ -351,6 +360,11 @@ public class TransferPanel extends JPanel {
     }
   }
 
+  /**
+   * Reads all fields and returns a {@link DomainTransfer} populated with the current input.
+   *
+   * @return the transfer request built from the current field values
+   */
   public DomainTransfer getDomainTransfer() {
     getDomainName();
     getRegistrant();
@@ -361,6 +375,7 @@ public class TransferPanel extends JPanel {
     return domain;
   }
 
+  /** Clears all input fields and resets the internal transfer data object. */
   public void clear() {
     txtDomainName.setText(null);
     txtAuthInfo.setText(null);
@@ -371,6 +386,11 @@ public class TransferPanel extends JPanel {
     domain = new DomainTransfer();
   }
 
+  /**
+   * Enables or disables all input fields.
+   *
+   * @param bEditable {@code true} to allow editing
+   */
   public void setEditable(boolean bEditable) {
     txtDomainName.setEditable(bEditable);
     txtAuthInfo.setEditable(bEditable);

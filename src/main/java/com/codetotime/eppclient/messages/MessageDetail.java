@@ -49,6 +49,10 @@ import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Frame showing the full detail and raw XML of a selected EPP poll message, with an option to
+ * acknowledge it.
+ */
 public class MessageDetail extends JFrame {
 
   private EPPuplink EPPuplink;
@@ -707,6 +711,11 @@ public class MessageDetail extends JFrame {
     return message.getMsgId();
   }
 
+  /**
+   * Shows or hides the acknowledge button based on whether the EPP connection is active.
+   *
+   * @param EPPstatus {@code true} if the EPP connection is active
+   */
   public void setEPPEnablement(boolean EPPstatus) {
     btnAck.setVisible(EPPstatus);
     btnTransfer.setVisible(EPPstatus);
@@ -813,6 +822,12 @@ public class MessageDetail extends JFrame {
     }
   }
 
+  /**
+   * Sends an EPP poll acknowledgement for the given message ID.
+   *
+   * @param msgQid the message queue ID to acknowledge
+   * @return {@code true} if the acknowledgement was accepted by the registry
+   */
   protected boolean ackMessage(String msgQid) {
     boolean ackStatus = false;
     HttpBaseResponse response = null;

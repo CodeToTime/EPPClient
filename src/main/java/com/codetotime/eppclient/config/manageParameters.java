@@ -50,6 +50,7 @@ import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/** Swing form for viewing and editing all application configuration parameters. */
 public class manageParameters extends JFrame implements WindowListener {
   private static final Logger log = LoggerFactory.getLogger(manageParameters.class);
 
@@ -913,6 +914,11 @@ public class manageParameters extends JFrame implements WindowListener {
 
   // End of variables declaration//GEN-END:variables
 
+  /**
+   * Enables or disables EPP-related controls based on connection status.
+   *
+   * @param EPPstatus {@code true} if the EPP connection is active
+   */
   public void setEPPEnablement(boolean EPPstatus) {
     // btnChangePwd.setVisible(EPPstatus);
   }
@@ -1051,18 +1057,25 @@ public class manageParameters extends JFrame implements WindowListener {
     }
   }
 
+  /** {@inheritDoc} */
   public void windowActivated(WindowEvent e) {}
 
+  /** {@inheritDoc} */
   public void windowOpened(WindowEvent e) {}
 
+  /** {@inheritDoc} */
   public void windowClosed(WindowEvent e) {}
 
+  /** {@inheritDoc} */
   public void windowDeactivated(WindowEvent e) {}
 
+  /** {@inheritDoc} */
   public void windowDeiconified(WindowEvent e) {}
 
+  /** {@inheritDoc} */
   public void windowIconified(WindowEvent e) {}
 
+  /** {@inheritDoc} */
   public void windowClosing(WindowEvent e) {
     if (killOnClose) {
       mainFrame.windowClosing(e);
