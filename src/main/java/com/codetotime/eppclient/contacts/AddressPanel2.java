@@ -659,7 +659,7 @@ public class AddressPanel2 extends JPanel {
       statusScroll.setViewportView(txtStatus);
     }
     add(
-            statusScroll,
+        statusScroll,
         new GridBagConstraints(
             5,
             0,
