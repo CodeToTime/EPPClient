@@ -28,7 +28,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.net.IDN;
 import java.util.Date;
 import java.util.Vector;
@@ -991,7 +990,7 @@ public class DomainPanel extends JPanel {
         }
         nameServerModel.add(txtNameServer.getModel().getSize(), txtNameServerToAdd.getText());
         txtNameServerToAdd.setText("");
-      } catch (invalidIpAddressException e) {
+      } catch (InvalidIpAddressException e) {
         JOptionPane.showMessageDialog(
             this,
             "The IP Address entered is not a valid IPv4 or IPv6 address.",

@@ -48,9 +48,9 @@ public class ipAddressValidator {
    *
    * @param ipAddress the IP address string to validate
    * @return {@link HostIpType#V_4} for IPv4 or {@link HostIpType#V_6} for IPv6
-   * @throws invalidIpAddressException if the address matches neither format
+   * @throws InvalidIpAddressException if the address matches neither format
    */
-  public static HostIpType validateIpAddress(String ipAddress) throws invalidIpAddressException {
+  public static HostIpType validateIpAddress(String ipAddress) throws InvalidIpAddressException {
     Matcher m1 = VALID_IPV4_PATTERN.matcher(ipAddress);
     if (m1.matches()) {
       return HostIpType.V_4;
@@ -59,6 +59,6 @@ public class ipAddressValidator {
     if (m2.matches()) {
       return HostIpType.V_6;
     }
-    throw new invalidIpAddressException();
+    throw new InvalidIpAddressException();
   }
 }

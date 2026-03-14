@@ -20,4 +20,4 @@
 
 package com.codetotime.eppclient.domains;
 
-class invalidIpAddressException extends Exception {}
+class InvalidIpAddressException extends Exception {}
