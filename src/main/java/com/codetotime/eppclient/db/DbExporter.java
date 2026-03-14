@@ -36,6 +36,8 @@ import java.sql.Statement;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility to export database tables (contacts, domains, messages) to CSV files inside a ZIP
@@ -43,6 +45,7 @@ import java.util.zip.ZipOutputStream;
  * with both Derby and MySQL/MariaDB/PostgreSQL.
  */
 public class DbExporter {
+  private static final Logger log = LoggerFactory.getLogger(DbExporter.class);
 
   /**
    * Export contacts, domains and messages tables to a ZIP file at the given destination. The ZIP
@@ -201,7 +204,8 @@ public class DbExporter {
             }
         }
       }
-    } catch (Exception ignored) {
+    } catch (Exception e) {
+      log.debug("Failed to resolve CSV delimiter, using default: {}", e.getMessage());
     }
     // Default: semicolon (better for many EU Excel/LibreOffice setups)
     return ';';
@@ -252,7 +256,8 @@ public class DbExporter {
       if (!fileSystemDir.exists()) {
         fileSystemDir.mkdirs();
       }
-    } catch (Exception ignored) {
+    } catch (Exception e) {
+      log.error("Failed to set Derby system directory: {}", e.getMessage(), e);
     }
   }
 }
