@@ -52,14 +52,14 @@ public class EppUplink {
       System.setProperty("https.proxyHost", "");
       System.setProperty("https.proxyPort", "");
     }
-    EPPthread = new EppThread(mainFrame);
-    EPPthread.start();
+    eppThread = new EppThread(mainFrame);
+    eppThread.start();
   }
 
   /** Restarts the EPP thread if one exists, or starts a new one. */
   public void restart() {
-    if (EPPthread != null) {
-      EPPthread.restart();
+    if (eppThread != null) {
+      eppThread.restart();
     } else {
       this.start();
     }
@@ -67,7 +67,7 @@ public class EppUplink {
 
   /** Interrupts the EPP thread to trigger an immediate poll cycle. */
   public void doPoll() {
-    EPPthread.interrupt();
+    eppThread.interrupt();
   }
 
   /**
@@ -78,7 +78,7 @@ public class EppUplink {
    * @throws IOException if a network error occurs
    */
   public Boolean pollMsg() throws XmlException, IOException {
-    return EPPthread.doPoll(true);
+    return eppThread.doPoll(true);
   }
 
   /** Reserved for future listener registration; currently a no-op. */
@@ -93,11 +93,11 @@ public class EppUplink {
    */
   public boolean gracefulStop() {
     boolean isStopped = false;
-    if (EPPthread == null) {
+    if (eppThread == null) {
       isStopped = true;
     } else {
-      if (EPPthread.gracefulStop()) {
-        EPPthread = null;
+      if (eppThread.gracefulStop()) {
+        eppThread = null;
         isStopped = true;
       }
     }
@@ -106,7 +106,7 @@ public class EppUplink {
 
   /** Immediately discards the EPP thread reference without waiting for it to finish. */
   public void stop() {
-    EPPthread = null;
+    eppThread = null;
   }
 
   /**
@@ -116,8 +116,8 @@ public class EppUplink {
    */
   public boolean isActive() {
     boolean isActive = false;
-    if (EPPthread instanceof EppThread) {
-      isActive = EPPthread.isActive();
+    if (eppThread instanceof EppThread) {
+      isActive = eppThread.isActive();
     }
     return isActive;
   }
@@ -132,9 +132,9 @@ public class EppUplink {
    */
   public HttpBaseResponse sendCommand(IEppRequest command)
       throws org.apache.xmlbeans.XmlException, IOException {
-    return EPPthread.sendCommand(command);
+    return eppThread.sendCommand(command);
   }
 
-  private EppThread EPPthread = null;
+  private EppThread eppThread = null;
   private main mainFrame;
 }
