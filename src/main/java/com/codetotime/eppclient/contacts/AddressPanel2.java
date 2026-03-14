@@ -676,7 +676,7 @@ public class AddressPanel2 extends JPanel {
 
   private void txtIsRegistrantActionPerformed(
       java.awt.event.ActionEvent evt) { // GEN-FIRST:event_txtIsRegistrantActionPerformed
-    // TODO add your handling code here:
+    // TODO: add your handling code here:
     if (address.getIsRegistrant()) {
       if (!txtIsRegistrant.isSelected()) {
         JOptionPane.showMessageDialog(
@@ -696,7 +696,7 @@ public class AddressPanel2 extends JPanel {
 
   private void txtAutoContactIdActionPerformed(
       java.awt.event.ActionEvent evt) { // GEN-FIRST:event_txtAutoContactIdActionPerformed
-    // TODO add your handling code here:
+    // TODO: add your handling code here:
     setEditable(isEditable);
   } // GEN-LAST:event_txtAutoContactIdActionPerformed
 

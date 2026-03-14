@@ -65,7 +65,7 @@ public class DomainPanel extends JPanel {
   }
 
   private void dbengineActionPerformed(ActionEvent e) {
-    // TODO add your code here
+    // TODO: add your code here
   }
 
   /** Creates a new DomainPanel with an empty domain object. */

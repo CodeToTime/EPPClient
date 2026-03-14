@@ -747,7 +747,7 @@ public class AddressPanel extends JPanel {
 
   private void txtIsRegistrantActionPerformed(
       java.awt.event.ActionEvent evt) { // GEN-FIRST:event_txtIsRegistrantActionPerformed
-    // TODO add your handling code here:
+    // TODO: add your handling code here:
     if (address.getIsRegistrant() && !address.isIsRegistrantChanged() && !getIsNewContact()) {
       if (!txtIsRegistrant.isSelected()) {
         JOptionPane.showMessageDialog(
