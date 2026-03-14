@@ -139,7 +139,6 @@ public class MessageDetail extends JFrame {
 
     // ======== this ========
     setTitle("Dettaglio MESSAGGIO");
-    Container contentPane = getContentPane();
 
     // ---- jLabel1 ----
     jLabel1.setText("Message ID:");
@@ -349,6 +348,7 @@ public class MessageDetail extends JFrame {
       jScrollPane4.setViewportView(messageTxt);
     }
 
+    Container contentPane = getContentPane();
     GroupLayout contentPaneLayout = new GroupLayout(contentPane);
     contentPane.setLayout(contentPaneLayout);
     contentPaneLayout.setHorizontalGroup(

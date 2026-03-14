@@ -59,7 +59,6 @@ public class TxtImport extends JFrame {
     // ======== this ========
     setTitle("Importazione Domini da file");
     setMinimumSize(new Dimension(600, 500));
-    Container contentPane = getContentPane();
 
     // ---- jFileChooser1 ----
     jFileChooser1.addActionListener(e -> jFileChooser1ActionPerformed(e));
@@ -71,6 +70,7 @@ public class TxtImport extends JFrame {
             + " presenti sul server EPP del Registro.\nPer poter procedere occorre predisporre"
             + " un file .txt contenente l'elenco dei domini, uno per riga.\n");
 
+    Container contentPane = getContentPane();
     GroupLayout contentPaneLayout = new GroupLayout(contentPane);
     contentPane.setLayout(contentPaneLayout);
     contentPaneLayout.setHorizontalGroup(

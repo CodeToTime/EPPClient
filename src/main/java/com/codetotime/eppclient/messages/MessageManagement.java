@@ -88,7 +88,6 @@ public class MessageManagement extends JFrame {
 
     // ======== this ========
     setTitle("Gestione MESSAGGI");
-    Container contentPane = getContentPane();
 
     // ======== jScrollPane1 ========
     {
@@ -106,6 +105,7 @@ public class MessageManagement extends JFrame {
     refresh1.setText("ACK ALL");
     refresh1.addActionListener(e -> ACKALLActionPerformed(e));
 
+    Container contentPane = getContentPane();
     GroupLayout contentPaneLayout = new GroupLayout(contentPane);
     contentPane.setLayout(contentPaneLayout);
     contentPaneLayout.setHorizontalGroup(

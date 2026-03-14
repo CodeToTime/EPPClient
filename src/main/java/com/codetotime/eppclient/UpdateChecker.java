@@ -81,8 +81,6 @@ public class UpdateChecker {
   }
 
   private static List<ReleaseInfo> fetchNewerReleases(String currentVersion) throws Exception {
-    List<ReleaseInfo> newerReleases = new ArrayList<>();
-
     URL url = new URL(GITHUB_API_URL);
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     conn.setRequestMethod("GET");
@@ -90,6 +88,7 @@ public class UpdateChecker {
     conn.setConnectTimeout(5000);
     conn.setReadTimeout(5000);
 
+    List<ReleaseInfo> newerReleases = new ArrayList<>();
     if (conn.getResponseCode() != 200) {
       return newerReleases;
     }
@@ -168,13 +167,12 @@ public class UpdateChecker {
 
   private static void showUpdateDialog(
       Component parent, String currentVersion, List<ReleaseInfo> newerReleases) {
-    ReleaseInfo latestRelease = newerReleases.get(0);
-
     StringBuilder message = new StringBuilder();
     message.append("============================================================\n");
     message.append("       NUOVA VERSIONE DISPONIBILE DI EPPCLIENT!\n");
     message.append("============================================================\n\n");
 
+    ReleaseInfo latestRelease = newerReleases.get(0);
     message.append("  Versione attuale:  ").append(currentVersion).append("\n");
     message.append("  Ultima versione:   ").append(latestRelease.tagName).append("\n\n");
 

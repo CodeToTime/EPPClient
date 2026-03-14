@@ -104,15 +104,6 @@ public class ContactSelection extends JDialog
         break;
     }
 
-    String msgString1 =
-        "Please select the contact to be linked as "
-            + txtContactType
-            + "Contact to\ndomain name '"
-            + domainName
-            + "'";
-
-    //        Object[] array = {msgString1, msgString2, textField};
-
     db = new contactsDao();
     db.connect();
     List<ListEntry> entries;
@@ -125,6 +116,13 @@ public class ContactSelection extends JDialog
 
     addressListPanel.addListEntries(entries);
     addressListPanel.addListSelectionListener(this);
+
+    String msgString1 =
+        "Please select the contact to be linked as "
+            + txtContactType
+            + "Contact to\ndomain name '"
+            + domainName
+            + "'";
 
     Object[] array = {msgString1, addressListPanel};
 

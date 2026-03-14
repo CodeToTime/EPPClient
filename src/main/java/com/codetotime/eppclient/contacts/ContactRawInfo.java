@@ -57,7 +57,6 @@ public class ContactRawInfo extends JFrame {
 
     // ======== this ========
     setTitle("Contact INFO Output");
-    Container contentPane = getContentPane();
 
     // ---- jLabel1 ----
     jLabel1.setText("Contact ID");
@@ -80,6 +79,7 @@ public class ContactRawInfo extends JFrame {
       jScrollPane1.setViewportView(contactRawInfoTxt);
     }
 
+    Container contentPane = getContentPane();
     GroupLayout contentPaneLayout = new GroupLayout(contentPane);
     contentPane.setLayout(contentPaneLayout);
     contentPaneLayout.setHorizontalGroup(

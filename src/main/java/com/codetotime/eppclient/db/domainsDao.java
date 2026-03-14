@@ -720,8 +720,6 @@ public class domainsDao {
       stmtGetAddress.setString(1, domainName);
       ResultSet result = stmtGetAddress.executeQuery();
       if (result.next()) {
-        String registrant = result.getString("REGISTRANT");
-
         String[] oldAdmin;
         if (result.getString("ADMIN") != null) {
           if (result.getString("ADMIN").length() > 0) {
@@ -800,6 +798,8 @@ public class domainsDao {
         int dnsSecAlg = result.getInt("DNSSECALG");
         int dnsSecDigestType = result.getInt("DNSSECDIGESTTYPE");
         String dnsSecDigest = result.getString("DNSSECDIGEST");
+
+        String registrant = result.getString("REGISTRANT");
         address =
             new Domain(
                 domainName,

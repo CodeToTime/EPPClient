@@ -57,7 +57,6 @@ public class DomainRawInfo extends JFrame {
 
     // ======== this ========
     setTitle("Domain INFO Output");
-    Container contentPane = getContentPane();
 
     // ---- jLabel1 ----
     jLabel1.setText("Domain Name:");
@@ -80,6 +79,7 @@ public class DomainRawInfo extends JFrame {
       jScrollPane1.setViewportView(domainRawInfoTxt);
     }
 
+    Container contentPane = getContentPane();
     GroupLayout contentPaneLayout = new GroupLayout(contentPane);
     contentPane.setLayout(contentPaneLayout);
     contentPaneLayout.setHorizontalGroup(
