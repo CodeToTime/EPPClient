@@ -20,8 +20,9 @@
 
 package com.codetotime.eppclient.contacts;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Component;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
 
 /** List cell renderer that displays a contact entry as {@code "contactId name"}. */
 public class ListEntryRenderer extends DefaultListCellRenderer {

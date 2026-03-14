@@ -20,8 +20,16 @@
 
 package com.codetotime.eppclient.domains;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Container;
+import java.awt.Font;
+import javax.swing.GroupLayout;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.LayoutStyle;
+import javax.swing.SwingConstants;
 
 /** Frame that displays the raw EPP info response for a domain. */
 public class DomainRawInfo extends JFrame {

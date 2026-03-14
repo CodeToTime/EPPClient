@@ -21,7 +21,13 @@
 package com.codetotime.eppclient.domains;
 
 import java.util.List;
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ListSelectionListener;
 
 /** Scrollable list panel showing domain entries loaded from the local database. */

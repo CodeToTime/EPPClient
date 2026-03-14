@@ -22,8 +22,16 @@ package com.codetotime.eppclient.domains.transfer;
 
 import com.codetotime.eppclient.contacts.ContactSelection;
 import com.codetotime.eppclient.domains.Domain;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.SoftBevelBorder;
 
 /**

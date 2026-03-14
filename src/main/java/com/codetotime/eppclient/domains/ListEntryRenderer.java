@@ -20,8 +20,9 @@
 
 package com.codetotime.eppclient.domains;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Component;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
 
 /** List cell renderer that displays a domain list entry as its domain name. */
 public class ListEntryRenderer extends DefaultListCellRenderer {

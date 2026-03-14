@@ -21,8 +21,13 @@
 package com.codetotime.eppclient.domains.transfer;
 
 import com.codetotime.eppclient.domains.Domain;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Dimension;
+import javax.swing.GroupLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.LayoutStyle;
 
 /**
  * Panel for submitting bulk domain transfer requests; accepts a list of {@code domain;authinfo}
