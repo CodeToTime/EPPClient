@@ -20,10 +20,10 @@
 
 package com.codetotime.eppclient.domains;
 
-import com.codetotime.eppclient.db.domainsDao;
+import com.codetotime.eppclient.Main;
+import com.codetotime.eppclient.db.DomainsDao;
 import com.codetotime.eppclient.domains.transfer.TransferManagement;
 import com.codetotime.eppclient.importer.ImportDomain;
-import com.codetotime.eppclient.main;
 import com.codetotime.eppclient.uplink.EppUplink;
 import it.nic.epp.client.commands.converters.AbstractHostsConverter.Host;
 import it.nic.epp.client.commands.query.DomainCheck;
@@ -64,10 +64,10 @@ import org.slf4j.LoggerFactory;
  */
 public class DomainsManagement extends JFrame implements ActionListener, ListSelectionListener {
 
-  private main mainFrame;
+  private Main mainFrame;
 
   /** Creates new form ContactsManagement. */
-  public DomainsManagement(main mainFrame) {
+  public DomainsManagement(Main mainFrame) {
     initComponents();
 
     windowAdapter = new WindowCloser();
@@ -190,7 +190,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
 
   private void refreshDomainList() {
     addressListPanel.deleteAllEntries();
-    //        db = new domainsDao();
+    //        db = new DomainsDao();
     //        db.connect();
     List<ListEntry> entries = db.getListEntries();
     //        db.disconnect();
@@ -203,7 +203,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
     ListEntry entry = addressListPanel.getSelectedListEntry();
     if (entry != null) {
       String contactId = entry.getDomainName();
-      //            db = new domainsDao();
+      //            db = new DomainsDao();
       //            db.connect();
       Domain address = db.getDomain(contactId);
       //            db.disconnect();
@@ -252,7 +252,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
             Vector newStatus = domain.getNewStatusV();
             newStatus.add(99);
             domain.setNewStatus(newStatus);
-            //                db = new domainsDao();
+            //                db = new DomainsDao();
             //                db.connect();
             db.editRecord(domain);
             //                db.disconnect();
@@ -321,12 +321,14 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
           String[] newNameServer = domain.getNameServer();
           for (int j = 0; j < newNameServer.length; j++) {
             if (newNameServer[j].contains("@")) {
-              String[] dNameServer = newNameServer[j].split("@");
+              String[] nameServerParts = newNameServer[j].split("@");
               try {
-                domainCreate.addHostAttrName(dNameServer[0]);
-                for (int i = 1; i < dNameServer.length; i++) {
+                domainCreate.addHostAttrName(nameServerParts[0]);
+                for (int i = 1; i < nameServerParts.length; i++) {
                   domainCreate.addHostAttrAddr(
-                      j, dNameServer[i], IpAddressValidator.validateIpAddress(dNameServer[i]));
+                      j,
+                      nameServerParts[i],
+                      IpAddressValidator.validateIpAddress(nameServerParts[i]));
                 }
               } catch (Exception e) {
                 log.warn("Invalid IP Address: {}", e.getMessage());
@@ -575,22 +577,22 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                   for (Host oldHost : domainInfoResData.getNs()) {
                     if (newNameServer[j].contains("@")) {
 
-                      String[] dNameServer = newNameServer[j].split("@");
+                      String[] nameServerParts = newNameServer[j].split("@");
 
-                      if (dNameServer[0].equals(oldHost.name)) {
+                      if (nameServerParts[0].equals(oldHost.name)) {
 
-                        /*if (dNameServer[0].equals(oldHost.name)) {
+                        /*if (nameServerParts[0].equals(oldHost.name)) {
                             if (oldHost.getIpSize()>0)
-                                if (dNameServer[1].equals(oldHost.getIp(0).address))
+                                if (nameServerParts[1].equals(oldHost.getIp(0).address))
                                     isNameServerToAdd = false;
                         }*/
 
                         Boolean hostMatch = true;
-                        for (int i = 1; i < dNameServer.length; i++) {
+                        for (int i = 1; i < nameServerParts.length; i++) {
                           Boolean ipFound = false;
 
                           for (int k = 0; k < oldHost.getIpSize(); k++) {
-                            if (dNameServer[i].equals(oldHost.getIp(k).address)) {
+                            if (nameServerParts[i].equals(oldHost.getIp(k).address)) {
                               ipFound = true;
                             }
                           }
@@ -602,8 +604,8 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
 
                         for (int i = 0; i < oldHost.getIpSize(); i++) {
                           Boolean ipFound = false;
-                          for (int k = 1; k < dNameServer.length; k++) {
-                            if (oldHost.getIp(i).address.equals(dNameServer[k])) {
+                          for (int k = 1; k < nameServerParts.length; k++) {
+                            if (oldHost.getIp(i).address.equals(nameServerParts[k])) {
                               ipFound = true;
                             }
                           }
@@ -629,15 +631,15 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                   countNameServerToAdd += 1;
 
                   if (newNameServer[j].contains("@")) {
-                    String[] dNameServer = newNameServer[j].split("@");
+                    String[] nameServerParts = newNameServer[j].split("@");
                     try {
 
-                      domainUpdate.addHostAttrNameToAdd(dNameServer[0]);
-                      for (int i = 1; i < dNameServer.length; i++) {
+                      domainUpdate.addHostAttrNameToAdd(nameServerParts[0]);
+                      for (int i = 1; i < nameServerParts.length; i++) {
                         domainUpdate.addHostAttrAddrToAdd(
                             countNameServerToAdd - 1,
-                            dNameServer[i],
-                            IpAddressValidator.validateIpAddress(dNameServer[i]));
+                            nameServerParts[i],
+                            IpAddressValidator.validateIpAddress(nameServerParts[i]));
                       }
 
                     } catch (Exception e) {
@@ -656,14 +658,14 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                   if (newNameServer != null) {
                     for (int k = 0; k < newNameServer.length; k++) {
                       if (newNameServer[k].contains("@")) {
-                        String[] dNameServer = newNameServer[k].split("@");
-                        if (dNameServer[0].equals(oldHost.name)) {
+                        String[] nameServerParts = newNameServer[k].split("@");
+                        if (nameServerParts[0].equals(oldHost.name)) {
                           Boolean hostMatch = true;
-                          for (int i = 1; i < dNameServer.length; i++) {
+                          for (int i = 1; i < nameServerParts.length; i++) {
                             Boolean ipFound = false;
 
-                            for (int j = 0; j < oldHost.getIpSize(); j++) {
-                              if (dNameServer[i].equals(oldHost.getIp(j).address)) {
+                            for (int m = 0; m < oldHost.getIpSize(); m++) {
+                              if (nameServerParts[i].equals(oldHost.getIp(m).address)) {
                                 ipFound = true;
                               }
                             }
@@ -675,8 +677,8 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
 
                           for (int i = 0; i < oldHost.getIpSize(); i++) {
                             Boolean ipFound = false;
-                            for (int j = 1; j < dNameServer.length; j++) {
-                              if (oldHost.getIp(i).address.equals(dNameServer[j])) {
+                            for (int m = 1; m < nameServerParts.length; m++) {
+                              if (oldHost.getIp(i).address.equals(nameServerParts[m])) {
                                 ipFound = true;
                               }
                             }
@@ -742,7 +744,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                   == 0) {
                 JOptionPane.showMessageDialog(this, response.toString());
               }
-              //                            db = new domainsDao();
+              //                            db = new DomainsDao();
               //                            db.connect();
               Domain address = db.getDomain(domain.getDomainName());
               //                            db.disconnect();
@@ -760,7 +762,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                 == 0) {
               JOptionPane.showMessageDialog(this, response.toString());
             }
-            //                        db = new domainsDao();
+            //                        db = new DomainsDao();
             //                        db.connect();
             Domain address = db.getDomain(domain.getDomainName());
             //                        db.disconnect();
@@ -898,7 +900,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
     ListEntry entry = (ListEntry) entryList.getSelectedValue();
     if (entry != null) {
       String domainName = entry.getDomainName();
-      //            db = new domainsDao();
+      //            db = new DomainsDao();
       //            db.connect();
       Domain address = db.getDomain(domainName);
       //            db.disconnect();
@@ -925,7 +927,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
       ImportDomain syncDomain = new ImportDomain(mainFrame, true);
       if (syncDomain.execute(domainName)) {
         addressListPanel.deleteAllEntries();
-        //                db = new domainsDao();
+        //                db = new DomainsDao();
         //                db.connect();
         List<ListEntry> entries = db.getListEntries();
         //                db.disconnect();
@@ -1061,7 +1063,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
           ImportDomain syncDomain = new ImportDomain(mainFrame, true);
           if (syncDomain.execute(domainName)) {
             addressListPanel.deleteAllEntries();
-            //                        db = new domainsDao();
+            //                        db = new DomainsDao();
             //                        db.connect();
             List<ListEntry> entries = db.getListEntries();
             //                        db.disconnect();
@@ -1153,7 +1155,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
   }
 
   private int selectedEntry = -1;
-  private domainsDao db;
+  private DomainsDao db;
   private WindowAdapter windowAdapter;
 
   class WindowCloser extends WindowAdapter {

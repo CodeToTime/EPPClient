@@ -20,7 +20,7 @@
 
 package com.codetotime.eppclient.contacts;
 
-import com.codetotime.eppclient.db.contactsDao;
+import com.codetotime.eppclient.db.ContactsDao;
 import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -48,7 +48,7 @@ public class AddressFrame extends JFrame implements ActionListener, ListSelectio
     loadFrameIcon();
     windowAdapter = new WindowCloser();
     this.addWindowListener(windowAdapter);
-    db = new contactsDao();
+    db = new ContactsDao();
     db.connect();
     addressActionPanel.addActionListener(this);
     addressPanel.setEditable(false);
@@ -196,7 +196,7 @@ public class AddressFrame extends JFrame implements ActionListener, ListSelectio
   // End of variables declaration//GEN-END:variables
 
   private int selectedEntry = -1;
-  private contactsDao db;
+  private ContactsDao db;
   private WindowAdapter windowAdapter;
 
   class WindowCloser extends WindowAdapter {

@@ -20,7 +20,7 @@
 
 package com.codetotime.eppclient.contacts;
 
-import com.codetotime.eppclient.db.contactsDao;
+import com.codetotime.eppclient.db.ContactsDao;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -106,7 +106,7 @@ public class ContactSelection extends JDialog
         break;
     }
 
-    contactsDb = new contactsDao();
+    contactsDb = new ContactsDao();
     contactsDb.connect();
     List<ListEntry> entries;
 
@@ -235,5 +235,5 @@ public class ContactSelection extends JDialog
   }
 
   private int selectedEntry = -1;
-  private contactsDao contactsDb;
+  private ContactsDao contactsDb;
 }

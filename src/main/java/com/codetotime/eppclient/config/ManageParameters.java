@@ -22,7 +22,7 @@ package com.codetotime.eppclient.config;
 
 import com.codetotime.eppclient.CustomLogin;
 import com.codetotime.eppclient.ErrorHandler;
-import com.codetotime.eppclient.main;
+import com.codetotime.eppclient.Main;
 import it.nic.epp.client.commands.session.Logout;
 import it.nic.epp.client.httpClient.Client;
 import it.nic.epp.client.responses.HttpBaseResponse;
@@ -55,12 +55,12 @@ import org.slf4j.LoggerFactory;
 public class ManageParameters extends JFrame implements WindowListener {
   private static final Logger log = LoggerFactory.getLogger(ManageParameters.class);
 
-  main mainFrame;
+  Main mainFrame;
   private boolean isKillRequired;
   private boolean killOnClose;
 
   /** Creates new form manageParameters2. */
-  public ManageParameters(main mainFrame) {
+  public ManageParameters(Main mainFrame) {
     initComponents();
     this.mainFrame = mainFrame;
     isKillRequired = false;

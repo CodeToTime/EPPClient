@@ -20,8 +20,8 @@
 
 package com.codetotime.eppclient.messages;
 
-import com.codetotime.eppclient.db.messagesDao;
-import com.codetotime.eppclient.main;
+import com.codetotime.eppclient.Main;
+import com.codetotime.eppclient.db.MessagesDao;
 import com.codetotime.eppclient.uplink.EppUplink;
 import java.awt.Container;
 import java.util.ListIterator;
@@ -42,10 +42,10 @@ public class MessageManagement extends JFrame {
 
   java.text.SimpleDateFormat dateFormatter = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
   Vector messageDetailWindows = new Vector();
-  private main mainFrame;
+  private Main mainFrame;
 
   /** Creates new form MessageManagement. */
-  public MessageManagement(main mainFrame) {
+  public MessageManagement(Main mainFrame) {
     initComponents();
     this.mainFrame = mainFrame;
     this.eppUplink = mainFrame.eppUplink;
@@ -259,6 +259,6 @@ public class MessageManagement extends JFrame {
   private EppUplink eppUplink;
   // DefaultTableModel model = new DefaultTableModel();
   NotEditableTableModel model = new NotEditableTableModel();
-  private messagesDao db;
+  private MessagesDao db;
   private boolean eppStatus;
 }

@@ -20,9 +20,9 @@
 
 package com.codetotime.eppclient.contacts;
 
-import com.codetotime.eppclient.db.contactsDao;
+import com.codetotime.eppclient.Main;
+import com.codetotime.eppclient.db.ContactsDao;
 import com.codetotime.eppclient.importer.ImportContact;
-import com.codetotime.eppclient.main;
 import com.codetotime.eppclient.uplink.EppUplink;
 import it.nic.epp.client.commands.query.ContactCheck;
 import it.nic.epp.client.commands.query.ContactInfo;
@@ -57,10 +57,10 @@ import org.slf4j.LoggerFactory;
  */
 public class ContactsManagement extends JFrame implements ActionListener, ListSelectionListener {
 
-  private main mainFrame;
+  private Main mainFrame;
 
   /** Creates new form ContactsManagement. */
-  public ContactsManagement(main mainFrame) {
+  public ContactsManagement(Main mainFrame) {
     initComponents();
 
     windowAdapter = new WindowCloser();
@@ -170,7 +170,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
 
   private void refreshContactList() {
     addressListPanel.deleteAllEntries();
-    //        db = new contactsDao();
+    //        db = new ContactsDao();
     //        db.connect();
     List<ListEntry> entries = db.getListEntries();
     //        db.disconnect();
@@ -192,7 +192,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
     ListEntry entry = addressListPanel.getSelectedListEntry();
     if (entry != null) {
       String contactId = entry.getContactId();
-      //            db = new contactsDao();
+      //            db = new ContactsDao();
       //            db.connect();
       Address address = db.getAddress(contactId);
       //            db.disconnect();
@@ -229,7 +229,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
         log.debug("SERVER: {}", response);
 
         if (response.isSuccessfully()) {
-          //                    db = new contactsDao();
+          //                    db = new ContactsDao();
           //                    db.connect();
           db.deleteRecord(contactId);
           //                    db.disconnect();
@@ -239,7 +239,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
             ListEntry entry = addressListPanel.getSelectedListEntry();
             if (entry != null) {
               contactId = entry.getContactId();
-              //                            db = new contactsDao();
+              //                            db = new ContactsDao();
               //                            db.connect();
               Address address = db.getAddress(contactId);
               //                            db.disconnect();
@@ -355,7 +355,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
           log.debug("SERVER: {}", response);
 
           if (response.isSuccessfully()) {
-            //                        db = new contactsDao();
+            //                        db = new ContactsDao();
             //                        db.connect();
             contactId = db.saveRecord(address);
             //                        db.disconnect();
@@ -665,7 +665,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
         case 2303:
           if (response.getReasonCode() == 9003) {
             // Cancello il contatto dal db locale
-            //                        db = new contactsDao();
+            //                        db = new ContactsDao();
             //                        db.connect();
 
             /*2012.06.15: Modifica libreria ITNIC*/
@@ -678,7 +678,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
               selectedIndex = addressListPanel.setSelectedIndex(selectedIndex);
               ListEntry entry = addressListPanel.getSelectedListEntry();
               if (entry != null) {
-                //                                db = new contactsDao();
+                //                                db = new ContactsDao();
                 //                                db.connect();
                 Address address = db.getAddress(entry.getContactId());
                 //                                db.disconnect();
@@ -734,7 +734,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
     ListEntry entry = (ListEntry) entryList.getSelectedValue();
     if (entry != null) {
       String contactId = entry.getContactId();
-      //            db = new contactsDao();
+      //            db = new ContactsDao();
       //            db.connect();
       Address address = db.getAddress(contactId);
       //            db.disconnect();
@@ -747,7 +747,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
   private static String selectedContactId;
 
   private int selectedEntry = -1;
-  private contactsDao db;
+  private ContactsDao db;
   private WindowAdapter windowAdapter;
 
   /** {@inheritDoc} */

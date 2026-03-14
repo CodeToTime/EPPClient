@@ -23,10 +23,10 @@ package com.codetotime.eppclient;
 import com.codetotime.eppclient.config.EppParams;
 import com.codetotime.eppclient.config.ManageParameters;
 import com.codetotime.eppclient.contacts.ContactsManagement;
+import com.codetotime.eppclient.db.ContactsDao;
 import com.codetotime.eppclient.db.DbExporter;
-import com.codetotime.eppclient.db.contactsDao;
-import com.codetotime.eppclient.db.domainsDao;
-import com.codetotime.eppclient.db.messagesDao;
+import com.codetotime.eppclient.db.DomainsDao;
+import com.codetotime.eppclient.db.MessagesDao;
 import com.codetotime.eppclient.domains.DomainsManagement;
 import com.codetotime.eppclient.importer.TxtImport;
 import com.codetotime.eppclient.messages.Message;
@@ -61,17 +61,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Application main frame: initialises the EPP connection, DAOs, and all management panels, and
+ * Application Main frame: initialises the EPP connection, DAOs, and all management panels, and
  * wires together the UI lifecycle with the EPP session lifecycle.
  */
-public class main extends JFrame implements WindowListener {
+public class Main extends JFrame implements WindowListener {
 
-  private static final Logger log = LoggerFactory.getLogger(main.class);
+  private static final Logger log = LoggerFactory.getLogger(Main.class);
   public EppUplink eppUplink;
 
-  public messagesDao messagesDao;
-  public domainsDao domainsDao;
-  public contactsDao contactsDao;
+  public MessagesDao messagesDao;
+  public DomainsDao domainsDao;
+  public ContactsDao contactsDao;
 
   public String paramPrefix;
 
@@ -89,13 +89,13 @@ public class main extends JFrame implements WindowListener {
     EventQueue.invokeLater(
         new Runnable() {
           public void run() {
-            new main().setVisible(true);
+            new Main().setVisible(true);
           }
         });
   }
 
   /** Creates new form mainFrame. */
-  public main() {
+  public Main() {
     System.setProperty(
         "org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
     initComponents();
@@ -103,11 +103,11 @@ public class main extends JFrame implements WindowListener {
     setVersion(com.codetotime.eppclient.BuildInfo.BUILD_VERSION);
 
     try {
-      messagesDao = new messagesDao();
+      messagesDao = new MessagesDao();
       messagesDao.connect();
-      domainsDao = new domainsDao();
+      domainsDao = new DomainsDao();
       domainsDao.connect();
-      contactsDao = new contactsDao();
+      contactsDao = new ContactsDao();
       contactsDao.connect();
 
       eppUplink = new EppUplink(this);
@@ -144,11 +144,11 @@ public class main extends JFrame implements WindowListener {
 
   /** Reinitialises the DAO connections and refreshes the UI after a configuration change. */
   public void windowReset() {
-    messagesDao = new messagesDao();
+    messagesDao = new MessagesDao();
     messagesDao.connect();
-    domainsDao = new domainsDao();
+    domainsDao = new DomainsDao();
     domainsDao.connect();
-    contactsDao = new contactsDao();
+    contactsDao = new ContactsDao();
     contactsDao.connect();
 
     eppUplink = new EppUplink(this);
@@ -239,8 +239,8 @@ public class main extends JFrame implements WindowListener {
     lblSoci = new JLabel();
     nextMsg = new JTextField();
     lblNextMsg = new JLabel();
-    lblEPPworking = new JLabel();
-    EPPonoff = new JButton();
+    lblEppWorking = new JLabel();
+    eppOnOff = new JButton();
     lblVersion = new JLabel();
     btnContact = new JButton();
     btnDomain = new JButton();
@@ -424,14 +424,14 @@ public class main extends JFrame implements WindowListener {
             0,
             0));
 
-    // ---- lblEPPworking ----
-    lblEPPworking.setFont(new Font("Tahoma", Font.PLAIN, 10));
-    lblEPPworking.setHorizontalAlignment(SwingConstants.TRAILING);
-    lblEPPworking.setIcon(new ImageIcon(getClass().getResource("/gear.gif")));
-    lblEPPworking.setText("sessione EPP non attiva");
-    lblEPPworking.setHorizontalTextPosition(SwingConstants.LEADING);
+    // ---- lblEppWorking ----
+    lblEppWorking.setFont(new Font("Tahoma", Font.PLAIN, 10));
+    lblEppWorking.setHorizontalAlignment(SwingConstants.TRAILING);
+    lblEppWorking.setIcon(new ImageIcon(getClass().getResource("/gear.gif")));
+    lblEppWorking.setText("sessione EPP non attiva");
+    lblEppWorking.setHorizontalTextPosition(SwingConstants.LEADING);
     contentPane.add(
-        lblEPPworking,
+        lblEppWorking,
         new GridBagConstraints(
             1,
             16,
@@ -445,11 +445,11 @@ public class main extends JFrame implements WindowListener {
             0,
             0));
 
-    // ---- EPPonoff ----
-    EPPonoff.setText("Attiva Sessione");
-    EPPonoff.addActionListener(e -> EPPonoffActionPerformed(e));
+    // ---- eppOnOff ----
+    eppOnOff.setText("Attiva Sessione");
+    eppOnOff.addActionListener(e -> eppOnOffActionPerformed(e));
     contentPane.add(
-        EPPonoff,
+        eppOnOff,
         new GridBagConstraints(
             0,
             16,
@@ -653,9 +653,9 @@ public class main extends JFrame implements WindowListener {
     messagesMenu.setVisible(true);
   } // GEN-LAST:event_btnMsgActionPerformed
 
-  private void EPPonoffActionPerformed(
+  private void eppOnOffActionPerformed(
       java.awt.event.ActionEvent evt) { // GEN-FIRST:event_EPPonoffActionPerformed
-    if (isActiveEPP) {
+    if (isActiveEpp) {
       eppUplink.gracefulStop();
     } else {
       eppUplink.start();
@@ -723,13 +723,13 @@ public class main extends JFrame implements WindowListener {
             if (error != null) {
               error.printStackTrace();
               JOptionPane.showMessageDialog(
-                  main.this,
+                  Main.this,
                   "Errore durante l'esportazione: " + error.getMessage(),
                   "Errore",
                   JOptionPane.ERROR_MESSAGE);
             } else {
               JOptionPane.showMessageDialog(
-                  main.this,
+                  Main.this,
                   "Esportazione completata:\n" + destFile.getAbsolutePath(),
                   "Operazione completata",
                   JOptionPane.INFORMATION_MESSAGE);
@@ -753,7 +753,7 @@ public class main extends JFrame implements WindowListener {
    *
    * @param txt the text to display
    */
-  public void setMSGQ(String txt) {
+  public void setMsgQ(String txt) {
     msgQ.setText(txt);
   }
 
@@ -789,29 +789,29 @@ public class main extends JFrame implements WindowListener {
    *
    * @param enableFlag {@code 1} to enable, {@code 0} to disable
    */
-  public void setActiveEPP(int enableFlag) {
-    isActiveEPP = enableFlag == 1;
+  public void setActiveEpp(int enableFlag) {
+    isActiveEpp = enableFlag == 1;
     if (enableFlag == 1) {
-      EPPonoff.setText("Termina Sessione");
-      lblEPPworking.setText("Sessione EPP attiva");
-      lblEPPworking.setEnabled(true);
-      EPPonoff.setEnabled(true);
+      eppOnOff.setText("Termina Sessione");
+      lblEppWorking.setText("Sessione EPP attiva");
+      lblEppWorking.setEnabled(true);
+      eppOnOff.setEnabled(true);
     } else if (enableFlag == 0) {
-      EPPonoff.setText("Attiva Sessione");
-      lblEPPworking.setText("Sessione EPP non attiva");
-      lblEPPworking.setEnabled(false);
-      EPPonoff.setEnabled(true);
+      eppOnOff.setText("Attiva Sessione");
+      lblEppWorking.setText("Sessione EPP non attiva");
+      lblEppWorking.setEnabled(false);
+      eppOnOff.setEnabled(true);
     } else if (enableFlag == 2) {
-      EPPonoff.setEnabled(false);
-      lblEPPworking.setEnabled(false);
+      eppOnOff.setEnabled(false);
+      lblEppWorking.setEnabled(false);
     }
 
-    domainsMenu.setEppEnablement(isActiveEPP);
-    contactsMenu.setEppEnablement(isActiveEPP);
-    messagesMenu.setEppEnablement(isActiveEPP);
-    configMenu.setEppEnablement(isActiveEPP);
+    domainsMenu.setEppEnablement(isActiveEpp);
+    contactsMenu.setEppEnablement(isActiveEpp);
+    messagesMenu.setEppEnablement(isActiveEpp);
+    configMenu.setEppEnablement(isActiveEpp);
     if (importMenu.isVisible()) {
-      importMenu.setVisible(isActiveEPP);
+      importMenu.setVisible(isActiveEpp);
     }
   }
 
@@ -839,8 +839,8 @@ public class main extends JFrame implements WindowListener {
   private JLabel lblSoci;
   private JTextField nextMsg;
   private JLabel lblNextMsg;
-  private JLabel lblEPPworking;
-  private JButton EPPonoff;
+  private JLabel lblEppWorking;
+  private JButton eppOnOff;
   private JLabel lblVersion;
   private JButton btnContact;
   private JButton btnDomain;
@@ -851,7 +851,7 @@ public class main extends JFrame implements WindowListener {
   private JButton btnImportFromTxt;
   // End of variables declaration//GEN-END:variables
 
-  private boolean isActiveEPP = false;
+  private boolean isActiveEpp = false;
 
   private DomainsManagement domainsMenu;
   private ContactsManagement contactsMenu;
@@ -860,8 +860,8 @@ public class main extends JFrame implements WindowListener {
 
   private TxtImport importMenu;
 
-  private class btnInformazioni extends AbstractAction {
-    private btnInformazioni() {
+  private class BtnInformazioni extends AbstractAction {
+    private BtnInformazioni() {
       // JFormDesigner - Action initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
       // @formatter:off
 

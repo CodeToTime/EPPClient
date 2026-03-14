@@ -22,8 +22,8 @@ package com.codetotime.eppclient.uplink;
 
 import com.codetotime.eppclient.CustomLogin;
 import com.codetotime.eppclient.ErrorHandler;
+import com.codetotime.eppclient.Main;
 import com.codetotime.eppclient.config.EppParams;
-import com.codetotime.eppclient.main;
 import com.codetotime.eppclient.messages.Message;
 import it.nic.epp.client.commands.interfaces.IEppRequest;
 import it.nic.epp.client.commands.query.Poll;
@@ -43,29 +43,29 @@ import org.slf4j.LoggerFactory;
 class EppThread extends Thread {
   private static final Logger log = LoggerFactory.getLogger(EppThread.class);
 
-  public EppThread(main mainFrame) {
+  public EppThread(Main mainFrame) {
     this.mainFrame = mainFrame;
   }
 
   @Override
   public void run() {
     isRunning = true;
-    mainFrame.setActiveEPP(2);
+    mainFrame.setActiveEpp(2);
 
     HttpBaseResponse response = null;
 
     try {
-      URI EppThread = new URI(EppParams.getParameter("EppClient.EppThread"));
+      URI eppThreadUri = new URI(EppParams.getParameter("EppClient.EppThread"));
 
       if (EppParams.getParameter("EppClient.proxyHost").length() > 0
           && EppParams.getParameter("EppClient.proxyPort").length() > 0) {
         client =
             new Client(
-                EppThread.toString(),
+                eppThreadUri.toString(),
                 EppParams.getParameter("EppClient.proxyHost"),
                 Integer.parseInt(EppParams.getParameter("EppClient.proxyPort")));
       } else {
-        client = new Client(EppThread.toString());
+        client = new Client(eppThreadUri.toString());
       }
 
       CustomLogin login =
@@ -79,8 +79,8 @@ class EppThread extends Thread {
       response = client.sendCommand(login);
       log.info("SERVER login response: *RESPONSE*");
       if (response.isSuccessfully()) {
-        EPPclosable = false;
-        mainFrame.setActiveEPP(1);
+        eppClosable = false;
+        mainFrame.setActiveEpp(1);
 
         LoginResponseExt responseExtension = (LoginResponseExt) response.getResponseExtension();
         if (responseExtension != null) {
@@ -100,7 +100,7 @@ class EppThread extends Thread {
           }
         }
       } else {
-        mainFrame.setActiveEPP(0);
+        mainFrame.setActiveEpp(0);
         if (response.getResultCode() == 2200) {
           if (response.getReasonCode() == 6004) {
             JOptionPane.showMessageDialog(
@@ -150,21 +150,21 @@ class EppThread extends Thread {
     } catch (XmlException v) {
       ErrorHandler.error(log, v, "Errore XML", mainFrame);
     } finally {
-      if (!EPPclosable) {
-        mainFrame.setActiveEPP(2);
+      if (!eppClosable) {
+        mainFrame.setActiveEpp(2);
         try {
-          if (!EPPclosable) {
+          if (!eppClosable) {
             Logout logout = new Logout();
             log.info("CLIENT logout command: {}", logout.toString());
             response = client.sendCommand(logout);
             log.info("SERVER logout response: {}", response.toString());
             if (response.isSuccessfully()) {
-              EPPclosable = true;
-              mainFrame.setActiveEPP(0);
+              eppClosable = true;
+              mainFrame.setActiveEpp(0);
             } else {
               if (response.getResultCode() == 2002) {
-                EPPclosable = true;
-                mainFrame.setActiveEPP(0);
+                eppClosable = true;
+                mainFrame.setActiveEpp(0);
               }
             }
           }
@@ -194,14 +194,14 @@ class EppThread extends Thread {
       }
       this.interrupt();
       try {
-        for (int i = 0; i < 10 && !EPPclosable; i++) {
+        for (int i = 0; i < 10 && !eppClosable; i++) {
           Thread.sleep(500);
         }
       } catch (InterruptedException e) {
         log.debug("EPP thread interrupted while graceful stopping: {}", e.getMessage());
       }
     }
-    return EPPclosable;
+    return eppClosable;
   }
 
   public Boolean doPoll() throws XmlException, IOException {
@@ -226,7 +226,7 @@ class EppThread extends Thread {
       log.info("CLIENT poll: {}", pollCmd.toString());
       log.info("SERVER poll response: {}", response.toString());
       if (response.isSuccessfully()) {
-        mainFrame.setMSGQ(Integer.toString(response.getMsgQCount()));
+        mainFrame.setMsgQ(Integer.toString(response.getMsgQCount()));
         if (response.getMsgQCount() > 0) {
 
           if (mainFrame.messagesDao.getMessage(response.getMsgQId()) == null) {
@@ -305,7 +305,7 @@ class EppThread extends Thread {
               "Errore Polling",
               JOptionPane.WARNING_MESSAGE);
           this.gracefulStop();
-          mainFrame.setActiveEPP(0);
+          mainFrame.setActiveEpp(0);
         }
       }
 
@@ -320,13 +320,13 @@ class EppThread extends Thread {
       throws org.apache.xmlbeans.XmlException, IOException {
     HttpBaseResponse response = null;
     try {
-      while (isWaitingEPPresponse) {
+      while (isWaitingEppResponse) {
         Thread.sleep(100);
       }
 
-      isWaitingEPPresponse = true;
+      isWaitingEppResponse = true;
       response = client.sendCommand(command);
-      isWaitingEPPresponse = false;
+      isWaitingEppResponse = false;
 
     } catch (InterruptedException ex) {
       log.debug("Interrupted while waiting for EPP uplink availability.");
@@ -340,9 +340,9 @@ class EppThread extends Thread {
   }
 
   private Client client = null;
-  private boolean EPPclosable = true;
+  private boolean eppClosable = true;
   private boolean isClosing = false;
   private boolean isRunning = false;
-  private boolean isWaitingEPPresponse = false;
-  private main mainFrame;
+  private boolean isWaitingEppResponse = false;
+  private Main mainFrame;
 }

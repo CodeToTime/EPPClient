@@ -20,7 +20,7 @@
 
 package com.codetotime.eppclient.importer;
 
-import com.codetotime.eppclient.main;
+import com.codetotime.eppclient.Main;
 import com.codetotime.eppclient.uplink.EppUplink;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -40,10 +40,10 @@ import org.slf4j.LoggerFactory;
 public class TxtImport extends JFrame {
   private static final Logger log = LoggerFactory.getLogger(TxtImport.class);
 
-  private main mainFrame;
+  private Main mainFrame;
 
   /** Creates new form TxtImport. */
-  public TxtImport(main mainFrame) {
+  public TxtImport(Main mainFrame) {
     initComponents();
 
     this.mainFrame = mainFrame;

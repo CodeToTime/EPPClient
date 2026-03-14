@@ -39,8 +39,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** DAO for persisting and retrieving EPP poll messages from the local database. */
-public class messagesDao {
-  private static final Logger log = LoggerFactory.getLogger(messagesDao.class);
+public class MessagesDao {
+  private static final Logger log = LoggerFactory.getLogger(MessagesDao.class);
 
   private static final String BUNDLE_NAME = "com.codetotime.eppclient.db.messages";
 
@@ -61,7 +61,7 @@ public class messagesDao {
   }
 
   /** Creates a new instance of AddressDao. */
-  public messagesDao() {
+  public MessagesDao() {
     this("messages");
   }
 
@@ -70,11 +70,11 @@ public class messagesDao {
    *
    * @param addressBookName the Derby database name to use
    */
-  public messagesDao(String addressBookName) {
+  public MessagesDao(String addressBookName) {
     this.dbName = addressBookName;
 
-    setDBSystemDir();
-    dbProperties = loadDBProperties();
+    setDbSystemDir();
+    dbProperties = loadDbProperties();
 
     if (dbProperties.getProperty("derby.url").contains("postgresql")) {
       dbProperties.put("db.schema", "public");
@@ -101,7 +101,7 @@ public class messagesDao {
             + "    ACTIONEDFLAG          SMALLINT"
             + ")";
 
-    strCreateAddressTableMYSQL =
+    strCreateAddressTableMysql =
         "create table IF NOT EXISTS "
             + dbProperties.getProperty("db.schema")
             + "."
@@ -198,16 +198,16 @@ public class messagesDao {
   }
 
   private boolean dbExists() {
-    boolean bExists = false;
+    boolean exists = false;
     String dbLocation = getDatabaseLocation();
     File dbFileDir = new File(dbLocation);
     if (dbFileDir.exists()) {
-      bExists = true;
+      exists = true;
     }
-    return bExists;
+    return exists;
   }
 
-  private void setDBSystemDir() {
+  private void setDbSystemDir() {
     // decide on the db system directory
     String userHomeDir = System.getProperty("user.home", ".");
     String systemDir = userHomeDir + "/.eppclient";
@@ -235,9 +235,9 @@ public class messagesDao {
     }
   }
 
-  private Properties loadDBProperties() {
+  private Properties loadDbProperties() {
     InputStream dbPropInputStream = null;
-    dbPropInputStream = messagesDao.class.getResourceAsStream("messages.properties");
+    dbPropInputStream = MessagesDao.class.getResourceAsStream("messages.properties");
     dbProperties = new Properties();
     try {
       dbProperties.load(dbPropInputStream);
@@ -272,17 +272,17 @@ public class messagesDao {
 
   private boolean createTables(Connection dbConnection) {
     log.info("Creazione tabelle in corso...");
-    boolean bCreatedTables = false;
+    boolean createdTables = false;
     Statement statement = null;
     try {
       statement = dbConnection.createStatement();
       if (dbProperties.getProperty("derby.url").contains("mariadb")
           || dbProperties.getProperty("derby.url").contains("postgresql")) {
-        statement.execute(strCreateAddressTableMYSQL);
+        statement.execute(strCreateAddressTableMysql);
       } else {
         statement.execute(strCreateAddressTable);
       }
-      bCreatedTables = true;
+      createdTables = true;
       try {
         Thread.sleep(1000);
       } catch (InterruptedException e) {
@@ -291,7 +291,7 @@ public class messagesDao {
     } catch (SQLException ex) {
       log.error("Error creating tables", ex);
     }
-    return bCreatedTables;
+    return createdTables;
   }
 
   /**
@@ -300,31 +300,31 @@ public class messagesDao {
    * @return {@code true} if the tables were dropped successfully
    */
   public boolean dropTables() {
-    boolean bDroppedTables = false;
+    boolean droppedTables = false;
     try {
       stmtDropMessageTable.clearParameters();
       stmtDropMessageTable.execute();
-      bDroppedTables = true;
+      droppedTables = true;
     } catch (SQLException ex) {
       log.error("Error dropping tables", ex);
     }
-    return bDroppedTables;
+    return droppedTables;
   }
 
   private boolean createDatabase() {
-    boolean bCreated = false;
+    boolean created = false;
     Connection dbConnection = null;
 
     String dbUrl = getDatabaseUrl();
     dbProperties.put("create", "true");
     try {
       dbConnection = DriverManager.getConnection(dbUrl, dbProperties);
-      bCreated = createTables(dbConnection);
+      created = createTables(dbConnection);
     } catch (SQLException ex) {
       log.error("Error creating database", ex);
     }
     dbProperties.remove("create");
-    return bCreated;
+    return created;
   }
 
   /**
@@ -439,7 +439,7 @@ public class messagesDao {
    * @return {@code true} if the record was updated successfully
    */
   public boolean editRecord(Message record) {
-    boolean bEdited = false;
+    boolean edited = false;
     try {
       stmtUpdateExistingRecord.clearParameters();
 
@@ -455,11 +455,11 @@ public class messagesDao {
       stmtUpdateExistingRecord.setString(4, record.getMsgId());
 
       stmtUpdateExistingRecord.executeUpdate();
-      bEdited = true;
+      edited = true;
     } catch (SQLException sqle) {
       log.error("Error editing message record", sqle);
     }
-    return bEdited;
+    return edited;
   }
 
   /**
@@ -469,17 +469,17 @@ public class messagesDao {
    * @return {@code true} if the record was deleted successfully
    */
   public boolean deleteRecord(String msgId) {
-    boolean bDeleted = false;
+    boolean deleted = false;
     try {
       stmtDeleteAddress.clearParameters();
       stmtDeleteAddress.setString(1, msgId);
       stmtDeleteAddress.executeUpdate();
-      bDeleted = true;
+      deleted = true;
     } catch (SQLException sqle) {
       log.error("Error deleting message record", sqle);
     }
 
-    return bDeleted;
+    return deleted;
   }
 
   /**
@@ -577,7 +577,7 @@ public class messagesDao {
 
   private final String strDropMessageTable;
   private final String strCreateAddressTable;
-  private final String strCreateAddressTableMYSQL;
+  private final String strCreateAddressTableMysql;
   private final String strGetAddress;
   private final String strSaveAddress;
   private final String strGetListEntries;

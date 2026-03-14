@@ -20,10 +20,10 @@
 
 package com.codetotime.eppclient.messages;
 
+import com.codetotime.eppclient.Main;
 import com.codetotime.eppclient.config.EppParams;
-import com.codetotime.eppclient.db.messagesDao;
+import com.codetotime.eppclient.db.MessagesDao;
 import com.codetotime.eppclient.importer.ImportDomain;
-import com.codetotime.eppclient.main;
 import com.codetotime.eppclient.uplink.EppUplink;
 import it.nic.epp.client.commands.query.Poll;
 import it.nic.epp.client.commands.transform.DomainTransfer;
@@ -59,16 +59,16 @@ public class MessageDetail extends JFrame {
   private EppUplink eppUplink;
   private Logger log;
   private Message message;
-  private messagesDao db;
+  private MessagesDao db;
   private MessageManagement parentFrame;
-  private main mainFrame;
+  private Main mainFrame;
 
   it.nic.epp.client.responses.CommandResponse response = null;
   PollingResponseResData resData;
   PollingResponseExt extData;
 
   /** Creates new form MessageDetail. */
-  public MessageDetail(main mainFrame, MessageManagement parentFrame, Message messageIn) {
+  public MessageDetail(Main mainFrame, MessageManagement parentFrame, Message messageIn) {
     initComponents();
 
     this.mainFrame = mainFrame;

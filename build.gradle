@@ -49,7 +49,7 @@ test {
 }
 
 application {
-    mainClass = 'com.codetotime.eppclient.main'
+    mainClass = 'com.codetotime.eppclient.Main'
 }
 
 // ShadowJar configuration (fat jar)

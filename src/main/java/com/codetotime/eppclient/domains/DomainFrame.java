@@ -20,7 +20,7 @@
 
 package com.codetotime.eppclient.domains;
 
-import com.codetotime.eppclient.db.domainsDao;
+import com.codetotime.eppclient.db.DomainsDao;
 import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -51,7 +51,7 @@ public class DomainFrame extends JFrame implements ActionListener, ListSelection
     loadFrameIcon();
     windowAdapter = new WindowCloser();
     this.addWindowListener(windowAdapter);
-    db = new domainsDao();
+    db = new DomainsDao();
     db.connect();
     addressActionPanel.addActionListener(this);
     domainPanel.setEditable(false);
@@ -200,7 +200,7 @@ public class DomainFrame extends JFrame implements ActionListener, ListSelection
   // End of variables declaration//GEN-END:variables
 
   private int selectedEntry = -1;
-  private domainsDao db;
+  private DomainsDao db;
   private WindowAdapter windowAdapter;
 
   class WindowCloser extends WindowAdapter {

@@ -20,10 +20,10 @@
 
 package com.codetotime.eppclient.importer;
 
-import com.codetotime.eppclient.db.contactsDao;
-import com.codetotime.eppclient.db.domainsDao;
+import com.codetotime.eppclient.Main;
+import com.codetotime.eppclient.db.ContactsDao;
+import com.codetotime.eppclient.db.DomainsDao;
 import com.codetotime.eppclient.domains.Domain;
-import com.codetotime.eppclient.main;
 import com.codetotime.eppclient.uplink.EppUplink;
 import it.nic.epp.client.commands.query.DomainInfo;
 import it.nic.epp.client.responses.HttpBaseResponse;
@@ -41,12 +41,12 @@ public class ImportDomain {
   private static final Logger log = LoggerFactory.getLogger(ImportDomain.class);
 
   /**
-   * Creates an import task using the given main frame's EPP connection.
+   * Creates an import task using the given Main frame's EPP connection.
    *
-   * @param mainFrame the application main frame providing the EPP connection
+   * @param mainFrame the application Main frame providing the EPP connection
    * @param recurseContacts {@code true} to also import all contacts linked to the domain
    */
-  public ImportDomain(main mainFrame, boolean recurseContacts) {
+  public ImportDomain(Main mainFrame, boolean recurseContacts) {
     this.mainFrame = mainFrame;
     this.eppUplink = mainFrame.eppUplink;
     this.domaindb = mainFrame.domainsDao;
@@ -138,10 +138,10 @@ public class ImportDomain {
   private int importResultCode;
   private int importReasonCode;
   private EppUplink eppUplink;
-  private domainsDao domaindb;
-  private contactsDao contactdb;
+  private DomainsDao domaindb;
+  private ContactsDao contactdb;
   // private String domainName;
   private boolean recurseContacts;
   private boolean closedb = false;
-  private main mainFrame;
+  private Main mainFrame;
 }

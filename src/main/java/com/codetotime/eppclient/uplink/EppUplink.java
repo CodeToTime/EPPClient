@@ -20,8 +20,8 @@
 
 package com.codetotime.eppclient.uplink;
 
+import com.codetotime.eppclient.Main;
 import com.codetotime.eppclient.config.EppParams;
-import com.codetotime.eppclient.main;
 import it.nic.epp.client.commands.interfaces.IEppRequest;
 import it.nic.epp.client.responses.HttpBaseResponse;
 import java.io.IOException;
@@ -34,11 +34,11 @@ import org.apache.xmlbeans.XmlException;
  */
 public class EppUplink {
   /**
-   * Constructs a new EppUplink bound to the given application main frame.
+   * Constructs a new EppUplink bound to the given application Main frame.
    *
-   * @param mainFrame the application main frame, passed through to the EPP thread
+   * @param mainFrame the application Main frame, passed through to the EPP thread
    */
-  public EppUplink(main mainFrame) {
+  public EppUplink(Main mainFrame) {
     this.mainFrame = mainFrame;
   }
 
@@ -136,5 +136,5 @@ public class EppUplink {
   }
 
   private EppThread eppThread = null;
-  private main mainFrame;
+  private Main mainFrame;
 }

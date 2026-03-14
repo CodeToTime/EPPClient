@@ -20,9 +20,9 @@
 
 package com.codetotime.eppclient.importer;
 
+import com.codetotime.eppclient.Main;
 import com.codetotime.eppclient.contacts.Address;
-import com.codetotime.eppclient.db.contactsDao;
-import com.codetotime.eppclient.main;
+import com.codetotime.eppclient.db.ContactsDao;
 import com.codetotime.eppclient.uplink.EppUplink;
 import it.nic.epp.client.commands.query.ContactInfo;
 import it.nic.epp.client.responses.HttpBaseResponse;
@@ -40,10 +40,10 @@ public class ImportContact {
   /**
    * Creates an import task for the given contact ID.
    *
-   * @param mainFrame the application main frame providing the EPP connection
+   * @param mainFrame the application Main frame providing the EPP connection
    * @param contactId the EPP contact handle to import
    */
-  public ImportContact(main mainFrame, String contactId) {
+  public ImportContact(Main mainFrame, String contactId) {
     this.eppUplink = mainFrame.eppUplink;
     this.contactdb = mainFrame.contactsDao;
     this.contactId = contactId;
@@ -207,6 +207,6 @@ public class ImportContact {
   }
 
   private EppUplink eppUplink;
-  private contactsDao contactdb;
+  private ContactsDao contactdb;
   private String contactId;
 }
