@@ -323,7 +323,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                 domainCreate.addHostAttrName(dNameServer[0]);
                 for (int i = 1; i < dNameServer.length; i++) {
                   domainCreate.addHostAttrAddr(
-                      j, dNameServer[i], ipAddressValidator.validateIpAddress(dNameServer[i]));
+                      j, dNameServer[i], IpAddressValidator.validateIpAddress(dNameServer[i]));
                 }
               } catch (Exception e) {
                 log.warn("Invalid IP Address: {}", e.getMessage());
@@ -630,7 +630,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                         domainUpdate.addHostAttrAddrToAdd(
                             countNameServerToAdd - 1,
                             dNameServer[i],
-                            ipAddressValidator.validateIpAddress(dNameServer[i]));
+                            IpAddressValidator.validateIpAddress(dNameServer[i]));
                       }
 
                     } catch (Exception e) {

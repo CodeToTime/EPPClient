@@ -985,7 +985,7 @@ public class DomainPanel extends JPanel {
         if (txtNameServerToAdd.getText().contains("@")) {
           String[] dNameServer = txtNameServerToAdd.getText().split("@");
           for (int i = 1; i < dNameServer.length; i++) {
-            ipAddressValidator.validateIpAddress(dNameServer[i]);
+            IpAddressValidator.validateIpAddress(dNameServer[i]);
           }
         }
         nameServerModel.add(txtNameServer.getModel().getSize(), txtNameServerToAdd.getText());

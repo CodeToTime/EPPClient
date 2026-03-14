@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 /** Validates an IP address string and returns whether it is IPv4 or IPv6. */
-public class ipAddressValidator {
+public class IpAddressValidator {
 
   private static Pattern VALID_IPV4_PATTERN = null;
   private static Pattern VALID_IPV6_PATTERN = null;
