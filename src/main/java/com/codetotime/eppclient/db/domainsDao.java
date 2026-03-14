@@ -538,9 +538,9 @@ public class domainsDao {
       }
       stmtSaveNewRecord.setString(9, record.getValidationCode());
       if (dbProperties.getProperty("derby.url").contains("postgresql")) {
-        stmtSaveNewRecord.setShort(10, (short) (record.isDNSSec() ? 1 : 0));
+        stmtSaveNewRecord.setShort(10, (short) (record.isDnsSec() ? 1 : 0));
       } else {
-        stmtSaveNewRecord.setInt(10, record.isDNSSec() ? 1 : 0);
+        stmtSaveNewRecord.setInt(10, record.isDnsSec() ? 1 : 0);
       }
       stmtSaveNewRecord.setString(11, record.getKeyTag());
       stmtSaveNewRecord.setInt(12, record.getAlg());
@@ -631,9 +631,9 @@ public class domainsDao {
       stmtUpdateExistingRecord.setString(8, record.getValidationCode());
 
       if (dbProperties.getProperty("derby.url").contains("postgresql")) {
-        stmtUpdateExistingRecord.setShort(9, (short) (record.isDNSSec() ? 1 : 0));
+        stmtUpdateExistingRecord.setShort(9, (short) (record.isDnsSec() ? 1 : 0));
       } else {
-        stmtUpdateExistingRecord.setInt(9, record.isDNSSec() ? 1 : 0);
+        stmtUpdateExistingRecord.setInt(9, record.isDnsSec() ? 1 : 0);
       }
       stmtUpdateExistingRecord.setString(10, record.getKeyTag());
       stmtUpdateExistingRecord.setInt(11, record.getAlg());

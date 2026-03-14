@@ -21,7 +21,7 @@
 package com.codetotime.eppclient;
 
 import com.codetotime.eppclient.config.EppParams;
-import com.codetotime.eppclient.config.manageParameters;
+import com.codetotime.eppclient.config.ManageParameters;
 import com.codetotime.eppclient.contacts.ContactsManagement;
 import com.codetotime.eppclient.db.DbExporter;
 import com.codetotime.eppclient.db.contactsDao;
@@ -123,7 +123,7 @@ public class main extends JFrame implements WindowListener {
           JOptionPane.WARNING_MESSAGE);
     }
 
-    configMenu = new manageParameters(this);
+    configMenu = new ManageParameters(this);
     if (com.codetotime.eppclient.BuildInfo.BUILD_VERSION.contains("SNAPSHOT")) {
       JOptionPane.showMessageDialog(
           this,
@@ -800,10 +800,10 @@ public class main extends JFrame implements WindowListener {
       lblEPPworking.setEnabled(false);
     }
 
-    domainsMenu.setEPPEnablement(isActiveEPP);
-    contactsMenu.setEPPEnablement(isActiveEPP);
+    domainsMenu.setEppEnablement(isActiveEPP);
+    contactsMenu.setEppEnablement(isActiveEPP);
     messagesMenu.setEppEnablement(isActiveEPP);
-    configMenu.setEPPEnablement(isActiveEPP);
+    configMenu.setEppEnablement(isActiveEPP);
     if (importMenu.isVisible()) {
       importMenu.setVisible(isActiveEPP);
     }
@@ -849,7 +849,7 @@ public class main extends JFrame implements WindowListener {
 
   private DomainsManagement domainsMenu;
   private ContactsManagement contactsMenu;
-  private manageParameters configMenu;
+  private ManageParameters configMenu;
   private MessageManagement messagesMenu;
 
   private TxtImport importMenu;

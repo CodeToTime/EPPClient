@@ -48,7 +48,7 @@ public class Domain {
    * @param oldStatus current status vector
    * @param expire the domain expiry date
    * @param validationCode Italian registry validation code
-   * @param isDNSSec whether DNSSec is enabled
+   * @param isDnsSec whether DNSSec is enabled
    * @param keyTag DNSSec key tag
    * @param alg DNSSec algorithm identifier
    * @param digestType DNSSec digest type
@@ -64,7 +64,7 @@ public class Domain {
       Vector oldStatus,
       Date expire,
       String validationCode,
-      boolean isDNSSec,
+      boolean isDnsSec,
       String keyTag,
       int alg,
       int digestType,
@@ -93,7 +93,7 @@ public class Domain {
     this.oldStatusV = oldStatus;
     this.expire = expire;
     this.validationCode = validationCode;
-    this.isDNSSec = isDNSSec;
+    this.isDnsSec = isDnsSec;
     this.keyTag = keyTag;
     this.alg = alg;
     this.digestType = digestType;
@@ -215,6 +215,21 @@ public class Domain {
     this.nameServer = nameServer;
   }
 
+  /**
+   * Sets name servers from a Host array, converting each entry to {@code "name@ip"} format.
+   *
+   * @param nameServers the Host objects from an EPP response
+   */
+  public void setNameServer(Host[] nameServers) {
+    if (nameServers != null) {
+      String[] newNameServer = new String[nameServers.length];
+      for (int i = 0; i < nameServers.length; i++) {
+        newNameServer[i] = nameServers[i].name + ":" + nameServers[i].getIps()[0].address;
+      }
+      setNameServer(newNameServer);
+    }
+  }
+
   public String[] getNameServer() {
     return this.nameServer;
   }
@@ -243,12 +258,12 @@ public class Domain {
     this.alg = alg;
   }
 
-  public boolean isDNSSec() {
-    return isDNSSec;
+  public boolean isDnsSec() {
+    return isDnsSec;
   }
 
-  public void setDNSSec(boolean DNSSec) {
-    isDNSSec = DNSSec;
+  public void setDnsSec(boolean dnsSec) {
+    isDnsSec = dnsSec;
   }
 
   public String getKeyTag() {
@@ -257,21 +272,6 @@ public class Domain {
 
   public void setKeyTag(String keyTag) {
     this.keyTag = keyTag;
-  }
-
-  /**
-   * Sets name servers from a Host array, converting each entry to {@code "name@ip"} format.
-   *
-   * @param nameServers the Host objects from an EPP response
-   */
-  public void setNameServer(Host[] nameServers) {
-    if (nameServers != null) {
-      String[] newNameServer = new String[nameServers.length];
-      for (int i = 0; i < nameServers.length; i++) {
-        newNameServer[i] = nameServers[i].name + ":" + nameServers[i].getIps()[0].address;
-      }
-      setNameServer(newNameServer);
-    }
   }
 
   public void setOldNameServer(String[] oldNameServer) {
@@ -388,7 +388,7 @@ public class Domain {
 
   private static final int PRIMENO = 37;
 
-  private boolean isDNSSec;
+  private boolean isDnsSec;
   private int alg;
   private int digestType;
   private String digest;

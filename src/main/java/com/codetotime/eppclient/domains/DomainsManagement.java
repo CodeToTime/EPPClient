@@ -182,10 +182,10 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
   /**
    * Shows or hides the action toolbar based on whether the EPP connection is active.
    *
-   * @param EPPstatus {@code true} if the EPP connection is active
+   * @param eppStatus {@code true} if the EPP connection is active
    */
-  public void setEPPEnablement(boolean EPPstatus) {
-    addressActionPanel.setVisible(EPPstatus);
+  public void setEppEnablement(boolean eppStatus) {
+    addressActionPanel.setVisible(eppStatus);
   }
 
   private void refreshDomainList() {
@@ -337,7 +337,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
           if (!domain.getValidationCode().isEmpty()) {
             domainCreate.setExtValidationCode(domain.getValidationCode());
           }
-          if (domain.isDNSSec()) {
+          if (domain.isDnsSec()) {
             domainCreate.addDsData(
                 Integer.parseInt(domain.getKeyTag()),
                 (short) domain.getAlg(),
@@ -394,7 +394,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
 
             DomainUpdate domainUpdate = new DomainUpdate(domain.getDomainName());
             // domainUpdate.setAllToSecDNSRem();
-            if (domain.isDNSSec()) {
+            if (domain.isDnsSec()) {
               domainUpdate.addDsDataToSecDNSAdd(
                   Integer.parseInt(domain.getKeyTag()),
                   (short) domain.getAlg(),

@@ -55,17 +55,17 @@ class EppThread extends Thread {
     HttpBaseResponse response = null;
 
     try {
-      URI serverURI = new URI(EppParams.getParameter("EppClient.serverURI"));
+      URI EppThread = new URI(EppParams.getParameter("EppClient.EppThread"));
 
       if (EppParams.getParameter("EppClient.proxyHost").length() > 0
           && EppParams.getParameter("EppClient.proxyPort").length() > 0) {
         client =
             new Client(
-                serverURI.toString(),
+                EppThread.toString(),
                 EppParams.getParameter("EppClient.proxyHost"),
                 Integer.parseInt(EppParams.getParameter("EppClient.proxyPort")));
       } else {
-        client = new Client(serverURI.toString());
+        client = new Client(EppThread.toString());
       }
 
       CustomLogin login =

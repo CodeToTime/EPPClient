@@ -180,10 +180,10 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
   /**
    * Shows or hides the action toolbar based on whether the EPP connection is active.
    *
-   * @param EPPstatus {@code true} if the EPP connection is active
+   * @param eppStatus {@code true} if the EPP connection is active
    */
-  public void setEPPEnablement(boolean EPPstatus) {
-    addressActionPanel.setVisible(EPPstatus);
+  public void setEppEnablement(boolean eppStatus) {
+    addressActionPanel.setVisible(eppStatus);
   }
 
   private void cancelAddress() {
@@ -395,7 +395,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
 
           ContactUpdate contactUpdate = new ContactUpdate(address.getContactId());
 
-          Boolean migratedUpdateOK = true;
+          Boolean migratedUpdateOk = true;
 
           if (!contactInfoExt.isRegistrant()) {
             if (address.isIsRegistrantChanged()) {
@@ -442,7 +442,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
               log.debug("SERVER: {}", response);
 
               if (!response.isSuccessfully()) {
-                migratedUpdateOK = false;
+                migratedUpdateOk = false;
                 if (JOptionPane.showConfirmDialog(
                         this,
                         "An error occurred while applying changes to the Registry.\n\n"
@@ -458,7 +458,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
             }
           }
 
-          if (migratedUpdateOK) {
+          if (migratedUpdateOk) {
 
             contactUpdate.setFax(address.getFax());
             contactUpdate.setVoice(address.getVoice());
