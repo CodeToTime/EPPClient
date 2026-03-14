@@ -46,7 +46,7 @@ public class ImportDomain {
    */
   public ImportDomain(main mainFrame, boolean recurseContacts) {
     this.mainFrame = mainFrame;
-    this.EPPuplink = mainFrame.EPPuplink;
+    this.eppUplink = mainFrame.eppUplink;
     this.domaindb = mainFrame.domainsDao;
     this.contactdb = mainFrame.contactsDao;
     this.recurseContacts = recurseContacts;
@@ -69,7 +69,7 @@ public class ImportDomain {
     try {
 
       log.debug("CLIENT: {}", domainInfo);
-      HttpBaseResponse response = EPPuplink.sendCommand(domainInfo);
+      HttpBaseResponse response = eppUplink.sendCommand(domainInfo);
       log.debug("SERVER: {}", response);
 
       if (response.isSuccessfully()) {
@@ -137,7 +137,7 @@ public class ImportDomain {
 
   private int importResultCode;
   private int importReasonCode;
-  private EppUplink EPPuplink;
+  private EppUplink eppUplink;
   private domainsDao domaindb;
   private contactsDao contactdb;
   // private String domainName;

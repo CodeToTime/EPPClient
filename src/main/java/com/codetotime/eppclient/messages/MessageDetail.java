@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory;
  */
 public class MessageDetail extends JFrame {
 
-  private EppUplink EPPuplink;
+  private EppUplink eppUplink;
   private Logger log;
   private Message message;
   private messagesDao db;
@@ -72,7 +72,7 @@ public class MessageDetail extends JFrame {
     initComponents();
 
     this.mainFrame = mainFrame;
-    this.EPPuplink = mainFrame.EPPuplink;
+    this.eppUplink = mainFrame.eppUplink;
     this.parentFrame = parentFrame;
     this.db = mainFrame.messagesDao;
 
@@ -553,7 +553,7 @@ public class MessageDetail extends JFrame {
               domainTransfer.setTransferApprove();
               log.debug("Transfer approve: {}", domainTransfer);
               try {
-                response = EPPuplink.sendCommand(domainTransfer);
+                response = eppUplink.sendCommand(domainTransfer);
               } catch (XmlException e) {
                 log.error("XmlException in btnTransferMouseReleased", e);
               } catch (IOException e) {
@@ -587,7 +587,7 @@ public class MessageDetail extends JFrame {
               domainTransfer.setTransferReject();
               log.debug("Transfer reject: {}", domainTransfer);
               try {
-                response = EPPuplink.sendCommand(domainTransfer);
+                response = eppUplink.sendCommand(domainTransfer);
               } catch (XmlException e) {
                 log.error("XmlException in btnTransferMouseReleased reject", e);
               } catch (IOException e) {
@@ -833,14 +833,14 @@ public class MessageDetail extends JFrame {
       Poll pollCmd = new Poll();
       pollCmd.setAck(msgQid);
       log.debug("ACK: {}", pollCmd);
-      response = EPPuplink.sendCommand(pollCmd);
+      response = eppUplink.sendCommand(pollCmd);
       if (response.isSuccessfully()) {
         ackStatus = true;
         message.setAck(true);
         db.editRecord(message);
         parentFrame.updateTableContent();
         switchAck();
-        EPPuplink.doPoll();
+        eppUplink.doPoll();
       } else {
         if (JOptionPane.showConfirmDialog(
                 this,

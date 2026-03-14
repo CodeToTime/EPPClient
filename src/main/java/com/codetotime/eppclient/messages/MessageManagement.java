@@ -49,7 +49,7 @@ public class MessageManagement extends JFrame {
   public MessageManagement(main mainFrame) {
     initComponents();
     this.mainFrame = mainFrame;
-    this.EPPuplink = mainFrame.EPPuplink;
+    this.eppUplink = mainFrame.eppUplink;
     this.db = mainFrame.messagesDao;
 
     messagesTable.addMouseListener(
@@ -186,7 +186,7 @@ public class MessageManagement extends JFrame {
 
         refresh1.setText("ACK ALL " + imsg);
 
-        if (!EPPuplink.pollMsg()) {
+        if (!eppUplink.pollMsg()) {
           terminateMassAck = true;
         }
       }
@@ -257,7 +257,7 @@ public class MessageManagement extends JFrame {
   private JButton refresh;
   private JButton refresh1;
   // End of variables declaration//GEN-END:variables
-  private EppUplink EPPuplink;
+  private EppUplink eppUplink;
   // DefaultTableModel model = new DefaultTableModel();
   NotEditableTableModel model = new NotEditableTableModel();
   private messagesDao db;

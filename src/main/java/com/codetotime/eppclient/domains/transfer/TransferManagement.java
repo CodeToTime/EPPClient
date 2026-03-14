@@ -45,10 +45,10 @@ public class TransferManagement extends JFrame implements ActionListener {
   private static final Logger log = LoggerFactory.getLogger(TransferManagement.class);
 
   /** Creates new form DomainTransferFrame. */
-  public TransferManagement(EppUplink EPPuplink) {
+  public TransferManagement(EppUplink eppUplink) {
     initComponents();
 
-    this.EPPuplink = EPPuplink;
+    this.eppUplink = eppUplink;
 
     transferActionPanel.addActionListener(this);
 
@@ -151,7 +151,7 @@ public class TransferManagement extends JFrame implements ActionListener {
         }
 
         log.info("CLIENT transfer request: {}", domainTransfer.toString());
-        HttpBaseResponse response = EPPuplink.sendCommand(domainTransfer);
+        HttpBaseResponse response = eppUplink.sendCommand(domainTransfer);
 
         if (response.isSuccessfully()) {
           if (domain.getIsCancel()) {
@@ -210,7 +210,7 @@ public class TransferManagement extends JFrame implements ActionListener {
           domainTransfer.setTransferRequest();
 
           log.info("CLIENT bulk transfer request: {}", domainTransfer.toString());
-          HttpBaseResponse response = EPPuplink.sendCommand(domainTransfer);
+          HttpBaseResponse response = eppUplink.sendCommand(domainTransfer);
 
           if (response.isSuccessfully()) {
             JOptionPane.showMessageDialog(
@@ -257,5 +257,5 @@ public class TransferManagement extends JFrame implements ActionListener {
     }
   }
 
-  private EppUplink EPPuplink;
+  private EppUplink eppUplink;
 }

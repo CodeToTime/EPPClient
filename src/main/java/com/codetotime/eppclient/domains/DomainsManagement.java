@@ -77,7 +77,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
     addressListPanel.addListSelectionListener(this);
 
     this.mainFrame = mainFrame;
-    this.EPPuplink = mainFrame.EPPuplink;
+    this.eppUplink = mainFrame.eppUplink;
     this.db = mainFrame.domainsDao;
 
     refreshDomainList();
@@ -220,7 +220,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
   private void transferAddress() {
     //        addressPanel.clear();
 
-    TransferManagement domainTransferFrame = new TransferManagement(EPPuplink);
+    TransferManagement domainTransferFrame = new TransferManagement(eppUplink);
 
     domainTransferFrame.setVisible(true);
   }
@@ -244,7 +244,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
         try {
           DomainDelete domainDelete = new DomainDelete(domainName);
           log.debug("CLIENT: {}", domainDelete);
-          HttpBaseResponse response = EPPuplink.sendCommand(domainDelete);
+          HttpBaseResponse response = eppUplink.sendCommand(domainDelete);
           log.debug("SERVER: {}", response);
 
           if (response.isSuccessfully()) {
@@ -345,7 +345,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                 parseHex(domain.getDigest()));
           }
           log.debug("CLIENT: {}", domainCreate);
-          HttpBaseResponse response = EPPuplink.sendCommand(domainCreate);
+          HttpBaseResponse response = eppUplink.sendCommand(domainCreate);
           log.debug("SERVER: {}", response);
 
           if (response.isSuccessfully()) {
@@ -386,7 +386,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
         try {
           DomainInfo domainInfo = new DomainInfo();
           domainInfo.setName(domain.getDomainName());
-          HttpBaseResponse response = EPPuplink.sendCommand(domainInfo);
+          HttpBaseResponse response = eppUplink.sendCommand(domainInfo);
           if (response.isSuccessfully()) {
             log.debug("DomainInfo PRIMA: {}", response);
             DomainInfoResponseResData domainInfoResData =
@@ -448,7 +448,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
               domainUpdate.setRegistrant(domain.getRegistrant());
 
               log.debug("CLIENT: {}", domainUpdate);
-              response = EPPuplink.sendCommand(domainUpdate);
+              response = eppUplink.sendCommand(domainUpdate);
               log.debug("SERVER: {}", response);
 
               domainUpdate = new DomainUpdate(domain.getDomainName());
@@ -697,13 +697,13 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
               }
 
               log.debug("CLIENT: {}", domainUpdate);
-              response = EPPuplink.sendCommand(domainUpdate);
+              response = eppUplink.sendCommand(domainUpdate);
               log.debug("SERVER: {}", response);
 
               if (response.isSuccessfully()
                   || (response.getResultCode() == 2003 && response.getReasonCode() == 9019)) {
 
-                response = EPPuplink.sendCommand(domainInfo);
+                response = eppUplink.sendCommand(domainInfo);
                 log.debug("DomainInfo DOPO: {}", response);
 
                 domainInfoResData = (DomainInfoResponseResData) response.getResponseResData();
@@ -818,7 +818,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
       try {
         DomainInfo domainInfo = new DomainInfo(domainName);
         log.debug("CLIENT: {}", domainInfo);
-        HttpBaseResponse response = EPPuplink.sendCommand(domainInfo);
+        HttpBaseResponse response = eppUplink.sendCommand(domainInfo);
         log.debug("SERVER: {}", response);
 
         if (response.isSuccessfully()) {
@@ -968,7 +968,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
         domainCheck.addName(domainName);
       }
 
-      HttpBaseResponse response = EPPuplink.sendCommand(domainCheck);
+      HttpBaseResponse response = eppUplink.sendCommand(domainCheck);
       log.debug("SERVER: {}", response);
 
       if (response.isSuccessfully()) {
@@ -1029,7 +1029,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
       try {
 
         log.debug("CLIENT: {}", domainUpdate);
-        HttpBaseResponse response = EPPuplink.sendCommand(domainUpdate);
+        HttpBaseResponse response = eppUplink.sendCommand(domainUpdate);
         log.debug("SERVER: {}", response);
         if (response.isSuccessfully()) {
           ImportDomain syncDomain = new ImportDomain(mainFrame, true);
@@ -1139,5 +1139,5 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
   // End of variables declaration//GEN-END:variables
 
   private Logger log;
-  private EppUplink EPPuplink;
+  private EppUplink eppUplink;
 }

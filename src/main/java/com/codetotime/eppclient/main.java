@@ -63,7 +63,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * wires together the UI lifecycle with the EPP session lifecycle.
  */
 public class main extends JFrame implements WindowListener {
-  public EppUplink EPPuplink;
+  public EppUplink eppUplink;
 
   public messagesDao messagesDao;
   public domainsDao domainsDao;
@@ -106,7 +106,7 @@ public class main extends JFrame implements WindowListener {
       contactsDao = new contactsDao();
       contactsDao.connect();
 
-      EPPuplink = new EppUplink(this);
+      eppUplink = new EppUplink(this);
 
       domainsMenu = new DomainsManagement(this);
       contactsMenu = new ContactsManagement(this);
@@ -146,7 +146,7 @@ public class main extends JFrame implements WindowListener {
     contactsDao = new contactsDao();
     contactsDao.connect();
 
-    EPPuplink = new EppUplink(this);
+    eppUplink = new EppUplink(this);
 
     domainsMenu = new DomainsManagement(this);
     contactsMenu = new ContactsManagement(this);
@@ -156,15 +156,15 @@ public class main extends JFrame implements WindowListener {
 
   /** {@inheritDoc} */
   public void windowOpened(WindowEvent e) {
-    EPPuplink.start();
+    eppUplink.start();
   }
 
   /** {@inheritDoc} */
   public void windowClosing(WindowEvent e) {
-    if (EPPuplink == null) {
+    if (eppUplink == null) {
       System.exit(0);
     } else {
-      boolean isClosed = EPPuplink.gracefulStop();
+      boolean isClosed = eppUplink.gracefulStop();
       if (isClosed) {
         System.exit(0);
       } else {
@@ -178,7 +178,7 @@ public class main extends JFrame implements WindowListener {
               JOptionPane.YES_NO_CANCEL_OPTION,
               JOptionPane.WARNING_MESSAGE)) {
             case JOptionPane.YES_OPTION:
-              isClosed = EPPuplink.gracefulStop();
+              isClosed = eppUplink.gracefulStop();
               if (isClosed) {
                 System.exit(0);
               }
@@ -191,7 +191,7 @@ public class main extends JFrame implements WindowListener {
             default:
               // Annullo chiusura
               isCancelled = true;
-              EPPuplink.restart();
+              eppUplink.restart();
               break;
           }
         }
@@ -651,9 +651,9 @@ public class main extends JFrame implements WindowListener {
   private void EPPonoffActionPerformed(
       java.awt.event.ActionEvent evt) { // GEN-FIRST:event_EPPonoffActionPerformed
     if (isActiveEPP) {
-      EPPuplink.gracefulStop();
+      eppUplink.gracefulStop();
     } else {
-      EPPuplink.start();
+      eppUplink.start();
     }
   } // GEN-LAST:event_EPPonoffActionPerformed
 
@@ -735,7 +735,7 @@ public class main extends JFrame implements WindowListener {
 
   private void btnImportFromTxtActionPerformed(
       java.awt.event.ActionEvent evt) { // GEN-FIRST:event_btnImportFromTxtActionPerformed
-    if (EPPuplink.isActive()) {
+    if (eppUplink.isActive()) {
       importMenu.setVisible(true);
     } else {
       sessionNotActiveWarning();

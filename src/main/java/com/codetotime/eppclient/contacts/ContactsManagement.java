@@ -70,7 +70,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
     addressListPanel.addListSelectionListener(this);
 
     this.mainFrame = mainFrame;
-    this.EPPuplink = mainFrame.EPPuplink;
+    this.eppUplink = mainFrame.eppUplink;
     this.db = mainFrame.contactsDao;
 
     refreshContactList();
@@ -225,7 +225,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
         ContactDelete contactDelete = new ContactDelete();
         contactDelete.setId(contactId);
         log.debug("CLIENT: {}", contactDelete);
-        HttpBaseResponse response = EPPuplink.sendCommand(contactDelete);
+        HttpBaseResponse response = eppUplink.sendCommand(contactDelete);
         log.debug("SERVER: {}", response);
 
         if (response.isSuccessfully()) {
@@ -293,7 +293,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
             ContactCheck contactCheck = new ContactCheck();
             contactCheck.addId(address.getContactId());
             try {
-              HttpBaseResponse response = EPPuplink.sendCommand(contactCheck);
+              HttpBaseResponse response = eppUplink.sendCommand(contactCheck);
               log.debug("SERVER: {}", response);
               if (response.isSuccessfully()) {
                 ContactCheckResponseResData resData =
@@ -345,7 +345,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
           }
 
           log.debug("CLIENT: {}", contactCreate);
-          HttpBaseResponse response = EPPuplink.sendCommand(contactCreate);
+          HttpBaseResponse response = eppUplink.sendCommand(contactCreate);
           log.debug("SERVER: {}", response);
 
           if (response.isSuccessfully()) {
@@ -386,7 +386,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
         try {
           ContactInfo contactInfo = new ContactInfo();
           contactInfo.setId(address.getContactId());
-          HttpBaseResponse response = EPPuplink.sendCommand(contactInfo);
+          HttpBaseResponse response = eppUplink.sendCommand(contactInfo);
           log.debug("ContactInfo PRIMA: {}", response);
           ContactInfoResponseResData contactInfoResData =
               (ContactInfoResponseResData) response.getResponseResData();
@@ -438,7 +438,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
 
             if (updateMigrated) {
               log.debug("CLIENT: {}", contactUpdate);
-              response = EPPuplink.sendCommand(contactUpdate);
+              response = eppUplink.sendCommand(contactUpdate);
               log.debug("SERVER: {}", response);
 
               if (!response.isSuccessfully()) {
@@ -482,7 +482,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
             contactUpdate.setExtConsForPub(address.getConsentForPublishing());
 
             log.debug("CLIENT: {}", contactUpdate);
-            response = EPPuplink.sendCommand(contactUpdate);
+            response = eppUplink.sendCommand(contactUpdate);
             log.debug("SERVER: {}", response);
 
             if (response.isSuccessfully()) {
@@ -536,7 +536,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
       }
 
       log.debug("CLIENT: {}", contactCheck);
-      HttpBaseResponse response = EPPuplink.sendCommand(contactCheck);
+      HttpBaseResponse response = eppUplink.sendCommand(contactCheck);
       log.debug("SERVER: {}", response);
 
       if (response.isSuccessfully()) {
@@ -583,7 +583,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
       try {
         ContactInfo contactInfo = new ContactInfo(contactId);
         log.debug("CLIENT: {}", contactInfo);
-        HttpBaseResponse response = EPPuplink.sendCommand(contactInfo);
+        HttpBaseResponse response = eppUplink.sendCommand(contactInfo);
         log.debug("SERVER: {}", response);
 
         if (response.isSuccessfully()) {
@@ -755,5 +755,5 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
   private AddressListPanel addressListPanel;
   // End of variables declaration//GEN-END:variables
   private Logger log;
-  private EppUplink EPPuplink;
+  private EppUplink eppUplink;
 }

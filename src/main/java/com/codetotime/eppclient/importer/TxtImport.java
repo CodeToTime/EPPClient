@@ -47,7 +47,7 @@ public class TxtImport extends JFrame {
     initComponents();
 
     this.mainFrame = mainFrame;
-    this.EPPuplink = mainFrame.EPPuplink;
+    this.eppUplink = mainFrame.eppUplink;
   }
 
   @SuppressWarnings("unchecked")
@@ -167,5 +167,5 @@ public class TxtImport extends JFrame {
     jFileChooser1.setEnabled(EPPstatus);
   }
 
-  private EppUplink EPPuplink;
+  private EppUplink eppUplink;
 }
