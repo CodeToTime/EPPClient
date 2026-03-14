@@ -23,7 +23,7 @@ package com.codetotime.eppclient.importer;
 import com.codetotime.eppclient.contacts.Address;
 import com.codetotime.eppclient.db.contactsDao;
 import com.codetotime.eppclient.main;
-import com.codetotime.eppclient.uplink.EPPuplink;
+import com.codetotime.eppclient.uplink.EppUplink;
 import it.nic.epp.client.commands.query.ContactInfo;
 import it.nic.epp.client.responses.HttpBaseResponse;
 import it.nic.epp.client.responses.ext.ContactInfoResponseExt;
@@ -206,7 +206,7 @@ public class ImportContact {
     return importStatus;
   }
 
-  private EPPuplink EPPuplink;
+  private EppUplink EPPuplink;
   private contactsDao contactdb;
   private String contactId;
 }

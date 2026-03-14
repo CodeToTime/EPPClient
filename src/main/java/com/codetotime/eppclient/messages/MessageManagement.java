@@ -22,7 +22,7 @@ package com.codetotime.eppclient.messages;
 
 import com.codetotime.eppclient.db.messagesDao;
 import com.codetotime.eppclient.main;
-import com.codetotime.eppclient.uplink.EPPuplink;
+import com.codetotime.eppclient.uplink.EppUplink;
 import java.awt.Container;
 import java.util.ListIterator;
 import java.util.Vector;
@@ -257,7 +257,7 @@ public class MessageManagement extends JFrame {
   private JButton refresh;
   private JButton refresh1;
   // End of variables declaration//GEN-END:variables
-  private EPPuplink EPPuplink;
+  private EppUplink EPPuplink;
   // DefaultTableModel model = new DefaultTableModel();
   NotEditableTableModel model = new NotEditableTableModel();
   private messagesDao db;

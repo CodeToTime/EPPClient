@@ -20,7 +20,7 @@
 
 package com.codetotime.eppclient.domains.transfer;
 
-import com.codetotime.eppclient.uplink.EPPuplink;
+import com.codetotime.eppclient.uplink.EppUplink;
 import it.nic.epp.client.commands.transform.DomainTransfer;
 import it.nic.epp.client.exceptions.EppSchemaException;
 import it.nic.epp.client.responses.HttpBaseResponse;
@@ -45,7 +45,7 @@ public class TransferManagement extends JFrame implements ActionListener {
   private static final Logger log = LoggerFactory.getLogger(TransferManagement.class);
 
   /** Creates new form DomainTransferFrame. */
-  public TransferManagement(EPPuplink EPPuplink) {
+  public TransferManagement(EppUplink EPPuplink) {
     initComponents();
 
     this.EPPuplink = EPPuplink;
@@ -257,5 +257,5 @@ public class TransferManagement extends JFrame implements ActionListener {
     }
   }
 
-  private EPPuplink EPPuplink;
+  private EppUplink EPPuplink;
 }

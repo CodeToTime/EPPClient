@@ -23,7 +23,7 @@ package com.codetotime.eppclient.contacts;
 import com.codetotime.eppclient.db.contactsDao;
 import com.codetotime.eppclient.importer.ImportContact;
 import com.codetotime.eppclient.main;
-import com.codetotime.eppclient.uplink.EPPuplink;
+import com.codetotime.eppclient.uplink.EppUplink;
 import it.nic.epp.client.commands.query.ContactCheck;
 import it.nic.epp.client.commands.query.ContactInfo;
 import it.nic.epp.client.commands.transform.ContactCreate;
@@ -755,5 +755,5 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
   private AddressListPanel addressListPanel;
   // End of variables declaration//GEN-END:variables
   private Logger log;
-  private EPPuplink EPPuplink;
+  private EppUplink EPPuplink;
 }

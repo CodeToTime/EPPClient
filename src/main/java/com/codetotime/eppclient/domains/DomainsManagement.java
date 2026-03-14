@@ -24,7 +24,7 @@ import com.codetotime.eppclient.db.domainsDao;
 import com.codetotime.eppclient.domains.transfer.TransferManagement;
 import com.codetotime.eppclient.importer.ImportDomain;
 import com.codetotime.eppclient.main;
-import com.codetotime.eppclient.uplink.EPPuplink;
+import com.codetotime.eppclient.uplink.EppUplink;
 import it.nic.epp.client.commands.converters.AbstractHostsConverter.Host;
 import it.nic.epp.client.commands.query.DomainCheck;
 import it.nic.epp.client.commands.query.DomainInfo;
@@ -1139,5 +1139,5 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
   // End of variables declaration//GEN-END:variables
 
   private Logger log;
-  private EPPuplink EPPuplink;
+  private EppUplink EPPuplink;
 }

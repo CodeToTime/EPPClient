@@ -21,7 +21,7 @@
 package com.codetotime.eppclient.importer;
 
 import com.codetotime.eppclient.main;
-import com.codetotime.eppclient.uplink.EPPuplink;
+import com.codetotime.eppclient.uplink.EppUplink;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.TextArea;
@@ -167,5 +167,5 @@ public class TxtImport extends JFrame {
     jFileChooser1.setEnabled(EPPstatus);
   }
 
-  private EPPuplink EPPuplink;
+  private EppUplink EPPuplink;
 }

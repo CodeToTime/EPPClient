@@ -32,13 +32,13 @@ import org.apache.xmlbeans.XmlException;
  * EPPthread}, configures proxy settings from application parameters, and delegates command dispatch
  * and poll operations to the active thread.
  */
-public class EPPuplink {
+public class EppUplink {
   /**
-   * Constructs a new EPPuplink bound to the given application main frame.
+   * Constructs a new EppUplink bound to the given application main frame.
    *
    * @param mainFrame the application main frame, passed through to the EPP thread
    */
-  public EPPuplink(main mainFrame) {
+  public EppUplink(main mainFrame) {
     this.mainFrame = mainFrame;
   }
 

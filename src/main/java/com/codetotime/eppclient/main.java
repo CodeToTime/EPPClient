@@ -31,7 +31,8 @@ import com.codetotime.eppclient.domains.DomainsManagement;
 import com.codetotime.eppclient.importer.TxtImport;
 import com.codetotime.eppclient.messages.Message;
 import com.codetotime.eppclient.messages.MessageManagement;
-import com.codetotime.eppclient.uplink.EPPuplink;
+import com.codetotime.eppclient.uplink.EppUplink;
+
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -40,21 +41,18 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
@@ -66,7 +64,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * wires together the UI lifecycle with the EPP session lifecycle.
  */
 public class main extends JFrame implements WindowListener {
-  public EPPuplink EPPuplink;
+  public EppUplink EPPuplink;
 
   public messagesDao messagesDao;
   public domainsDao domainsDao;
@@ -109,7 +107,7 @@ public class main extends JFrame implements WindowListener {
       contactsDao = new contactsDao();
       contactsDao.connect();
 
-      EPPuplink = new EPPuplink(this);
+      EPPuplink = new EppUplink(this);
 
       domainsMenu = new DomainsManagement(this);
       contactsMenu = new ContactsManagement(this);
@@ -149,7 +147,7 @@ public class main extends JFrame implements WindowListener {
     contactsDao = new contactsDao();
     contactsDao.connect();
 
-    EPPuplink = new EPPuplink(this);
+    EPPuplink = new EppUplink(this);
 
     domainsMenu = new DomainsManagement(this);
     contactsMenu = new ContactsManagement(this);

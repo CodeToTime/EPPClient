@@ -24,7 +24,7 @@ import com.codetotime.eppclient.db.contactsDao;
 import com.codetotime.eppclient.db.domainsDao;
 import com.codetotime.eppclient.domains.Domain;
 import com.codetotime.eppclient.main;
-import com.codetotime.eppclient.uplink.EPPuplink;
+import com.codetotime.eppclient.uplink.EppUplink;
 import it.nic.epp.client.commands.query.DomainInfo;
 import it.nic.epp.client.responses.HttpBaseResponse;
 import it.nic.epp.client.responses.resData.DomainInfoResponseResData;
@@ -137,7 +137,7 @@ public class ImportDomain {
 
   private int importResultCode;
   private int importReasonCode;
-  private EPPuplink EPPuplink;
+  private EppUplink EPPuplink;
   private domainsDao domaindb;
   private contactsDao contactdb;
   // private String domainName;

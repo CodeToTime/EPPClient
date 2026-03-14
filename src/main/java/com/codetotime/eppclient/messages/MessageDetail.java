@@ -24,7 +24,7 @@ import com.codetotime.eppclient.config.EPPparams;
 import com.codetotime.eppclient.db.messagesDao;
 import com.codetotime.eppclient.importer.ImportDomain;
 import com.codetotime.eppclient.main;
-import com.codetotime.eppclient.uplink.EPPuplink;
+import com.codetotime.eppclient.uplink.EppUplink;
 import it.nic.epp.client.commands.query.Poll;
 import it.nic.epp.client.commands.transform.DomainTransfer;
 import it.nic.epp.client.exceptions.EppSchemaException;
@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory;
  */
 public class MessageDetail extends JFrame {
 
-  private EPPuplink EPPuplink;
+  private EppUplink EPPuplink;
   private Logger log;
   private Message message;
   private messagesDao db;
