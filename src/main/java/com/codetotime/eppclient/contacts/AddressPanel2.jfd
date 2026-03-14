@@ -9,7 +9,7 @@ new FormModel {
 		} ) {
 			name: "this"
 			add( new FormComponent( "javax.swing.JLabel" ) {
-				name: "lblAddress1"
+				name: "lblStreet"
 				"text": "street"
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 				"gridy": 3
@@ -72,7 +72,7 @@ new FormModel {
 				"insets": new java.awt.Insets( 5, 5, 5, 5 )
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
-				name: "lblState"
+				name: "lblStateOrProvince"
 				"text": "stateOrProvince"
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 				"gridy": 5
@@ -91,7 +91,7 @@ new FormModel {
 				"insets": new java.awt.Insets( 5, 5, 5, 5 )
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
-				name: "lblLastName"
+				name: "lblName"
 				"text": "name"
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 				"gridy": 1
@@ -112,7 +112,7 @@ new FormModel {
 				"insets": new java.awt.Insets( 5, 5, 5, 5 )
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
-				name: "lblFirstName"
+				name: "lblOrg"
 				"text": "org"
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 				"gridy": 2
@@ -133,7 +133,7 @@ new FormModel {
 				"insets": new java.awt.Insets( 5, 5, 5, 5 )
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
-				name: "lblPhone"
+				name: "lblVoice"
 				"text": "voice"
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 				"gridy": 8
@@ -205,7 +205,7 @@ new FormModel {
 				"insets": new java.awt.Insets( 5, 5, 5, 5 )
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
-				name: "lblCountry1"
+				name: "lblRegCode"
 				"text": "regCode"
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 				"gridy": 14
@@ -225,7 +225,7 @@ new FormModel {
 				"insets": new java.awt.Insets( 5, 5, 5, 5 )
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
-				name: "lblCountry2"
+				name: "lblNationalityCode"
 				"text": "nationalityCode"
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 				"gridy": 12
@@ -234,7 +234,7 @@ new FormModel {
 				"insets": new java.awt.Insets( 5, 5, 5, 5 )
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
-				name: "lblCountry3"
+				name: "lblEntityType"
 				"text": "entityType"
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 				"gridy": 13
@@ -252,7 +252,7 @@ new FormModel {
 				"vAlign": 0
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
-				name: "lblPhone1"
+				name: "lblFax"
 				"font": new java.awt.Font( "Tahoma", 2, 11 )
 				"text": "fax"
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
@@ -274,7 +274,7 @@ new FormModel {
 				"insets": new java.awt.Insets( 5, 5, 5, 5 )
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
-				name: "lblLastName1"
+				name: "lblContactId"
 				"text": "contactID"
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 				"hAlign": 4
@@ -331,7 +331,7 @@ new FormModel {
 				"vAlign": 0
 			} )
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-				name: "jScrollPane1"
+				name: "statusScroll"
 				add( new FormComponent( "javax.swing.JList" ) {
 					name: "txtStatus"
 					"model": new javax.swing.DefaultListModel {

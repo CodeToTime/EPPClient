@@ -55,47 +55,47 @@ public class AddressPanel2 extends JPanel {
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
 
   private void initComponents() {
-    lblAddress1 = new JLabel();
+    lblStreet = new JLabel();
     txtStreet = new JTextField();
     lblCity = new JLabel();
     txtCity = new JTextField();
     txtStateOrProvince = new JTextField();
     txtPostalCode = new JTextField();
-    lblState = new JLabel();
+    lblStateOrProvince = new JLabel();
     lblPostalCode = new JLabel();
-    lblLastName = new JLabel();
+    lblName = new JLabel();
     txtName = new JTextField();
-    lblFirstName = new JLabel();
+    lblOrg = new JLabel();
     txtOrg = new JTextField();
-    lblPhone = new JLabel();
+    lblVoice = new JLabel();
     txtVoice = new JTextField();
     lblEmail = new JLabel();
     txtEmail = new JTextField();
     lblCountry = new JLabel();
     txtCountryCode = new JTextField();
     txtRegCode = new JTextField();
-    lblCountry1 = new JLabel();
+    lblRegCode = new JLabel();
     txtNationalityCode = new JTextField();
-    lblCountry2 = new JLabel();
-    lblCountry3 = new JLabel();
+    lblNationalityCode = new JLabel();
+    lblEntityType = new JLabel();
     txtIsRegistrant = new JCheckBox();
-    lblPhone1 = new JLabel();
+    lblFax = new JLabel();
     txtFax = new JTextField();
-    lblLastName1 = new JLabel();
+    lblContactId = new JLabel();
     txtContactId = new JTextField();
     txtAutoContactId = new JCheckBox();
     txtEntityType = new JComboBox<>();
     txtConsentForPublishing = new JCheckBox();
-    jScrollPane1 = new JScrollPane();
+    statusScroll = new JScrollPane();
     txtStatus = new JList<>();
 
     // ======== this ========
     setLayout(new GridBagLayout());
 
-    // ---- lblAddress1 ----
-    lblAddress1.setText("street");
+    // ---- lblStreet ----
+    lblStreet.setText("street");
     add(
-        lblAddress1,
+        lblStreet,
         new GridBagConstraints(
             0,
             3,
@@ -197,10 +197,10 @@ public class AddressPanel2 extends JPanel {
             0,
             0));
 
-    // ---- lblState ----
-    lblState.setText("stateOrProvince");
+    // ---- lblStateOrProvince ----
+    lblStateOrProvince.setText("stateOrProvince");
     add(
-        lblState,
+        lblStateOrProvince,
         new GridBagConstraints(
             0,
             5,
@@ -231,10 +231,10 @@ public class AddressPanel2 extends JPanel {
             0,
             0));
 
-    // ---- lblLastName ----
-    lblLastName.setText("name");
+    // ---- lblName ----
+    lblName.setText("name");
     add(
-        lblLastName,
+        lblName,
         new GridBagConstraints(
             0,
             1,
@@ -266,10 +266,10 @@ public class AddressPanel2 extends JPanel {
             0,
             0));
 
-    // ---- lblFirstName ----
-    lblFirstName.setText("org");
+    // ---- lblOrg ----
+    lblOrg.setText("org");
     add(
-        lblFirstName,
+        lblOrg,
         new GridBagConstraints(
             0,
             2,
@@ -301,10 +301,10 @@ public class AddressPanel2 extends JPanel {
             0,
             0));
 
-    // ---- lblPhone ----
-    lblPhone.setText("voice");
+    // ---- lblVoice ----
+    lblVoice.setText("voice");
     add(
-        lblPhone,
+        lblVoice,
         new GridBagConstraints(
             0,
             8,
@@ -422,10 +422,10 @@ public class AddressPanel2 extends JPanel {
             0,
             0));
 
-    // ---- lblCountry1 ----
-    lblCountry1.setText("regCode");
+    // ---- lblRegCode ----
+    lblRegCode.setText("regCode");
     add(
-        lblCountry1,
+        lblRegCode,
         new GridBagConstraints(
             0,
             14,
@@ -456,10 +456,10 @@ public class AddressPanel2 extends JPanel {
             0,
             0));
 
-    // ---- lblCountry2 ----
-    lblCountry2.setText("nationalityCode");
+    // ---- lblNationalityCode ----
+    lblNationalityCode.setText("nationalityCode");
     add(
-        lblCountry2,
+        lblNationalityCode,
         new GridBagConstraints(
             0,
             12,
@@ -473,10 +473,10 @@ public class AddressPanel2 extends JPanel {
             0,
             0));
 
-    // ---- lblCountry3 ----
-    lblCountry3.setText("entityType");
+    // ---- lblEntityType ----
+    lblEntityType.setText("entityType");
     add(
-        lblCountry3,
+        lblEntityType,
         new GridBagConstraints(
             0,
             13,
@@ -508,11 +508,11 @@ public class AddressPanel2 extends JPanel {
             0,
             0));
 
-    // ---- lblPhone1 ----
-    lblPhone1.setFont(new Font("Tahoma", Font.ITALIC, 11));
-    lblPhone1.setText("fax");
+    // ---- lblFax ----
+    lblFax.setFont(new Font("Tahoma", 2, 11));
+    lblFax.setText("fax");
     add(
-        lblPhone1,
+        lblFax,
         new GridBagConstraints(
             0,
             9,
@@ -544,10 +544,10 @@ public class AddressPanel2 extends JPanel {
             0,
             0));
 
-    // ---- lblLastName1 ----
-    lblLastName1.setText("contactID");
+    // ---- lblContactId ----
+    lblContactId.setText("contactID");
     add(
-        lblLastName1,
+        lblContactId,
         new GridBagConstraints(
             0,
             0,
@@ -632,7 +632,7 @@ public class AddressPanel2 extends JPanel {
             0,
             0));
 
-    // ======== jScrollPane1 ========
+    // ======== statusScroll ========
     {
 
       // ---- txtStatus ----
@@ -656,10 +656,10 @@ public class AddressPanel2 extends JPanel {
       txtStatus.setMinimumSize(new Dimension(150, 25));
       txtStatus.setPreferredSize(new Dimension(150, 25));
       txtStatus.setVisibleRowCount(4);
-      jScrollPane1.setViewportView(txtStatus);
+      statusScroll.setViewportView(txtStatus);
     }
     add(
-        jScrollPane1,
+            statusScroll,
         new GridBagConstraints(
             5,
             0,
@@ -1049,38 +1049,38 @@ public class AddressPanel2 extends JPanel {
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
 
-  private JLabel lblAddress1;
+  private JLabel lblStreet;
   private JTextField txtStreet;
   private JLabel lblCity;
   private JTextField txtCity;
   private JTextField txtStateOrProvince;
   private JTextField txtPostalCode;
-  private JLabel lblState;
+  private JLabel lblStateOrProvince;
   private JLabel lblPostalCode;
-  private JLabel lblLastName;
+  private JLabel lblName;
   private JTextField txtName;
-  private JLabel lblFirstName;
+  private JLabel lblOrg;
   private JTextField txtOrg;
-  private JLabel lblPhone;
+  private JLabel lblVoice;
   private JTextField txtVoice;
   private JLabel lblEmail;
   private JTextField txtEmail;
   private JLabel lblCountry;
   private JTextField txtCountryCode;
   private JTextField txtRegCode;
-  private JLabel lblCountry1;
+  private JLabel lblRegCode;
   private JTextField txtNationalityCode;
-  private JLabel lblCountry2;
-  private JLabel lblCountry3;
+  private JLabel lblNationalityCode;
+  private JLabel lblEntityType;
   private JCheckBox txtIsRegistrant;
-  private JLabel lblPhone1;
+  private JLabel lblFax;
   private JTextField txtFax;
-  private JLabel lblLastName1;
+  private JLabel lblContactId;
   private JTextField txtContactId;
   private JCheckBox txtAutoContactId;
   private JComboBox<String> txtEntityType;
   private JCheckBox txtConsentForPublishing;
-  private JScrollPane jScrollPane1;
+  private JScrollPane statusScroll;
   private JList<String> txtStatus;
   // End of variables declaration//GEN-END:variables
   String contactId = "";

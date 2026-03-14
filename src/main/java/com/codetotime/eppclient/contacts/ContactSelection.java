@@ -46,15 +46,15 @@ import javax.swing.event.ListSelectionListener;
 public class ContactSelection extends JDialog
     implements ActionListener, ListSelectionListener, PropertyChangeListener {
   private String typedText = null;
-  private JTextField textField;
-  private JPanel dd;
+  private final JTextField textField;
+  private final JPanel parentPanel;
 
   AddressListPanel addressListPanel = new AddressListPanel();
 
   private JOptionPane optionPane;
 
-  private String btnString1 = "Enter";
-  private String btnString2 = "Cancel";
+  private final String btnEnter = "Enter";
+  private final String btnCancel = "Cancel";
 
   /**
    * Returns null if the typed string was invalid; otherwise, returns the string as the user entered
@@ -67,25 +67,25 @@ public class ContactSelection extends JDialog
   /**
    * Creates a contact selection dialog for the given domain, defaulting to contact type 0.
    *
-   * @param aFrame the parent frame
+   * @param frame the parent frame
    * @param parent the panel that will receive the selected contact ID
    * @param domainName the domain name context for the selection
    */
-  public ContactSelection(Frame aFrame, JPanel parent, String domainName) {
-    this(aFrame, parent, domainName, 0);
+  public ContactSelection(Frame frame, JPanel parent, String domainName) {
+    this(frame, parent, domainName, 0);
   }
 
   /**
    * Creates a contact selection dialog for the given domain and contact type.
    *
-   * @param aFrame the parent frame
+   * @param frame the parent frame
    * @param parent the panel that will receive the selected contact ID
    * @param domainName the domain name context for the selection
    * @param contactType the contact role: 0 = registrant, 1 = admin, 2 = tech
    */
-  public ContactSelection(Frame aFrame, JPanel parent, String domainName, int contactType) {
-    super(aFrame, true);
-    dd = parent;
+  public ContactSelection(Frame frame, JPanel parent, String domainName, int contactType) {
+    super(frame, true);
+    this.parentPanel = parent;
 
     setTitle("CONTACT selection");
 
@@ -102,16 +102,18 @@ public class ContactSelection extends JDialog
       case 3:
         txtContactType = "Tech-";
         break;
+      default:
+        break;
     }
 
-    db = new contactsDao();
-    db.connect();
+    contactsDb = new contactsDao();
+    contactsDb.connect();
     List<ListEntry> entries;
 
     if (contactType == 1) {
-      entries = db.getRegistrantEntries();
+      entries = contactsDb.getRegistrantEntries();
     } else {
-      entries = db.getListEntries();
+      entries = contactsDb.getListEntries();
     }
 
     addressListPanel.addListEntries(entries);
@@ -128,7 +130,7 @@ public class ContactSelection extends JDialog
 
     // Create an array specifying the number of dialog buttons
     // and their text.
-    Object[] options = {btnString1, btnString2};
+    Object[] options = {btnEnter, btnCancel};
 
     // Create the JOptionPane.
     optionPane =
@@ -174,7 +176,7 @@ public class ContactSelection extends JDialog
 
   /** This method handles events for the text field. */
   public void actionPerformed(ActionEvent e) {
-    optionPane.setValue(btnString1);
+    optionPane.setValue(btnEnter);
   }
 
   /** This method reacts to state changes in the option pane. */
@@ -197,13 +199,12 @@ public class ContactSelection extends JDialog
       // property change event will be fired.
       optionPane.setValue(JOptionPane.UNINITIALIZED_VALUE);
 
-      if (btnString1.equals(value)) {
+      if (btnEnter.equals(value)) {
         typedText = addressListPanel.getSelectedListEntry().getContactId();
-        String ucText = typedText.toUpperCase();
         clearAndHide();
 
       } else { // user closed dialog or clicked cancel
-        //                dd.setLabel("It's OK.  "
+        //                parentPanel.setLabel("It's OK.  "
         //                         + "We won't force you to type "
         //                         + magicWord + ".");
         typedText = null;
@@ -217,15 +218,13 @@ public class ContactSelection extends JDialog
     if (e.getValueIsAdjusting()) {
       return;
     }
-    JList entryList = (JList) e.getSource();
+    JList<?> entryList = (JList<?>) e.getSource();
     selectedEntry = entryList.getSelectedIndex();
     ListEntry entry = (ListEntry) entryList.getSelectedValue();
     if (entry != null) {
       String contactId = entry.getContactId();
-      Address address = db.getAddress(contactId);
+      // Address address = contactsDb.getAddress(contactId);
       // addressPanel.setAddress(address);
-    } else {
-      // addressPanel.clear();
     }
   }
 
@@ -236,5 +235,5 @@ public class ContactSelection extends JDialog
   }
 
   private int selectedEntry = -1;
-  private contactsDao db;
+  private contactsDao contactsDb;
 }
