@@ -48,25 +48,25 @@ public class BulkTransferPanel extends JPanel {
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents() {
     lblAuthInfo = new JLabel();
-    jScrollPane1 = new JScrollPane();
+    bulkRequestScroll = new JScrollPane();
     bulkRequestField = new JTextArea();
-    jScrollPane2 = new JScrollPane();
+    bulkResultScroll = new JScrollPane();
     bulkResultField = new JTextArea();
 
     // ---- lblAuthInfo ----
     lblAuthInfo.setText("domain;authinfo");
 
-    // ======== jScrollPane1 ========
+    // ======== bulkRequestScroll ========
     {
 
       // ---- bulkRequestField ----
       bulkRequestField.setColumns(30);
       bulkRequestField.setRows(10);
       bulkRequestField.setMinimumSize(new Dimension(484, 274));
-      jScrollPane1.setViewportView(bulkRequestField);
+      bulkRequestScroll.setViewportView(bulkRequestField);
     }
 
-    // ======== jScrollPane2 ========
+    // ======== bulkResultScroll ========
     {
 
       // ---- bulkResultField ----
@@ -74,7 +74,7 @@ public class BulkTransferPanel extends JPanel {
       bulkResultField.setColumns(30);
       bulkResultField.setRows(10);
       bulkResultField.setMinimumSize(new Dimension(484, 274));
-      jScrollPane2.setViewportView(bulkResultField);
+      bulkResultScroll.setViewportView(bulkResultField);
     }
 
     GroupLayout layout = new GroupLayout(this);
@@ -92,12 +92,12 @@ public class BulkTransferPanel extends JPanel {
                         layout
                             .createParallelGroup()
                             .addComponent(
-                                jScrollPane2,
+                                bulkResultScroll,
                                 GroupLayout.PREFERRED_SIZE,
                                 369,
                                 GroupLayout.PREFERRED_SIZE)
                             .addComponent(
-                                jScrollPane1,
+                                bulkRequestScroll,
                                 GroupLayout.PREFERRED_SIZE,
                                 369,
                                 GroupLayout.PREFERRED_SIZE))
@@ -114,13 +114,16 @@ public class BulkTransferPanel extends JPanel {
                             .createParallelGroup()
                             .addComponent(lblAuthInfo)
                             .addComponent(
-                                jScrollPane1,
+                                bulkRequestScroll,
                                 GroupLayout.PREFERRED_SIZE,
                                 201,
                                 GroupLayout.PREFERRED_SIZE))
                     .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                     .addComponent(
-                        jScrollPane2, GroupLayout.PREFERRED_SIZE, 201, GroupLayout.PREFERRED_SIZE)
+                        bulkResultScroll,
+                        GroupLayout.PREFERRED_SIZE,
+                        201,
+                        GroupLayout.PREFERRED_SIZE)
                     .addContainerGap()));
   } // </editor-fold>//GEN-END:initComponents
 
@@ -165,9 +168,9 @@ public class BulkTransferPanel extends JPanel {
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private JLabel lblAuthInfo;
-  private JScrollPane jScrollPane1;
+  private JScrollPane bulkRequestScroll;
   private JTextArea bulkRequestField;
-  private JScrollPane jScrollPane2;
+  private JScrollPane bulkResultScroll;
   private JTextArea bulkResultField;
   // End of variables declaration//GEN-END:variables
 

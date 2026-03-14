@@ -28,7 +28,7 @@ import it.nic.epp.client.commands.session.Login;
 public class CustomLogin extends Login {
 
   static {
-    configureDNSSEC();
+    configureDnssec();
   }
 
   /** Creates a login command using the default credentials from application parameters. */
@@ -42,16 +42,17 @@ public class CustomLogin extends Login {
    * @param clID the registrar client ID
    * @param pw the password
    */
+  @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   public CustomLogin(String clID, String pw) {
     super(clID, pw);
   }
 
-  private static void configureDNSSEC() {
+  private static void configureDnssec() {
     String dnssecEnabled = EppParams.getParameter("EppClient.implement.DNSSEC");
 
-    boolean isDNSSECEnabled = Boolean.parseBoolean(dnssecEnabled);
+    boolean isDnssecEnabled = Boolean.parseBoolean(dnssecEnabled);
 
-    System.setProperty("EppClient.implement.secDNS", String.valueOf(isDNSSECEnabled));
-    System.setProperty("EppClient.implement.extsecDNS", String.valueOf(isDNSSECEnabled));
+    System.setProperty("EppClient.implement.secDNS", String.valueOf(isDnssecEnabled));
+    System.setProperty("EppClient.implement.extsecDNS", String.valueOf(isDnssecEnabled));
   }
 }
