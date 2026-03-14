@@ -99,7 +99,10 @@ public class main extends JFrame implements WindowListener {
     } catch (Exception ex) {
       JOptionPane.showMessageDialog(
           this,
-          "Si è verificato un errore durante l'accesso al database.\nVerificare che i dati immessi nel menu \"Configurazione\" siano corretti\ne riavviare il client.\n\nAl momento è possibile aprire solo la finestra \"Configurazione\"!",
+          "Si è verificato un errore durante l'accesso al database.\n"
+              + "Verificare che i dati immessi nel menu \"Configurazione\" siano corretti\n"
+              + "e riavviare il client.\n\n"
+              + "Al momento è possibile aprire solo la finestra \"Configurazione\"!",
           "Errore connessione al database",
           JOptionPane.WARNING_MESSAGE);
     }
@@ -153,7 +156,8 @@ public class main extends JFrame implements WindowListener {
         while (!isCancelled) {
           switch (JOptionPane.showConfirmDialog(
               this,
-              "The application is still waiting for the EPP Server to logout.\nDo you want to wait 5 seconds for a graceful close?",
+              "The application is still waiting for the EPP Server to logout.\n"
+                  + "Do you want to wait 5 seconds for a graceful close?",
               "Exiting application",
               JOptionPane.YES_NO_CANCEL_OPTION,
               JOptionPane.WARNING_MESSAGE)) {
@@ -796,7 +800,8 @@ public class main extends JFrame implements WindowListener {
   private void sessionNotActiveWarning() {
     JOptionPane.showMessageDialog(
         this,
-        "Attenzione! Non è attiva alcuna sessione EPP con il server del Registro.\nImpossibile procedere!",
+        "Attenzione! Non è attiva alcuna sessione EPP con il server del Registro.\n"
+            + "Impossibile procedere!",
         "Sessione EPP non attiva",
         JOptionPane.WARNING_MESSAGE);
   }

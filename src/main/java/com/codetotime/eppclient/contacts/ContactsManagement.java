@@ -252,7 +252,8 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
         } else {
           if (JOptionPane.showConfirmDialog(
                   this,
-                  "An error occurred while deleting contact on the Registry.\n\nDo you want to see the Registry XML response?",
+                  "An error occurred while deleting contact on the Registry.\n\n"
+                      + "Do you want to see the Registry XML response?",
                   "Registry delete failure",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.WARNING_MESSAGE)
@@ -365,7 +366,8 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
           } else {
             if (JOptionPane.showConfirmDialog(
                     this,
-                    "An error occurred while applying changes to the Registry.\n\nDo you want to see the Registry XML response?",
+                    "An error occurred while applying changes to the Registry.\n\n"
+                        + "Do you want to see the Registry XML response?",
                     "Registry update failure",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.WARNING_MESSAGE)
@@ -443,7 +445,8 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
                 migratedUpdateOK = false;
                 if (JOptionPane.showConfirmDialog(
                         this,
-                        "An error occurred while applying changes to the Registry.\n\nDo you want to see the Registry XML response?",
+                        "An error occurred while applying changes to the Registry.\n\n"
+                            + "Do you want to see the Registry XML response?",
                         "Registry (M) update failure",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.WARNING_MESSAGE)
@@ -492,7 +495,8 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
             } else {
               if (JOptionPane.showConfirmDialog(
                       this,
-                      "An error occurred while applying changes to the Registry.\n\nDo you want to see the Registry XML response?",
+                      "An error occurred while applying changes to the Registry.\n\n"
+                          + "Do you want to see the Registry XML response?",
                       "Registry update failure",
                       JOptionPane.YES_NO_OPTION,
                       JOptionPane.WARNING_MESSAGE)
@@ -556,7 +560,8 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
       } else {
         if (JOptionPane.showConfirmDialog(
                 this,
-                "An error occurred while checking contact availability on the Registry.\n\nDo you want to see the Registry XML response?",
+                "An error occurred while checking contact availability on the Registry.\n\n"
+                    + "Do you want to see the Registry XML response?",
                 "Registry contact check failure",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE)
@@ -587,7 +592,8 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
         } else {
           if (JOptionPane.showConfirmDialog(
                   this,
-                  "An error occurred while asking for Contact Info on the Registry.\n\nDo you want to see the Registry XML response?",
+                  "An error occurred while asking for Contact Info on the Registry.\n\n"
+                      + "Do you want to see the Registry XML response?",
                   "Registry delete failure",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.WARNING_MESSAGE)

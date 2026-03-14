@@ -259,7 +259,8 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
           } else {
             if (JOptionPane.showConfirmDialog(
                     this,
-                    "An error occurred while deleting the domain on Registry.\n\nDo you want to see the Registry XML response?",
+                    "An error occurred while deleting the domain on Registry.\n\n"
+                        + "Do you want to see the Registry XML response?",
                     "Registry update failure",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.WARNING_MESSAGE)
@@ -362,7 +363,8 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
           } else {
             if (JOptionPane.showConfirmDialog(
                     this,
-                    "An error occurred while applying changes to the Registry.\n\nDo you want to see the Registry XML response?",
+                    "An error occurred while applying changes to the Registry.\n\n"
+                        + "Do you want to see the Registry XML response?",
                     "Registry update failure",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.WARNING_MESSAGE)
@@ -711,7 +713,8 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
               } else {
                 if (JOptionPane.showConfirmDialog(
                         this,
-                        "An error occurred while applying changes to the Registry.\n\nDo you want to see the Registry XML response?",
+                        "An error occurred while applying changes to the Registry.\n\n"
+                            + "Do you want to see the Registry XML response?",
                         "Registry update failure",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.WARNING_MESSAGE)
@@ -724,7 +727,8 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
             } else {
               if (JOptionPane.showConfirmDialog(
                       this,
-                      "An error occurred while applying changes to the Registry.\n\nDo you want to see the Registry XML response?",
+                      "An error occurred while applying changes to the Registry.\n\n"
+                          + "Do you want to see the Registry XML response?",
                       "Registry update failure",
                       JOptionPane.YES_NO_OPTION,
                       JOptionPane.WARNING_MESSAGE)
@@ -741,7 +745,8 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
           } else {
             if (JOptionPane.showConfirmDialog(
                     this,
-                    "An error occurred while making an InfoDomain to build change-list.\n\nDo you want to see the Registry XML response?",
+                    "An error occurred while making an InfoDomain to build change-list.\n\n"
+                        + "Do you want to see the Registry XML response?",
                     "Registry Domain Info failure",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.WARNING_MESSAGE)
@@ -822,7 +827,8 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
         } else {
           if (JOptionPane.showConfirmDialog(
                   this,
-                  "An error occurred while asking for Info Domain on Registry.\n\nDo you want to see the Registry XML response?",
+                  "An error occurred while asking for Info Domain on Registry.\n\n"
+                      + "Do you want to see the Registry XML response?",
                   "Registry update failure",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.WARNING_MESSAGE)
@@ -986,7 +992,8 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
       } else {
         if (JOptionPane.showConfirmDialog(
                 this,
-                "An error occurred while checking contact availability on the Registry.\n\nDo you want to see the Registry XML response?",
+                "An error occurred while checking contact availability on the Registry.\n\n"
+                    + "Do you want to see the Registry XML response?",
                 "Registry contact check failure",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE)

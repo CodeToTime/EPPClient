@@ -104,14 +104,16 @@ class EPPthread extends Thread {
           if (response.getReasonCode() == 6004) {
             JOptionPane.showMessageDialog(
                 mainFrame,
-                "La password è scaduta!\n\nEffettuare il cambio dal menu \"Configurazione->Cambio Password\"",
+                "La password è scaduta!\n\n"
+                    + "Effettuare il cambio dal menu \"Configurazione->Cambio Password\"",
                 "Password Scaduta",
                 JOptionPane.WARNING_MESSAGE);
           }
           if (response.getReasonCode() == 6005) {
             JOptionPane.showMessageDialog(
                 mainFrame,
-                "La password è errata!\n\nInserire la password corretta dal menu \"Configurazione\"",
+                "La password è errata!\n\n"
+                    + "Inserire la password corretta dal menu \"Configurazione\"",
                 "Password Errata",
                 JOptionPane.WARNING_MESSAGE);
           }
@@ -133,7 +135,8 @@ class EPPthread extends Thread {
           if (response.getReasonCode() == 5051) {
             JOptionPane.showMessageDialog(
                 mainFrame,
-                "E' stato superato il numero massimo di sessioni\nconsentite dal server EPP del Registro!",
+                "E' stato superato il numero massimo di sessioni\n"
+                    + "consentite dal server EPP del Registro!",
                 "Numero massimo di sessioni raggiunto",
                 JOptionPane.WARNING_MESSAGE);
           }

@@ -85,9 +85,11 @@ public class InfoDialog {
         + "Il richiedente ha certificato quanto segue:\n\n"
         + "1) Di essere un Registrar accreditato presso il Registro .it (NIC.it).\n"
         + "2) Di essere autorizzato all'utilizzo della libreria EPP del Registro .it.\n"
-        + "3) Di aver verificato il codice del software EPP Client e di accettarlo nello stato in cui viene fornito (\"AS IS\").\n"
+        + "3) Di aver verificato il codice del software EPP Client e di accettarlo nello stato\n"
+        + "in cui viene fornito (\"AS IS\").\n"
         + "----------------------------------------\n"
-        + "Le dichiarazioni sopra riportate sono rese sotto la piena responsabilità del richiedente.\n\n"
+        + "Le dichiarazioni sopra riportate sono rese sotto la piena responsabilità del\n"
+        + "richiedente.\n\n"
         + "Il software è fornito senza garanzie di alcun tipo.";
   }
 }

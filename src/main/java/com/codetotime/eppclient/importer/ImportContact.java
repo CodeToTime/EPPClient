@@ -69,14 +69,22 @@ public class ImportContact {
         contactInfoExt = (ContactInfoResponseExt) response.getResponseExtension();
         Address RegistrantContact = new Address();
 
-        /*                contactInfoResData.getName(), contactInfoResData.getOrg(), "", contactInfoResData.getCity(), contactInfoResData.getSp(), contactInfoResData.getPc(),
-            contactInfoResData.getCc(), contactInfoResData.getVoice(), contactInfoResData.getFax(), contactInfoResData.getEmail(), contactInfoExt.getConsentForPublishing(), contactInfoExt.isRegistrant(),
-            contactInfoExt.getNationalityCode(), contactInfoExt.getEntityType(), contactInfoExt.getRegCode(), null, contactInfoResData.getId()
+        /*  contactInfoResData.getName(), contactInfoResData.getOrg(), "",
+            contactInfoResData.getCity(), contactInfoResData.getSp(), contactInfoResData.getPc(),
+            contactInfoResData.getCc(), contactInfoResData.getVoice(), contactInfoResData.getFax(),
+            contactInfoResData.getEmail(), contactInfoExt.getConsentForPublishing(),
+            contactInfoExt.isRegistrant(), contactInfoExt.getNationalityCode(),
+            contactInfoExt.getEntityType(), contactInfoExt.getRegCode(), null,
+            contactInfoResData.getId()
 
-
-        RegistrantContact = new Address(contactInfoResData.getName(), contactInfoResData.getOrg(), contactInfoResData.getStreet(0), contactInfoResData.getCity(), contactInfoResData.getSp(), contactInfoResData.getPc(),
-            contactInfoResData.getCc(), contactInfoResData.getVoice(), contactInfoResData.getFax(), contactInfoResData.getEmail(), contactInfoExt.getConsentForPublishing(), contactInfoExt.isRegistrant(),
-            contactInfoExt.getNationalityCode(), contactInfoExt.getEntityType(), contactInfoExt.getRegCode(), null, contactInfoResData.getId());*/
+        RegistrantContact = new Address(contactInfoResData.getName(), contactInfoResData.getOrg(),
+            contactInfoResData.getStreet(0), contactInfoResData.getCity(),
+            contactInfoResData.getSp(), contactInfoResData.getPc(), contactInfoResData.getCc(),
+            contactInfoResData.getVoice(), contactInfoResData.getFax(),
+            contactInfoResData.getEmail(), contactInfoExt.getConsentForPublishing(),
+            contactInfoExt.isRegistrant(), contactInfoExt.getNationalityCode(),
+            contactInfoExt.getEntityType(), contactInfoExt.getRegCode(), null,
+            contactInfoResData.getId());*/
 
         try {
           RegistrantContact.setContactName(contactInfoResData.getName());

@@ -595,7 +595,12 @@ public class DomainPanel extends JPanel {
     // ---- lblDnsExpl ----
     lblDnsExpl.setFont(new Font("Tahoma", Font.PLAIN, 10));
     lblDnsExpl.setText(
-        "<HTML><P ALIGN=\"CENTER\"><B>NOTE DI COMPILAZIONE</B></P><BR/>\n<P>In caso di nameserver subordinati al dominio &egrave; necessario indicare il/gli indirizzi IP separandoli con il carattere \"@\".<BR/>\nSono supportati sia IPv4 che IPv6, es.:<BR/>\nSolo IPv4: \"dns.example.it@11.22.33.44\"<BR/>\nIPv4+IPv6: \"dns.example.it@11.22.33.44@3ff3:1:2:3:4:5:6:7\"</P></HTML>");
+        "<HTML><P ALIGN=\"CENTER\"><B>NOTE DI COMPILAZIONE</B></P><BR/>\n"
+            + "<P>In caso di nameserver subordinati al dominio &egrave; necessario indicare il/gli"
+            + " indirizzi IP separandoli con il carattere \"@\".<BR/>\n"
+            + "Sono supportati sia IPv4 che IPv6, es.:<BR/>\n"
+            + "Solo IPv4: \"dns.example.it@11.22.33.44\"<BR/>\n"
+            + "IPv4+IPv6: \"dns.example.it@11.22.33.44@3ff3:1:2:3:4:5:6:7\"</P></HTML>");
     lblDnsExpl.setVerticalAlignment(SwingConstants.TOP);
     lblDnsExpl.setMaximumSize(new Dimension(150, 120));
     lblDnsExpl.setMinimumSize(new Dimension(150, 120));
@@ -1390,15 +1395,18 @@ public class DomainPanel extends JPanel {
 
   /*    int[] getNewStatus() {
       int[] newStatus;
-      if (lblIsPendingDelete.isEnabled())
-          newStatus = new int[txtStatus.getSelectedIndices().length+1];
-      else
+      if (lblIsPendingDelete.isEnabled()) {
+          newStatus = new int[txtStatus.getSelectedIndices().length + 1];
+      } else {
           newStatus = new int[txtStatus.getSelectedIndices().length];
+      }
 
-      if (lblIsPendingDelete.isEnabled())
-          newStatus[newStatus.length-1] = 99;
+      if (lblIsPendingDelete.isEnabled()) {
+          newStatus[newStatus.length - 1] = 99;
+      }
 
-      System.arraycopy(txtStatus.getSelectedIndices(), 0, newStatus, 0, txtStatus.getSelectedIndices().length);
+      System.arraycopy(txtStatus.getSelectedIndices(), 0, newStatus, 0,
+          txtStatus.getSelectedIndices().length);
       domain.setNewStatus(newStatus);
       return newStatus;
   }*/

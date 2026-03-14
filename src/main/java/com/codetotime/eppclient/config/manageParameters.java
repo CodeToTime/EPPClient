@@ -932,7 +932,11 @@ public class manageParameters extends JFrame implements WindowListener {
         || serverURI.getText().contains("https://epp-acc2.nic.it")) {
       JOptionPane.showMessageDialog(
           this,
-          "Please DONT'T enter accreditation test server here!\n\nTo proceed with the .it Registry Accreditation test go to the TEST section.\n\nAs the accreditation procedure requires several operations to be executed in sequence\nentering here an accreditation server hostname will cause the test to fail.",
+          "Please DONT'T enter accreditation test server here!\n\n"
+              + "To proceed with the .it Registry Accreditation test go to the TEST section.\n\n"
+              + "As the accreditation procedure requires several operations to be executed in"
+              + " sequence\n"
+              + "entering here an accreditation server hostname will cause the test to fail.",
           "ACCREDITATION SERVER FOUND",
           JOptionPane.INFORMATION_MESSAGE);
       serverURI.setText(EPPparams.getParameter("EppClient.serverURI"));

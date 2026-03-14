@@ -163,7 +163,8 @@ public class TransferManagement extends JFrame implements ActionListener {
           } else {
             JOptionPane.showMessageDialog(
                 this,
-                "The transfer has been successfully requested and is Pending.\n\nYou will receive a message after ACK/NACK",
+                "The transfer has been successfully requested and is Pending.\n\n"
+                    + "You will receive a message after ACK/NACK",
                 "Registry transfer confirmation",
                 JOptionPane.INFORMATION_MESSAGE);
           }
@@ -171,7 +172,8 @@ public class TransferManagement extends JFrame implements ActionListener {
         } else {
           if (JOptionPane.showConfirmDialog(
                   this,
-                  "An error occurred while requesting transfer at the Registry.\n\nDo you want to see the Registry XML response?",
+                  "An error occurred while requesting transfer at the Registry.\n\n"
+                      + "Do you want to see the Registry XML response?",
                   "Registry transfer failure",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.WARNING_MESSAGE)
@@ -221,7 +223,8 @@ public class TransferManagement extends JFrame implements ActionListener {
           } else {
             if (JOptionPane.showConfirmDialog(
                     this,
-                    "An error occurred while requesting transfer at the Registry.\n\nDo you want to see the Registry XML response?",
+                    "An error occurred while requesting transfer at the Registry.\n\n"
+                        + "Do you want to see the Registry XML response?",
                     "Registry transfer failure",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.WARNING_MESSAGE)

@@ -513,7 +513,8 @@ public class MessageDetail extends JFrame {
           if (transferredDomain.execute(resData.getTranferMsgName())) {
             txtTransfer.setText(
                 txtTransfer.getText()
-                    + "\nThe domain name has been successfully added to the client local database.");
+                    + "\nThe domain name has been successfully added to the client local"
+                    + " database.");
             message.setActioned(true);
             db.editRecord(message);
             if (!message.getAck()) {
@@ -528,7 +529,8 @@ public class MessageDetail extends JFrame {
           } else {
             txtTransfer.setText(
                 txtTransfer.getText()
-                    + "\nAn error occurred while importing the domain name to the client local database.");
+                    + "\nAn error occurred while importing the domain name to the client"
+                    + " local database.");
           }
         }
 
@@ -576,7 +578,8 @@ public class MessageDetail extends JFrame {
               } else {
                 txtTransfer.setText(
                     txtTransfer.getText()
-                        + "\n============\nAn error occurred while Acknowledging the transfer. This messages has NOT been Acked.");
+                        + "\n============\nAn error occurred while Acknowledging the transfer."
+                        + " This messages has NOT been Acked.");
               }
               break;
             case 1:
@@ -609,7 +612,8 @@ public class MessageDetail extends JFrame {
               } else {
                 txtTransfer.setText(
                     txtTransfer.getText()
-                        + "\n============\nAn error occurred while Rejecting the transfer. This messages has NOT been Acked.");
+                        + "\n============\nAn error occurred while Rejecting the transfer."
+                        + " This messages has NOT been Acked.");
               }
               break;
             case 2:
@@ -621,7 +625,8 @@ public class MessageDetail extends JFrame {
           mainFrame.domainsDao.deleteRecord(resData.getTranferMsgName());
           txtTransfer.setText(
               txtTransfer.getText()
-                  + "\n============\nThe domain name has been successfully deleted from the client local database.");
+                  + "\n============\nThe domain name has been successfully deleted from"
+                  + " the client local database.");
           message.setActioned(true);
           db.editRecord(message);
           if (!message.getAck()) {
@@ -660,7 +665,8 @@ public class MessageDetail extends JFrame {
         mainFrame.domainsDao.deleteRecord(extData.getSimpleMsgDomains()[0]);
         txtOther.setText(
             txtOther.getText()
-                + "\n============\nThe domain name has been successfully deleted from the client local database.");
+                + "\n============\nThe domain name has been successfully deleted from"
+                + " the client local database.");
         message.setActioned(true);
         db.editRecord(message);
         if (!message.getAck()) {
@@ -676,7 +682,8 @@ public class MessageDetail extends JFrame {
         if (syncDomain.execute(extData.getChgStatusMsgName())) {
           txtOther.setText(
               txtOther.getText()
-                  + "\nThe domain name has been successfully updated on the client local database.");
+                  + "\nThe domain name has been successfully updated on the client local"
+                  + " database.");
           message.setActioned(true);
           db.editRecord(message);
           if (!message.getAck()) {
@@ -740,7 +747,9 @@ public class MessageDetail extends JFrame {
           } else if (resData.getTranferMsgTrStatus().equals("clientApproved")) {
             txtTransfer.setText(
                 txtTransfer.getText()
-                    + "APPROVED by the Losing Registrar, the Domain Name has been added to your account on the Registry. Please click the button below to save it on the client local database.");
+                    + "APPROVED by the Losing Registrar, the Domain Name has been added to your"
+                    + " account on the Registry. Please click the button below to save it"
+                    + " on the client local database.");
             btnTransfer.setText("Save to local db");
             btnTransfer.setEnabled(true);
           } else {
@@ -760,7 +769,8 @@ public class MessageDetail extends JFrame {
                     + EPPparams.getParameter("EppClient.defaultUser")
                     + " to Registrar "
                     + resData.getTranferMsgReID()
-                    + ". Please click the button below to ACK o REJ the Transfer (will also ACK the message).");
+                    + ". Please click the button below to ACK o REJ the Transfer (will also ACK"
+                    + " the message).");
             btnTransfer.setText("Acknowledge/Reject Transfer");
             btnTransfer.setEnabled(true);
           } else if (resData.getTranferMsgTrStatus().equals("clientApproved")
@@ -770,7 +780,8 @@ public class MessageDetail extends JFrame {
                     + resData.getTranferMsgName()
                     + " has been successfully transferred to Registrar "
                     + resData.getTranferMsgReID()
-                    + ". Please click the button below to delete-it from the client local database.");
+                    + ". Please click the button below to delete-it from the client local"
+                    + " database.");
             btnTransfer.setText("Delete from local db");
             btnTransfer.setEnabled(true);
           } else {
@@ -789,7 +800,8 @@ public class MessageDetail extends JFrame {
       txtOther.setText(
           "The domain name "
               + extData.getSimpleMsgDomains()[0]
-              + " has been deleted. Please click the button below to delete-it from the client local database.");
+              + " has been deleted. Please click the button below to delete-it from the"
+              + " client local database.");
       btnOther.setText("Delete from local db");
       btnOther.setEnabled(true);
 
@@ -801,7 +813,8 @@ public class MessageDetail extends JFrame {
       txtOther.setText(
           "The domain name "
               + extData.getChgStatusMsgName()
-              + " autoRenewPeriod is expired. Please click the button below to update the expiration date stored in the local database.");
+              + " autoRenewPeriod is expired. Please click the button below to update the"
+              + " expiration date stored in the local database.");
       btnOther.setText("Update expiration date on local db");
       btnOther.setEnabled(true);
     }
@@ -831,7 +844,8 @@ public class MessageDetail extends JFrame {
       } else {
         if (JOptionPane.showConfirmDialog(
                 this,
-                "An error occurred while aknowledging a message.\n\nDo you want to see the Registry XML response?",
+                "An error occurred while aknowledging a message.\n\n"
+                    + "Do you want to see the Registry XML response?",
                 "Registry adknowledgment failure",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE)
