@@ -202,6 +202,7 @@ public class DbExporter {
             if (cfg.length() == 1) {
               return cfg.charAt(0);
             }
+            break;
         }
       }
     } catch (Exception e) {

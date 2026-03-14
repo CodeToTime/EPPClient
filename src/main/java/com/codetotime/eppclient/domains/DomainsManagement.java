@@ -487,6 +487,8 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                     case 2:
                       domainUpdate.addStatusToRem(DomainUpdateStatusType.CLIENT_UPDATE_PROHIBITED);
                       break;
+                    default:
+                      break;
                   }
                 }
               }
@@ -518,6 +520,8 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                       break;
                     case 2:
                       domainUpdate.addStatusToAdd(DomainUpdateStatusType.CLIENT_UPDATE_PROHIBITED);
+                      break;
+                    default:
                       break;
                   }
                 }
@@ -937,6 +941,11 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                     "Dominio inesistente",
                     JOptionPane.WARNING_MESSAGE);
                 break;
+              default:
+                log.debug(
+                    "Unhandled sync reason code {} for result code 2303",
+                    syncDomain.getReasonCode());
+                break;
             }
             break;
           case 2202:
@@ -948,7 +957,15 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                     "Dominio di altro Registrar",
                     JOptionPane.WARNING_MESSAGE);
                 break;
+              default:
+                log.debug(
+                    "Unhandled sync reason code {} for result code 2202",
+                    syncDomain.getReasonCode());
+                break;
             }
+            break;
+          default:
+            log.debug("Unhandled sync result code {}", syncDomain.getResultCode());
             break;
         }
       }
