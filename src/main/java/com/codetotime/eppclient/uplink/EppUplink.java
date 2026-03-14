@@ -29,7 +29,7 @@ import org.apache.xmlbeans.XmlException;
 
 /**
  * Manages the EPP connection lifecycle: starts, restarts, and stops the underlying {@link
- * EPPthread}, configures proxy settings from application parameters, and delegates command dispatch
+ * EppThread}, configures proxy settings from application parameters, and delegates command dispatch
  * and poll operations to the active thread.
  */
 public class EppUplink {
@@ -52,7 +52,7 @@ public class EppUplink {
       System.setProperty("https.proxyHost", "");
       System.setProperty("https.proxyPort", "");
     }
-    EPPthread = new EPPthread(mainFrame);
+    EPPthread = new EppThread(mainFrame);
     EPPthread.start();
   }
 
@@ -83,7 +83,7 @@ public class EppUplink {
 
   /** Reserved for future listener registration; currently a no-op. */
   public void registerListener() {
-    // EPPthread
+    // EppThread
   }
 
   /**
@@ -116,7 +116,7 @@ public class EppUplink {
    */
   public boolean isActive() {
     boolean isActive = false;
-    if (EPPthread instanceof EPPthread) {
+    if (EPPthread instanceof EppThread) {
       isActive = EPPthread.isActive();
     }
     return isActive;
@@ -135,6 +135,6 @@ public class EppUplink {
     return EPPthread.sendCommand(command);
   }
 
-  private EPPthread EPPthread = null;
+  private EppThread EPPthread = null;
   private main mainFrame;
 }

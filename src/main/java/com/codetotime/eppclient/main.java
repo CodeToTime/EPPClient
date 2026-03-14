@@ -32,7 +32,6 @@ import com.codetotime.eppclient.importer.TxtImport;
 import com.codetotime.eppclient.messages.Message;
 import com.codetotime.eppclient.messages.MessageManagement;
 import com.codetotime.eppclient.uplink.EppUplink;
-
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.EventQueue;

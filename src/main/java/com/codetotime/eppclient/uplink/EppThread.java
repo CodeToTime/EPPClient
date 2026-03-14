@@ -40,10 +40,10 @@ import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class EPPthread extends Thread {
-  private static final Logger log = LoggerFactory.getLogger(EPPthread.class);
+class EppThread extends Thread {
+  private static final Logger log = LoggerFactory.getLogger(EppThread.class);
 
-  public EPPthread(main mainFrame) {
+  public EppThread(main mainFrame) {
     this.mainFrame = mainFrame;
   }
 
