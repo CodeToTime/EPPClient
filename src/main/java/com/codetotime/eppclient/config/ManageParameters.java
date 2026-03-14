@@ -951,6 +951,7 @@ public class ManageParameters extends JFrame implements WindowListener {
     try {
       Integer.parseInt(proxyPortValue);
     } catch (NumberFormatException ex) {
+      log.debug("Invalid proxy port value: {}", proxyPortValue);
       proxyPortValue = ""; // Treat invalid numeric values as empty string
     }
     EppParams.setParameter("EppClient.proxyPort", proxyPortValue);
@@ -964,6 +965,7 @@ public class ManageParameters extends JFrame implements WindowListener {
     try {
       Integer.parseInt(refreshValue);
     } catch (NumberFormatException ex) {
+      log.debug("Invalid refresh interval value: {}", refreshValue);
       refreshValue = ""; // Treat invalid numeric values as empty string
     }
     EppParams.setParameter("EppClient.refreshInterval", refreshValue);

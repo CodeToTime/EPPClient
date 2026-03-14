@@ -96,6 +96,7 @@ class EppThread extends Thread {
             Thread.sleep(
                 Integer.parseInt(EppParams.getParameter("EppClient.refreshInterval")) * 1000);
           } catch (InterruptedException v) {
+            log.debug("EPP thread sleep interrupted: {}", v.getMessage());
           }
         }
       } else {
@@ -197,6 +198,7 @@ class EppThread extends Thread {
           Thread.sleep(500);
         }
       } catch (InterruptedException e) {
+        log.debug("EPP thread interrupted while graceful stopping: {}", e.getMessage());
       }
     }
     return EPPclosable;
@@ -308,6 +310,7 @@ class EppThread extends Thread {
       }
 
     } catch (NullPointerException v) {
+      log.error("NullPointerException in doPoll", v);
     }
 
     return gotMessage;

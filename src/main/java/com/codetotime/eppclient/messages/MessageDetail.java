@@ -90,7 +90,7 @@ public class MessageDetail extends JFrame {
     try {
       response = new it.nic.epp.client.responses.CommandResponse(message.getXml());
     } catch (XmlException e) {
-      log.error("XmlException in constructor", e);
+      log.error("XmlException in constructor for message ID {}", message.getMsgId(), e);
     }
 
     resData = (PollingResponseResData) response.getResponseResData();

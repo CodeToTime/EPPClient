@@ -24,10 +24,13 @@ import it.nic.epp.client.commands.converters.AbstractHostsConverter.HostIpType;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Validates an IP address string and returns whether it is IPv4 or IPv6. */
 public class IpAddressValidator {
 
+  private static final Logger log = LoggerFactory.getLogger(IpAddressValidator.class);
   private static Pattern VALID_IPV4_PATTERN = null;
   private static Pattern VALID_IPV6_PATTERN = null;
   private static final String ipv4Pattern =
@@ -39,7 +42,7 @@ public class IpAddressValidator {
       VALID_IPV4_PATTERN = Pattern.compile(ipv4Pattern, Pattern.CASE_INSENSITIVE);
       VALID_IPV6_PATTERN = Pattern.compile(ipv6Pattern, Pattern.CASE_INSENSITIVE);
     } catch (PatternSyntaxException e) {
-      // logger.severe("Unable to compile pattern", e);
+      log.error("Unable to compile IP validation pattern", e);
     }
   }
 

@@ -277,8 +277,11 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                          logger.logmessage("SERVER: "+ response.toString());
           */
         } catch (NullPointerException v) {
+          log.error("NullPointerException in deleteDomain", v);
         } catch (XmlException v) {
+          log.error("XmlException in deleteDomain", v);
         } catch (IOException v) {
+          log.error("IOException in deleteDomain", v);
         }
 
       } else {
@@ -845,8 +848,11 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                        logger.logmessage("SERVER: "+ response.toString());
         */
       } catch (NullPointerException v) {
+        log.error("NullPointerException in infoDomain", v);
       } catch (XmlException v) {
+        log.error("XmlException in infoDomain", v);
       } catch (IOException v) {
+        log.error("IOException in infoDomain", v);
       }
     }
   }
@@ -1003,8 +1009,11 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
       }
 
     } catch (NullPointerException v) {
+      log.error("NullPointerException in checkDomain", v);
     } catch (XmlException v) {
+      log.error("XmlException in checkDomain", v);
     } catch (IOException v) {
+      log.error("IOException in checkDomain", v);
     }
   }
 
@@ -1059,8 +1068,11 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
         }
 
       } catch (NullPointerException v) {
+        log.error("NullPointerException in restoreDomain", v);
       } catch (XmlException v) {
+        log.error("NullPointerException in restoreDomain", v);
       } catch (IOException v) {
+        log.error("IOException in restoreDomain", v);
       }
     }
   }

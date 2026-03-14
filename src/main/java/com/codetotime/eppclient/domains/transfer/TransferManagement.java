@@ -186,9 +186,13 @@ public class TransferManagement extends JFrame implements ActionListener {
         log.info("SERVER transfer response: {}", response.toString());
 
       } catch (NullPointerException v) {
+        log.error("NullPointerException in requestTransfer", v);
       } catch (XmlException v) {
+        log.error("XmlException in requestTransfer", v);
       } catch (IOException v) {
+        log.error("IOException in requestTransfer", v);
       } catch (EppSchemaException v) {
+        log.error("EppSchemaException in requestTransfer", v);
       }
 
       if (canClose) {
@@ -235,8 +239,11 @@ public class TransferManagement extends JFrame implements ActionListener {
           log.info("SERVER bulk transfer response: {}", response.toString());
 
         } catch (NullPointerException v) {
+          log.error("NullPointerException in bulk transfer", v);
         } catch (XmlException v) {
+          log.error("XmlException in bulk transfer", v);
         } catch (IOException v) {
+          log.error("IOException in bulk transfer", v);
         }
       }
     }

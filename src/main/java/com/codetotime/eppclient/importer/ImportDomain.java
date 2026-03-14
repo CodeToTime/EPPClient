@@ -38,6 +38,8 @@ import org.slf4j.LoggerFactory;
  */
 public class ImportDomain {
 
+  private static final Logger log = LoggerFactory.getLogger(ImportDomain.class);
+
   /**
    * Creates an import task using the given main frame's EPP connection.
    *
@@ -50,8 +52,6 @@ public class ImportDomain {
     this.domaindb = mainFrame.domainsDao;
     this.contactdb = mainFrame.contactsDao;
     this.recurseContacts = recurseContacts;
-
-    log = LoggerFactory.getLogger(ImportDomain.class);
   }
 
   /**
@@ -143,6 +143,5 @@ public class ImportDomain {
   // private String domainName;
   private boolean recurseContacts;
   private boolean closedb = false;
-  private Logger log;
   private main mainFrame;
 }

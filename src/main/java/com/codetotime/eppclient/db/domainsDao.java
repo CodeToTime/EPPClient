@@ -391,6 +391,7 @@ public class domainsDao {
       dbConnection = DriverManager.getConnection(dbUrl, dbProperties);
       bCreated = createTables(dbConnection);
     } catch (SQLException ex) {
+      log.error("Error creating database", ex);
     }
     dbProperties.remove("create");
     return bCreated;
@@ -433,6 +434,7 @@ public class domainsDao {
       try {
         DriverManager.getConnection(dbUrl, dbProperties);
       } catch (SQLException ex) {
+        log.debug("Database shutdown: {}", ex.getMessage());
       }
       isConnected = false;
     }

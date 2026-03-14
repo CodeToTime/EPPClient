@@ -89,103 +89,103 @@ public class ImportContact {
         try {
           registrantContact.setContactName(contactInfoResData.getName());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field Name not available for contact {}", contactId);
         }
 
         try {
           registrantContact.setOrg(contactInfoResData.getOrg());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field Org not available for contact {}", contactId);
         }
 
         try {
           registrantContact.setStreet(contactInfoResData.getStreet(0));
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field Street not available for contact {}", contactId);
         }
 
         try {
           registrantContact.setCity(contactInfoResData.getCity());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field City not available for contact {}", contactId);
         }
 
         try {
           registrantContact.setStateOrProvince(contactInfoResData.getSp());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field StateOrProvince not available for contact {}", contactId);
         }
 
         try {
           registrantContact.setPostalCode(contactInfoResData.getPc());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field PostalCode not available for contact {}", contactId);
         }
 
         try {
           registrantContact.setCountryCode(contactInfoResData.getCc());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field CountryCode not available for contact {}", contactId);
         }
 
         try {
           registrantContact.setVoice(contactInfoResData.getVoice());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field Voice not available for contact {}", contactId);
         }
 
         try {
           registrantContact.setFax(contactInfoResData.getFax());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field Fax not available for contact {}", contactId);
         }
 
         try {
           registrantContact.setEmail(contactInfoResData.getEmail());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field Email not available for contact {}", contactId);
         }
 
         try {
           registrantContact.setSchoolCode(contactInfoExt.getSchoolCode());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field SchoolCode not available for contact {}", contactId);
         }
 
         try {
           registrantContact.setConsentForPublishing(contactInfoExt.getConsentForPublishing());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field ConsentForPublishing not available for contact {}", contactId);
         }
 
         try {
           registrantContact.setIsRegistrant(contactInfoExt.isRegistrant());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field IsRegistrant not available for contact {}", contactId);
         }
 
         try {
           registrantContact.setNationalityCode(contactInfoExt.getNationalityCode());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field NationalityCode not available for contact {}", contactId);
         }
 
         try {
           registrantContact.setEntityType(contactInfoExt.getEntityType());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field EntityType not available for contact {}", contactId);
         }
 
         try {
           registrantContact.setRegCode(contactInfoExt.getRegCode());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field RegCode not available for contact {}", contactId);
         }
 
         try {
           registrantContact.setContactId(contactInfoResData.getId());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field ContactId not available for contact {}", contactId);
         }
 
         if (contactdb.getAddress(contactId) == null) {

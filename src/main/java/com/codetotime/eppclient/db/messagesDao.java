@@ -368,6 +368,7 @@ public class messagesDao {
       try {
         DriverManager.getConnection(dbUrl, dbProperties);
       } catch (SQLException ex) {
+        log.debug("Database shutdown: {}", ex.getMessage());
       }
       isConnected = false;
     }

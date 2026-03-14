@@ -264,8 +264,11 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
         }
 
       } catch (NullPointerException v) {
+        log.error("NullPointerException in deleteAddress", v);
       } catch (XmlException v) {
+        log.error("XmlException in deleteAddress", v);
       } catch (IOException v) {
+        log.error("IOException in deleteAddress", v);
       }
 
     } else {
@@ -303,8 +306,11 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
                 }
               }
             } catch (NullPointerException v) {
+              log.error("NullPointerException in saveAddress (new check)", v);
             } catch (XmlException v) {
+              log.error("XmlException in saveAddress (new check)", v);
             } catch (IOException v) {
+              log.error("IOException in saveAddress (new check)", v);
             }
           }
         }
@@ -377,8 +383,11 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
           }
 
         } catch (NullPointerException v) {
+          log.error("NullPointerException in saveAddress (edit check)", v);
         } catch (XmlException v) {
+          log.error("XmlException in saveAddress (edit check)", v);
         } catch (IOException v) {
+          log.error("IOException in saveAddress (edit check)", v);
         }
 
       } else {
@@ -571,8 +580,11 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
       }
 
     } catch (NullPointerException v) {
+      log.error("NullPointerException in checkContact", v);
     } catch (XmlException v) {
+      log.error("XmlException in checkContact", v);
     } catch (IOException v) {
+      log.error("IOException in checkContact", v);
     }
   }
 
@@ -604,8 +616,11 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
         }
 
       } catch (NullPointerException v) {
+        log.error("NullPointerException in infoContact", v);
       } catch (XmlException v) {
+        log.error("XmlException in infoContact", v);
       } catch (IOException v) {
+        log.error("IOException in infoContact", v);
       }
     }
   }

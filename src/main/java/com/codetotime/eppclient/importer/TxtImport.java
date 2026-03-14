@@ -138,8 +138,10 @@ public class TxtImport extends JFrame {
           logTextArea.setText(logTextArea.getText() + "\n======FINE IMPORTAZIONE======");
           in.close();
         } catch (FileNotFoundException e) {
+          log.error("File not found: {}", file.getAbsolutePath(), e);
           logTextArea.setText(logTextArea.getText() + "\n++++++Impossibile aprire il file++++++");
         } catch (IOException e) {
+          log.error("IO error during bulk import from file: {}", file.getAbsolutePath(), e);
           logTextArea.setText(
               logTextArea.getText()
                   + "\n++++++Errore sconosciuto durante l'apertura del file++++++");

@@ -57,12 +57,16 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Application main frame: initialises the EPP connection, DAOs, and all management panels, and
  * wires together the UI lifecycle with the EPP session lifecycle.
  */
 public class main extends JFrame implements WindowListener {
+
+  private static final Logger log = LoggerFactory.getLogger(main.class);
   public EppUplink eppUplink;
 
   public messagesDao messagesDao;
@@ -113,6 +117,7 @@ public class main extends JFrame implements WindowListener {
       messagesMenu = new MessageManagement(this);
       importMenu = new TxtImport(this);
     } catch (Exception ex) {
+      log.error("Error during DAO or menu initialization", ex);
       JOptionPane.showMessageDialog(
           this,
           "Si è verificato un errore durante l'accesso al database.\n"
@@ -668,6 +673,7 @@ public class main extends JFrame implements WindowListener {
       File suggested = new File(System.getProperty("user.home"), "epp-backup-" + ts + ".zip");
       chooser.setSelectedFile(suggested);
     } catch (Exception ignore) {
+      log.debug("Failed to set suggested backup file: {}", ignore.getMessage());
     }
 
     int result = chooser.showSaveDialog(this);
