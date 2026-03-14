@@ -463,10 +463,13 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                 }
                 boolean removeOldStatus = true;
                 for (int i = 0; i < domain.getNewStatusV().size(); i++) {
-                  if (domain.getNewStatusV().get(i) instanceof Integer)
-                    if (status == (Integer) domain.getNewStatusV().get(i)) removeOldStatus = false;
+                  if (domain.getNewStatusV().get(i) instanceof Integer) {
+                    if (status == (Integer) domain.getNewStatusV().get(i)) {
+                      removeOldStatus = false;
+                    }
+                  }
                 }
-                if (removeOldStatus)
+                if (removeOldStatus) {
                   switch (status) {
                     case 0:
                       domainUpdate.addStatusToRem(DomainUpdateStatusType.CLIENT_DELETE_PROHIBITED);
@@ -479,6 +482,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                       domainUpdate.addStatusToRem(DomainUpdateStatusType.CLIENT_UPDATE_PROHIBITED);
                       break;
                   }
+                }
               }
 
               for (int i = 0; i < domain.getNewStatusV().size(); i++) {
@@ -492,10 +496,12 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                   } else if (oldStatus.equals("clientUpdateProhibited")) {
                     status = 2;
                   }
-                  if (status == (Integer) domain.getNewStatusV().get(i)) addNewStatus = false;
+                  if (status == (Integer) domain.getNewStatusV().get(i)) {
+                    addNewStatus = false;
+                  }
                 }
 
-                if (addNewStatus)
+                if (addNewStatus) {
                   switch ((Integer) domain.getNewStatusV().get(i)) {
                     case 0:
                       domainUpdate.addStatusToAdd(DomainUpdateStatusType.CLIENT_DELETE_PROHIBITED);
@@ -508,6 +514,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                       domainUpdate.addStatusToAdd(DomainUpdateStatusType.CLIENT_UPDATE_PROHIBITED);
                       break;
                   }
+                }
               }
 
               String[] newTech = domain.getTech();
@@ -573,19 +580,27 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                           Boolean ipFound = false;
 
                           for (int k = 0; k < oldHost.getIpSize(); k++) {
-                            if (dNameServer[i].equals(oldHost.getIp(k).address)) ipFound = true;
+                            if (dNameServer[i].equals(oldHost.getIp(k).address)) {
+                              ipFound = true;
+                            }
                           }
 
-                          if (!ipFound) hostMatch = false;
+                          if (!ipFound) {
+                            hostMatch = false;
+                          }
                         }
 
                         for (int i = 0; i < oldHost.getIpSize(); i++) {
                           Boolean ipFound = false;
                           for (int k = 1; k < dNameServer.length; k++) {
-                            if (oldHost.getIp(i).address.equals(dNameServer[k])) ipFound = true;
+                            if (oldHost.getIp(i).address.equals(dNameServer[k])) {
+                              ipFound = true;
+                            }
                           }
 
-                          if (!ipFound) hostMatch = false;
+                          if (!ipFound) {
+                            hostMatch = false;
+                          }
                         }
                         if (hostMatch) {
                           isNameServerToAdd = false;
@@ -593,7 +608,9 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                       }
 
                     } else {
-                      if (newNameServer[j].equals(oldHost.name)) isNameServerToAdd = false;
+                      if (newNameServer[j].equals(oldHost.name)) {
+                        isNameServerToAdd = false;
+                      }
                     }
                   }
                 }
@@ -636,26 +653,36 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                             Boolean ipFound = false;
 
                             for (int j = 0; j < oldHost.getIpSize(); j++) {
-                              if (dNameServer[i].equals(oldHost.getIp(j).address)) ipFound = true;
+                              if (dNameServer[i].equals(oldHost.getIp(j).address)) {
+                                ipFound = true;
+                              }
                             }
 
-                            if (!ipFound) hostMatch = false;
+                            if (!ipFound) {
+                              hostMatch = false;
+                            }
                           }
 
                           for (int i = 0; i < oldHost.getIpSize(); i++) {
                             Boolean ipFound = false;
                             for (int j = 1; j < dNameServer.length; j++) {
-                              if (oldHost.getIp(i).address.equals(dNameServer[j])) ipFound = true;
+                              if (oldHost.getIp(i).address.equals(dNameServer[j])) {
+                                ipFound = true;
+                              }
                             }
 
-                            if (!ipFound) hostMatch = false;
+                            if (!ipFound) {
+                              hostMatch = false;
+                            }
                           }
                           if (hostMatch) {
                             isNameServerToRem = false;
                           }
                         }
                       } else {
-                        if (newNameServer[k].equals(oldHost.getName())) isNameServerToRem = false;
+                        if (newNameServer[k].equals(oldHost.getName())) {
+                          isNameServerToRem = false;
+                        }
                       }
                     }
                   }
@@ -947,8 +974,9 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
             msgAvailabilityResult += "Available";
           } else {
             msgAvailabilityResult += "NOT Available";
-            if (resData.getChkReasonText(i) != null)
+            if (resData.getChkReasonText(i) != null) {
               msgAvailabilityResult += " (" + resData.getChkReasonText(i) + ")";
+            }
           }
           msgAvailabilityResult += "\n";
         }

@@ -1150,8 +1150,11 @@ public class DomainPanel extends JPanel {
 
   void setDnsSec(boolean isDnsSec) {
     domain.setDNSSec(isDnsSec);
-    if (dnsSecEnabled) chkDNSSEC.setSelected(isDnsSec);
-    else chkDNSSEC.setSelected(false);
+    if (dnsSecEnabled) {
+      chkDNSSEC.setSelected(isDnsSec);
+    } else {
+      chkDNSSEC.setSelected(false);
+    }
     toggleDnsSecFields();
   }
 
@@ -1372,11 +1375,16 @@ public class DomainPanel extends JPanel {
     domain.setNewStatus(newStatus);
     txtStatus.clearSelection();
     if (newStatus != null) {
-      for (int i = 0; i < newStatus.size(); i++)
+      for (int i = 0; i < newStatus.size(); i++) {
         txtStatus.addSelectionInterval((Integer) newStatus.get(i), (Integer) newStatus.get(i));
+      }
     }
     lblIsPendingDelete.setEnabled(false);
-    if (newStatus != null) if (newStatus.contains(99)) lblIsPendingDelete.setEnabled(true);
+    if (newStatus != null) {
+      if (newStatus.contains(99)) {
+        lblIsPendingDelete.setEnabled(true);
+      }
+    }
   }
 
   /*    int[] getNewStatus() {
@@ -1400,7 +1408,9 @@ public class DomainPanel extends JPanel {
       newStatus.add(selectedStatus);
     }
 
-    if (lblIsPendingDelete.isEnabled()) newStatus.add(99);
+    if (lblIsPendingDelete.isEnabled()) {
+      newStatus.add(99);
+    }
 
     domain.setNewStatus(newStatus);
 

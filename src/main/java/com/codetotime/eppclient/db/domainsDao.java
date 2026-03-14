@@ -259,7 +259,9 @@ public class domainsDao {
               .getMetaData()
               .getTables(dbProperties.getProperty("db.schema"), null, "%", null);
       while (rs.next()) {
-        if (rs.getString(3).toLowerCase().equals(tableName.toLowerCase())) tableExists = true;
+        if (rs.getString(3).toLowerCase().equals(tableName.toLowerCase())) {
+          tableExists = true;
+        }
       }
     } catch (SQLException ex) {
       log.error("Error checking table existence", ex);
@@ -450,7 +452,9 @@ public class domainsDao {
    */
   public String getDatabaseUrl() {
     String dbUrl = dbProperties.getProperty("derby.url");
-    if (!dbUrl.contains("mariadb") && !dbUrl.contains("postgresql")) dbUrl += dbName;
+    if (!dbUrl.contains("mariadb") && !dbUrl.contains("postgresql")) {
+      dbUrl += dbName;
+    }
     return dbUrl;
   }
 
@@ -471,7 +475,9 @@ public class domainsDao {
       String[] newAdmins = record.getAdmin();
       if (newAdmins != null) {
         for (int adminIndex = 0; adminIndex < newAdmins.length; adminIndex++) {
-          if (newAdmin.length() > 0) newAdmin = newAdmin + ";";
+          if (newAdmin.length() > 0) {
+            newAdmin = newAdmin + ";";
+          }
           newAdmin = newAdmin + newAdmins[adminIndex];
         }
       }
@@ -481,7 +487,9 @@ public class domainsDao {
       String[] newTechs = record.getTech();
       if (newTechs != null) {
         for (int techIndex = 0; techIndex < newTechs.length; techIndex++) {
-          if (newTech.length() > 0) newTech = newTech + ";";
+          if (newTech.length() > 0) {
+            newTech = newTech + ";";
+          }
           newTech = newTech + newTechs[techIndex];
         }
       }
@@ -491,7 +499,9 @@ public class domainsDao {
       String[] newNameServers = record.getNameServer();
       if (newNameServers != null) {
         for (int nameServerIndex = 0; nameServerIndex < newNameServers.length; nameServerIndex++) {
-          if (newNameServer.length() > 0) newNameServer = newNameServer + ";";
+          if (newNameServer.length() > 0) {
+            newNameServer = newNameServer + ";";
+          }
           newNameServer = newNameServer + newNameServers[nameServerIndex];
         }
       }
@@ -500,11 +510,14 @@ public class domainsDao {
       stmtSaveNewRecord.setString(6, record.getAuthInfo());
 
       String newStatus = "";
-      if (record.getNewStatusV() != null)
+      if (record.getNewStatusV() != null) {
         for (int statusIndex = 0; statusIndex < record.getNewStatusV().size(); statusIndex++) {
-          if (newStatus.length() > 0) newStatus = newStatus + ",";
+          if (newStatus.length() > 0) {
+            newStatus = newStatus + ",";
+          }
           newStatus += record.getNewStatusV().get(statusIndex);
         }
+      }
 
       /*            int[] newStatuses = record.getNewStatus();
       if (newStatuses != null) {
@@ -555,7 +568,9 @@ public class domainsDao {
       String[] newAdmins = record.getAdmin();
       if (newAdmins != null) {
         for (int adminIndex = 0; adminIndex < newAdmins.length; adminIndex++) {
-          if (newAdmin.length() > 0) newAdmin = newAdmin + ";";
+          if (newAdmin.length() > 0) {
+            newAdmin = newAdmin + ";";
+          }
           newAdmin = newAdmin + newAdmins[adminIndex];
         }
       }
@@ -565,7 +580,9 @@ public class domainsDao {
       String[] newTechs = record.getTech();
       if (newTechs != null) {
         for (int techIndex = 0; techIndex < newTechs.length; techIndex++) {
-          if (newTech.length() > 0) newTech = newTech + ";";
+          if (newTech.length() > 0) {
+            newTech = newTech + ";";
+          }
           newTech = newTech + newTechs[techIndex];
         }
       }
@@ -575,7 +592,9 @@ public class domainsDao {
       String[] newNameServers = record.getNameServer();
       if (newNameServers != null) {
         for (int nameServerIndex = 0; nameServerIndex < newNameServers.length; nameServerIndex++) {
-          if (newNameServer.length() > 0) newNameServer = newNameServer + ";";
+          if (newNameServer.length() > 0) {
+            newNameServer = newNameServer + ";";
+          }
           newNameServer = newNameServer + newNameServers[nameServerIndex];
         }
       }
@@ -585,7 +604,9 @@ public class domainsDao {
 
       String newStatus = "";
       for (int statusIndex = 0; statusIndex < record.getNewStatusV().size(); statusIndex++) {
-        if (newStatus.length() > 0) newStatus = newStatus + ",";
+        if (newStatus.length() > 0) {
+          newStatus = newStatus + ",";
+        }
         newStatus += record.getNewStatusV().get(statusIndex);
       }
 

@@ -142,14 +142,18 @@ public class DbExporter {
     int cols = meta.getColumnCount();
     // Header
     for (int i = 1; i <= cols; i++) {
-      if (i > 1) writer.write(delimiter);
+      if (i > 1) {
+        writer.write(delimiter);
+      }
       writer.write(alwaysQuote(meta.getColumnName(i)));
     }
     writer.write("\r\n");
     // Rows
     while (rs.next()) {
       for (int i = 1; i <= cols; i++) {
-        if (i > 1) writer.write(delimiter);
+        if (i > 1) {
+          writer.write(delimiter);
+        }
         Object val = rs.getObject(i);
         writer.write(alwaysQuote(val));
       }
@@ -181,7 +185,9 @@ public class DbExporter {
           case "tsv":
             return '\t';
           default:
-            if (cfg.length() == 1) return cfg.charAt(0);
+            if (cfg.length() == 1) {
+              return cfg.charAt(0);
+            }
         }
       }
     } catch (Exception ignored) {
@@ -207,7 +213,9 @@ public class DbExporter {
   }
 
   private static String buildJdbcUrl(String baseUrl, String dbName) {
-    if (baseUrl == null) return null;
+    if (baseUrl == null) {
+      return null;
+    }
     String lurl = baseUrl.toLowerCase();
     if (lurl.contains("mariadb") || lurl.contains("postgresql")) {
       return baseUrl; // full URL already configured for MySQL/MariaDB/PostgreSQL

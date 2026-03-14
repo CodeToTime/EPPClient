@@ -174,7 +174,9 @@ class EPPthread extends Thread {
   }
 
   public void restart() {
-    if (isClosing) isClosing = false;
+    if (isClosing) {
+      isClosing = false;
+    }
     if (!isRunning) {
       this.start();
     }
@@ -182,7 +184,9 @@ class EPPthread extends Thread {
 
   public boolean gracefulStop() {
     if (isRunning) {
-      if (!isClosing) isClosing = true;
+      if (!isClosing) {
+        isClosing = true;
+      }
       this.interrupt();
       try {
         for (int i = 0; i < 10 && !EPPclosable; i++) {

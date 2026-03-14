@@ -668,7 +668,9 @@ public class main extends JFrame implements WindowListener {
               "Conferma sovrascrittura",
               JOptionPane.YES_NO_OPTION,
               JOptionPane.WARNING_MESSAGE);
-      if (ow != JOptionPane.YES_OPTION) return;
+      if (ow != JOptionPane.YES_OPTION) {
+        return;
+      }
     }
 
     final File destFile = file;
@@ -781,7 +783,9 @@ public class main extends JFrame implements WindowListener {
     contactsMenu.setEPPEnablement(isActiveEPP);
     messagesMenu.setEPPEnablement(isActiveEPP);
     configMenu.setEPPEnablement(isActiveEPP);
-    if (importMenu.isVisible()) importMenu.setVisible(isActiveEPP);
+    if (importMenu.isVisible()) {
+      importMenu.setVisible(isActiveEPP);
+    }
   }
 
   private void setVersion(String version) {

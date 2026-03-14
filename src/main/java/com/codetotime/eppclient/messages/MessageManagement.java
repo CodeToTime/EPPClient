@@ -172,7 +172,9 @@ public class MessageManagement extends JFrame {
   @Override
   public void setVisible(boolean b) {
     super.setVisible(b);
-    if (b) updateTableContent();
+    if (b) {
+      updateTableContent();
+    }
   }
 
   private void ackAllMessages() {
@@ -202,7 +204,9 @@ public class MessageManagement extends JFrame {
             .equals(messagesTable.getValueAt(messagesTable.getSelectedRow(), 0))) {
           ((MessageDetail) messageDetailWindows.get(i)).setVisible(true);
           detailsOpened = true;
-          if (i > 10) break;
+          if (i > 10) {
+            break;
+          }
         }
       }
       if (!detailsOpened) {

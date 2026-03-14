@@ -988,7 +988,9 @@ public class manageParameters extends JFrame implements WindowListener {
         break;
     }
 
-    if (isKillRequired) killOnClose = true;
+    if (isKillRequired) {
+      killOnClose = true;
+    }
   }
 
   private void dropTables() {

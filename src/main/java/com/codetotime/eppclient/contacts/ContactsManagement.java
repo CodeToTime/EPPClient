@@ -296,7 +296,9 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
               if (response.isSuccessfully()) {
                 ContactCheckResponseResData resData =
                     (ContactCheckResponseResData) response.getResponseResData();
-                if (resData.getChkAvail(0)) break;
+                if (resData.getChkAvail(0)) {
+                  break;
+                }
               }
             } catch (NullPointerException v) {
             } catch (XmlException v) {
@@ -323,14 +325,17 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
 
           contactCreate.setFax(address.getFax());
           contactCreate.setOrg(address.getOrg());
-          if (!address.getSchoolCode().isEmpty())
+          if (!address.getSchoolCode().isEmpty()) {
             contactCreate.setExtSchoolCode(address.getSchoolCode());
+          }
 
-          if (!address.getIpaCode().isEmpty() && address.getUoCode().isEmpty())
+          if (!address.getIpaCode().isEmpty() && address.getUoCode().isEmpty()) {
             contactCreate.setExtGovRegistrant(address.getIpaCode());
+          }
 
-          if (!address.getIpaCode().isEmpty() && !address.getUoCode().isEmpty())
+          if (!address.getIpaCode().isEmpty() && !address.getUoCode().isEmpty()) {
             contactCreate.setExtGovRegistrant(address.getIpaCode(), address.getUoCode());
+          }
 
           if (address.getIsRegistrant()) {
             contactCreate.setExtRegistrant(
@@ -466,8 +471,9 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
             contactUpdate.setSp(address.getStateOrProvince());
             contactUpdate.setPc(address.getPostalCode());
             contactUpdate.setCc(address.getCountryCode());
-            if (!address.getSchoolCode().isEmpty())
+            if (!address.getSchoolCode().isEmpty()) {
               contactUpdate.setExtSchoolCode(address.getSchoolCode());
+            }
 
             contactUpdate.setExtConsForPub(address.getConsentForPublishing());
 
@@ -538,8 +544,9 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
             msgAvailabilityResult += "Available";
           } else {
             msgAvailabilityResult += "NOT Available";
-            if (resData.getChkReasonText(i) != null)
+            if (resData.getChkReasonText(i) != null) {
               msgAvailabilityResult += " (" + resData.getChkReasonText(i) + ")";
+            }
           }
           msgAvailabilityResult += "\n";
         }

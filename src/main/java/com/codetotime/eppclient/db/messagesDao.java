@@ -183,7 +183,9 @@ public class messagesDao {
               .getMetaData()
               .getTables(dbProperties.getProperty("db.schema"), null, "%", null);
       while (rs.next()) {
-        if (rs.getString(3).toLowerCase().equals(tableName.toLowerCase())) tableExists = true;
+        if (rs.getString(3).toLowerCase().equals(tableName.toLowerCase())) {
+          tableExists = true;
+        }
       }
     } catch (SQLException ex) {
       log.error("Error checking table existence", ex);
@@ -387,7 +389,9 @@ public class messagesDao {
    */
   public String getDatabaseUrl() {
     String dbUrl = dbProperties.getProperty("derby.url");
-    if (!dbUrl.contains("mariadb") && !dbUrl.contains("postgresql")) dbUrl += dbName;
+    if (!dbUrl.contains("mariadb") && !dbUrl.contains("postgresql")) {
+      dbUrl += dbName;
+    }
     return dbUrl;
   }
 

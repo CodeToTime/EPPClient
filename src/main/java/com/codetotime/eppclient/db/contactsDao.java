@@ -277,7 +277,9 @@ public class contactsDao {
               .getMetaData()
               .getTables(dbProperties.getProperty("db.schema"), null, "%", null);
       while (rs.next()) {
-        if (rs.getString(3).toLowerCase().equals(tableName.toLowerCase())) tableExists = true;
+        if (rs.getString(3).toLowerCase().equals(tableName.toLowerCase())) {
+          tableExists = true;
+        }
       }
     } catch (SQLException ex) {
       log.error("Error checking table existence", ex);
@@ -467,7 +469,9 @@ public class contactsDao {
    */
   public String getDatabaseUrl() {
     String dbUrl = dbProperties.getProperty("derby.url");
-    if (!dbUrl.contains("mariadb") && !dbUrl.contains("postgresql")) dbUrl += dbName;
+    if (!dbUrl.contains("mariadb") && !dbUrl.contains("postgresql")) {
+      dbUrl += dbName;
+    }
     return dbUrl;
   }
 
@@ -555,7 +559,9 @@ public class contactsDao {
 
       if (newStatuses != null) {
         for (int statusIndex = 0; statusIndex < newStatuses.length; statusIndex++) {
-          if (newStatus.length() > 0) newStatus = newStatus + ",";
+          if (newStatus.length() > 0) {
+            newStatus = newStatus + ",";
+          }
           newStatus = newStatus + newStatuses[statusIndex];
         }
       }

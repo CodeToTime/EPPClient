@@ -182,7 +182,9 @@ public class MessageDetail extends JFrame {
             new java.beans.PropertyChangeListener() {
               @Override
               public void propertyChange(java.beans.PropertyChangeEvent e) {
-                if ("borde\u0072".equals(e.getPropertyName())) throw new RuntimeException();
+                if ("borde\u0072".equals(e.getPropertyName())) {
+                  throw new RuntimeException();
+                }
               }
             });
 
@@ -479,7 +481,9 @@ public class MessageDetail extends JFrame {
           new java.beans.PropertyChangeListener() {
             @Override
             public void propertyChange(java.beans.PropertyChangeEvent e) {
-              if ("bord\u0065r".equals(e.getPropertyName())) throw new RuntimeException();
+              if ("bord\u0065r".equals(e.getPropertyName())) {
+                throw new RuntimeException();
+              }
             }
           });
 
