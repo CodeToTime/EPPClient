@@ -20,7 +20,7 @@
 
 package com.codetotime.eppclient.db;
 
-import com.codetotime.eppclient.config.EPPparams;
+import com.codetotime.eppclient.config.EppParams;
 import com.codetotime.eppclient.messages.Message;
 import java.io.File;
 import java.io.IOException;
@@ -244,8 +244,8 @@ public class messagesDao {
       dbProperties.put("derby.locks.monitor", "true");
       dbProperties.put("derby.locks.deadlockTrace", "true");
       dbProperties.put("derby.language.logStatementText", "true");
-      String dbUrl = EPPparams.getParameter("EppClient.dburl");
-      log.debug("Loaded dbUrl from EPPparams: [{}]", dbUrl);
+      String dbUrl = EppParams.getParameter("EppClient.dburl");
+      log.debug("Loaded dbUrl from EppParams: [{}]", dbUrl);
       if (dbUrl.contains("mariadb")) {
         dbProperties.put("derby.driver", "org.mariadb.jdbc.Driver");
       } else if (dbUrl.contains("postgresql")) {
@@ -254,9 +254,9 @@ public class messagesDao {
         dbProperties.put("derby.driver", "org.apache.derby.jdbc.EmbeddedDriver");
       }
       dbProperties.put("derby.url", dbUrl);
-      String dbSchema = EPPparams.getParameter("EppClient.dbname");
-      String dbUser = EPPparams.getParameter("EppClient.dbuid");
-      String dbPwd = EPPparams.getParameter("EppClient.dbpwd");
+      String dbSchema = EppParams.getParameter("EppClient.dbname");
+      String dbUser = EppParams.getParameter("EppClient.dbuid");
+      String dbPwd = EppParams.getParameter("EppClient.dbpwd");
       log.debug("Loaded dbSchema: [{}]", dbSchema);
       log.debug("Loaded dbUser: [{}]", dbUser);
       log.debug("Loaded dbPwd: [{}]", dbPwd);

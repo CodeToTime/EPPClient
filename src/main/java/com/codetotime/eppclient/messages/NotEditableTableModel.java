@@ -22,9 +22,7 @@ package com.codetotime.eppclient.messages;
 
 import javax.swing.table.DefaultTableModel;
 
-/**
- * A table model that does not allow cell editing.
- */
+/** A table model that does not allow cell editing. */
 class NotEditableTableModel extends DefaultTableModel {
   @Override
   public boolean isCellEditable(int column, int row) {

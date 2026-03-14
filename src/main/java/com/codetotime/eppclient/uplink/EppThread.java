@@ -22,7 +22,7 @@ package com.codetotime.eppclient.uplink;
 
 import com.codetotime.eppclient.CustomLogin;
 import com.codetotime.eppclient.ErrorHandler;
-import com.codetotime.eppclient.config.EPPparams;
+import com.codetotime.eppclient.config.EppParams;
 import com.codetotime.eppclient.main;
 import com.codetotime.eppclient.messages.Message;
 import it.nic.epp.client.commands.interfaces.IEppRequest;
@@ -55,23 +55,23 @@ class EppThread extends Thread {
     HttpBaseResponse response = null;
 
     try {
-      URI serverURI = new URI(EPPparams.getParameter("EppClient.serverURI"));
+      URI serverURI = new URI(EppParams.getParameter("EppClient.serverURI"));
 
-      if (EPPparams.getParameter("EppClient.proxyHost").length() > 0
-          && EPPparams.getParameter("EppClient.proxyPort").length() > 0) {
+      if (EppParams.getParameter("EppClient.proxyHost").length() > 0
+          && EppParams.getParameter("EppClient.proxyPort").length() > 0) {
         client =
             new Client(
                 serverURI.toString(),
-                EPPparams.getParameter("EppClient.proxyHost"),
-                Integer.parseInt(EPPparams.getParameter("EppClient.proxyPort")));
+                EppParams.getParameter("EppClient.proxyHost"),
+                Integer.parseInt(EppParams.getParameter("EppClient.proxyPort")));
       } else {
         client = new Client(serverURI.toString());
       }
 
       CustomLogin login =
           new CustomLogin(
-              EPPparams.getParameter("EppClient.defaultUser"),
-              EPPparams.getParameter("EppClient.defaultPassword"));
+              EppParams.getParameter("EppClient.defaultUser"),
+              EppParams.getParameter("EppClient.defaultPassword"));
 
       //            logger.logmessage("HELLO: " + client.sendHello().toString());
 
@@ -94,7 +94,7 @@ class EppThread extends Thread {
           doPoll();
           try {
             Thread.sleep(
-                Integer.parseInt(EPPparams.getParameter("EppClient.refreshInterval")) * 1000);
+                Integer.parseInt(EppParams.getParameter("EppClient.refreshInterval")) * 1000);
           } catch (InterruptedException v) {
           }
         }

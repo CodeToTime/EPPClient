@@ -802,7 +802,7 @@ public class manageParameters extends JFrame implements WindowListener {
             "The New Password cannot be an empty string.",
             "Password cannot be empty",
             JOptionPane.ERROR_MESSAGE);
-      } else if (EPPparams.getParameter("EppClient.defaultPassword").equals(newPassword)) {
+      } else if (EppParams.getParameter("EppClient.defaultPassword").equals(newPassword)) {
         JOptionPane.showMessageDialog(
             this,
             "The New Password cannot be the same as the Old Password.",
@@ -811,15 +811,15 @@ public class manageParameters extends JFrame implements WindowListener {
       } else {
         try {
           // sets the serverURI
-          URI serverURI = new URI(EPPparams.getParameter("EppClient.serverURI"));
+          URI serverURI = new URI(EppParams.getParameter("EppClient.serverURI"));
           // creates a new client
           Client client = new Client(serverURI.toString());
 
           // creates a login command with a valid account
           CustomLogin login =
               new CustomLogin(
-                  EPPparams.getParameter("EppClient.defaultUser"),
-                  EPPparams.getParameter("EppClient.defaultPassword"));
+                  EppParams.getParameter("EppClient.defaultUser"),
+                  EppParams.getParameter("EppClient.defaultPassword"));
 
           login.setNewPW(newPassword);
 
@@ -835,7 +835,7 @@ public class manageParameters extends JFrame implements WindowListener {
           log.info("SERVER logout: {}", response.toString());
 
           defaultPassword.setText(newPassword);
-          EPPparams.setParameter("EppClient.defaultPassword", defaultPassword.getText());
+          EppParams.setParameter("EppClient.defaultPassword", defaultPassword.getText());
 
           JOptionPane.showMessageDialog(
               this,
@@ -925,8 +925,8 @@ public class manageParameters extends JFrame implements WindowListener {
   }
 
   private void saveParameters() {
-    EPPparams.setParameter("EppClient.defaultUser", defaultUser.getText());
-    EPPparams.setParameter("EppClient.defaultPassword", defaultPassword.getText());
+    EppParams.setParameter("EppClient.defaultUser", defaultUser.getText());
+    EppParams.setParameter("EppClient.defaultPassword", defaultPassword.getText());
 
     if (serverURI.getText().contains("https://epp-acc1.nic.it")
         || serverURI.getText().contains("https://epp-acc2.nic.it")) {
@@ -939,12 +939,12 @@ public class manageParameters extends JFrame implements WindowListener {
               + "entering here an accreditation server hostname will cause the test to fail.",
           "ACCREDITATION SERVER FOUND",
           JOptionPane.INFORMATION_MESSAGE);
-      serverURI.setText(EPPparams.getParameter("EppClient.serverURI"));
+      serverURI.setText(EppParams.getParameter("EppClient.serverURI"));
     } else {
-      EPPparams.setParameter("EppClient.serverURI", serverURI.getText());
+      EppParams.setParameter("EppClient.serverURI", serverURI.getText());
     }
 
-    EPPparams.setParameter("EppClient.proxyHost", proxyHost.getText());
+    EppParams.setParameter("EppClient.proxyHost", proxyHost.getText());
 
     // Handle proxyPort - save as string, validate if numeric
     String proxyPortValue = proxyPort.getText().trim();
@@ -953,11 +953,11 @@ public class manageParameters extends JFrame implements WindowListener {
     } catch (NumberFormatException ex) {
       proxyPortValue = ""; // Treat invalid numeric values as empty string
     }
-    EPPparams.setParameter("EppClient.proxyPort", proxyPortValue);
+    EppParams.setParameter("EppClient.proxyPort", proxyPortValue);
 
-    EPPparams.setParameter("EppClient.contactPrefix", contactPrefix.getText());
-    EPPparams.setParameter("EppClient.defaultTech", defaultTech.getText());
-    EPPparams.setParameter("EppClient.defaultNS", defaultNS.getText());
+    EppParams.setParameter("EppClient.contactPrefix", contactPrefix.getText());
+    EppParams.setParameter("EppClient.defaultTech", defaultTech.getText());
+    EppParams.setParameter("EppClient.defaultNS", defaultNS.getText());
 
     // Handle refreshInterval - save as string, validate if numeric
     String refreshValue = refreshInterval.getText().trim();
@@ -966,28 +966,28 @@ public class manageParameters extends JFrame implements WindowListener {
     } catch (NumberFormatException ex) {
       refreshValue = ""; // Treat invalid numeric values as empty string
     }
-    EPPparams.setParameter("EppClient.refreshInterval", refreshValue);
+    EppParams.setParameter("EppClient.refreshInterval", refreshValue);
 
-    EPPparams.setParameter("EppClient.dbengine", Integer.toString(dbengine.getSelectedIndex()));
-    EPPparams.setParameter("EppClient.dbname", dbname.getText());
-    EPPparams.setParameter("EppClient.dbhost", dbhost.getText());
-    EPPparams.setParameter("EppClient.dbuid", dbuid.getText());
-    EPPparams.setParameter("EppClient.dbpwd", dbpwd.getText());
-    EPPparams.setParameter("EppClient.implement.DNSSEC", Boolean.toString(chkDNSSEC.isSelected()));
+    EppParams.setParameter("EppClient.dbengine", Integer.toString(dbengine.getSelectedIndex()));
+    EppParams.setParameter("EppClient.dbname", dbname.getText());
+    EppParams.setParameter("EppClient.dbhost", dbhost.getText());
+    EppParams.setParameter("EppClient.dbuid", dbuid.getText());
+    EppParams.setParameter("EppClient.dbpwd", dbpwd.getText());
+    EppParams.setParameter("EppClient.implement.DNSSEC", Boolean.toString(chkDNSSEC.isSelected()));
 
     switch (dbengine.getSelectedIndex()) { // 0: derby, 1: mysql/mariadb, 2: postgresql
       case 0:
-        EPPparams.setParameter("EppClient.dburl", "jdbc:derby:");
-        EPPparams.setParameter("EppClient.dbname", "eppclient");
-        EPPparams.setParameter("EppClient.dbuid", "eppclient");
-        EPPparams.setParameter("EppClient.dbpwd", "clientepp");
+        EppParams.setParameter("EppClient.dburl", "jdbc:derby:");
+        EppParams.setParameter("EppClient.dbname", "eppclient");
+        EppParams.setParameter("EppClient.dbuid", "eppclient");
+        EppParams.setParameter("EppClient.dbpwd", "clientepp");
         break;
       case 1:
-        EPPparams.setParameter(
+        EppParams.setParameter(
             "EppClient.dburl", "jdbc:mariadb://" + dbhost.getText() + "/" + dbname.getText());
         break;
       case 2:
-        EPPparams.setParameter(
+        EppParams.setParameter(
             "EppClient.dburl", "jdbc:postgresql://" + dbhost.getText() + "/" + dbname.getText());
       default:
         break;
@@ -1040,22 +1040,22 @@ public class manageParameters extends JFrame implements WindowListener {
   public void setVisible(boolean b) {
     super.setVisible(b);
     if (b) {
-      defaultUser.setText(EPPparams.getParameter("EppClient.defaultUser"));
-      defaultPassword.setText(EPPparams.getParameter("EppClient.defaultPassword"));
-      serverURI.setText(EPPparams.getParameter("EppClient.serverURI"));
-      proxyHost.setText(EPPparams.getParameter("EppClient.proxyHost"));
-      proxyPort.setText(EPPparams.getParameter("EppClient.proxyPort"));
-      contactPrefix.setText(EPPparams.getParameter("EppClient.contactPrefix"));
-      defaultTech.setText(EPPparams.getParameter("EppClient.defaultTech"));
-      defaultNS.setText(EPPparams.getParameter("EppClient.defaultNS"));
-      refreshInterval.setText(EPPparams.getParameter("EppClient.refreshInterval"));
-      dbengine.setSelectedIndex(Integer.parseInt(EPPparams.getParameter("EppClient.dbengine")));
-      dbname.setText(EPPparams.getParameter("EppClient.dbname"));
-      dbhost.setText(EPPparams.getParameter("EppClient.dbhost"));
-      dbuid.setText(EPPparams.getParameter("EppClient.dbuid"));
-      dbpwd.setText(EPPparams.getParameter("EppClient.dbpwd"));
+      defaultUser.setText(EppParams.getParameter("EppClient.defaultUser"));
+      defaultPassword.setText(EppParams.getParameter("EppClient.defaultPassword"));
+      serverURI.setText(EppParams.getParameter("EppClient.serverURI"));
+      proxyHost.setText(EppParams.getParameter("EppClient.proxyHost"));
+      proxyPort.setText(EppParams.getParameter("EppClient.proxyPort"));
+      contactPrefix.setText(EppParams.getParameter("EppClient.contactPrefix"));
+      defaultTech.setText(EppParams.getParameter("EppClient.defaultTech"));
+      defaultNS.setText(EppParams.getParameter("EppClient.defaultNS"));
+      refreshInterval.setText(EppParams.getParameter("EppClient.refreshInterval"));
+      dbengine.setSelectedIndex(Integer.parseInt(EppParams.getParameter("EppClient.dbengine")));
+      dbname.setText(EppParams.getParameter("EppClient.dbname"));
+      dbhost.setText(EppParams.getParameter("EppClient.dbhost"));
+      dbuid.setText(EppParams.getParameter("EppClient.dbuid"));
+      dbpwd.setText(EppParams.getParameter("EppClient.dbpwd"));
       chkDNSSEC.setSelected(
-          Boolean.parseBoolean(EPPparams.getParameter("EppClient.implement.DNSSEC")));
+          Boolean.parseBoolean(EppParams.getParameter("EppClient.implement.DNSSEC")));
       setVisibleOnDbEngine();
     } else {
       if (killOnClose) {

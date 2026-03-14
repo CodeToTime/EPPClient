@@ -20,7 +20,7 @@
 
 package com.codetotime.eppclient.db;
 
-import com.codetotime.eppclient.config.EPPparams;
+import com.codetotime.eppclient.config.EppParams;
 import com.codetotime.eppclient.domains.Domain;
 import com.codetotime.eppclient.domains.ListEntry;
 import java.io.File;
@@ -320,7 +320,7 @@ public class domainsDao {
     try {
       dbProperties.load(dbPropInputStream);
 
-      String dbUrl = EPPparams.getParameter("EppClient.dburl");
+      String dbUrl = EppParams.getParameter("EppClient.dburl");
       if (dbUrl.contains("mariadb")) {
         dbProperties.put("derby.driver", "org.mariadb.jdbc.Driver");
       } else if (dbUrl.contains("postgresql")) {
@@ -329,10 +329,10 @@ public class domainsDao {
         dbProperties.put("derby.driver", "org.apache.derby.jdbc.EmbeddedDriver");
       }
       dbProperties.put("derby.url", dbUrl);
-      dbProperties.put("db.schema", EPPparams.getParameter("EppClient.dbname"));
+      dbProperties.put("db.schema", EppParams.getParameter("EppClient.dbname"));
 
-      dbProperties.put("user", EPPparams.getParameter("EppClient.dbuid"));
-      dbProperties.put("password", EPPparams.getParameter("EppClient.dbpwd"));
+      dbProperties.put("user", EppParams.getParameter("EppClient.dbuid"));
+      dbProperties.put("password", EppParams.getParameter("EppClient.dbpwd"));
     } catch (IOException ex) {
       log.error("Error loading database properties", ex);
     }
@@ -352,7 +352,7 @@ public class domainsDao {
       }
       statement.execute(createTableSql);
       bCreatedTables = true;
-      EPPparams.setParameter("EppClient.dblevel", "1");
+      EppParams.setParameter("EppClient.dblevel", "1");
     } catch (SQLException ex) {
       if (ex.getSQLState().equals("X0Y32") || ex.getMessage().contains("already exists")) {
         bCreatedTables = true;

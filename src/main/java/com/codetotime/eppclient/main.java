@@ -20,7 +20,7 @@
 
 package com.codetotime.eppclient;
 
-import com.codetotime.eppclient.config.EPPparams;
+import com.codetotime.eppclient.config.EppParams;
 import com.codetotime.eppclient.config.manageParameters;
 import com.codetotime.eppclient.contacts.ContactsManagement;
 import com.codetotime.eppclient.db.DbExporter;
@@ -79,7 +79,7 @@ public class main extends JFrame implements WindowListener {
   @SuppressWarnings("unused")
   public static void main(String[] args) {
     if (args.length > 0) {
-      EPPparams.setPrefix(args[0]);
+      EppParams.setPrefix(args[0]);
     }
 
     EventQueue.invokeLater(

@@ -18,7 +18,7 @@
 
 package com.codetotime.eppclient;
 
-import com.codetotime.eppclient.config.EPPparams;
+import com.codetotime.eppclient.config.EppParams;
 import it.nic.epp.client.commands.session.Login;
 
 /**
@@ -47,7 +47,7 @@ public class CustomLogin extends Login {
   }
 
   private static void configureDNSSEC() {
-    String dnssecEnabled = EPPparams.getParameter("EppClient.implement.DNSSEC");
+    String dnssecEnabled = EppParams.getParameter("EppClient.implement.DNSSEC");
 
     boolean isDNSSECEnabled = Boolean.parseBoolean(dnssecEnabled);
 

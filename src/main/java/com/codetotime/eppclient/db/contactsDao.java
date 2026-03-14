@@ -20,7 +20,7 @@
 
 package com.codetotime.eppclient.db;
 
-import com.codetotime.eppclient.config.EPPparams;
+import com.codetotime.eppclient.config.EppParams;
 import com.codetotime.eppclient.contacts.Address;
 import com.codetotime.eppclient.contacts.ListEntry;
 import java.io.File;
@@ -336,7 +336,7 @@ public class contactsDao {
     try {
       dbProperties.load(dbPropInputStream);
 
-      String dbUrl = EPPparams.getParameter("EppClient.dburl");
+      String dbUrl = EppParams.getParameter("EppClient.dburl");
       if (dbUrl.contains("mariadb")) {
         dbProperties.put("derby.driver", "org.mariadb.jdbc.Driver");
       } else if (dbUrl.contains("postgresql")) {
@@ -345,9 +345,9 @@ public class contactsDao {
         dbProperties.put("derby.driver", "org.apache.derby.jdbc.EmbeddedDriver");
       }
       dbProperties.put("derby.url", dbUrl);
-      dbProperties.put("db.schema", EPPparams.getParameter("EppClient.dbname"));
-      dbProperties.put("user", EPPparams.getParameter("EppClient.dbuid"));
-      dbProperties.put("password", EPPparams.getParameter("EppClient.dbpwd"));
+      dbProperties.put("db.schema", EppParams.getParameter("EppClient.dbname"));
+      dbProperties.put("user", EppParams.getParameter("EppClient.dbuid"));
+      dbProperties.put("password", EppParams.getParameter("EppClient.dbpwd"));
 
     } catch (IOException ex) {
       log.error("Error loading database properties", ex);

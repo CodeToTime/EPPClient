@@ -118,7 +118,7 @@ public class MessageManagement extends JFrame {
                         contentPaneLayout
                             .createParallelGroup()
                             .addComponent(
-                                    messagesScroll, GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE)
+                                messagesScroll, GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE)
                             .addGroup(
                                 GroupLayout.Alignment.TRAILING,
                                 contentPaneLayout

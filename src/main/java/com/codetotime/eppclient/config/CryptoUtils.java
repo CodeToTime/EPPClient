@@ -27,7 +27,7 @@ import javax.crypto.spec.SecretKeySpec;
 /**
  * Utility class for AES encryption and decryption of configuration values.
  *
- * <p>Uses a hardcoded 128-bit AES key provided by {@link EPPparams#getKey()}.
+ * <p>Uses a hardcoded 128-bit AES key provided by {@link EppParams#getKey()}.
  */
 public class CryptoUtils {
   public static final String AES = "AES";
@@ -69,7 +69,7 @@ public class CryptoUtils {
   }
 
   private static byte[] readKeyFile() {
-    String keyValue = EPPparams.getKey();
+    String keyValue = EppParams.getKey();
     return hexStringToByteArray(keyValue);
   }
 

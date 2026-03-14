@@ -20,7 +20,7 @@
 
 package com.codetotime.eppclient.contacts;
 
-import com.codetotime.eppclient.config.EPPparams;
+import com.codetotime.eppclient.config.EppParams;
 
 /**
  * Holds all contact fields for an EPP contact object, including postal info, registry-specific
@@ -298,7 +298,7 @@ public class Address {
   public String getRandomContactId() {
     String contactId = Integer.toString((int) (Math.random() * 100000000));
     contactId =
-        EPPparams.getParameter("EppClient.contactPrefix")
+        EppParams.getParameter("EppClient.contactPrefix")
             + contactId.substring(contactId.length() - 7);
     return contactId;
   }

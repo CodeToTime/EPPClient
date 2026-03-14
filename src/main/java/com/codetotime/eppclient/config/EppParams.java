@@ -30,9 +30,9 @@ import org.slf4j.LoggerFactory;
  * Reads and writes application configuration parameters, storing them encrypted in the Java
  * Preferences store and falling back to the resource bundle when no stored value exists.
  */
-public class EPPparams {
-  private static final Logger log = LoggerFactory.getLogger(EPPparams.class);
-  private static final String BUNDLE_NAME = "com.codetotime.eppclient.config.EPPparams";
+public class EppParams {
+  private static final Logger log = LoggerFactory.getLogger(EppParams.class);
+  private static final String BUNDLE_NAME = "com.codetotime.eppclient.config.EppParams";
 
   private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
@@ -42,7 +42,7 @@ public class EPPparams {
 
   static {
     try {
-      thisClass = Class.forName("com.codetotime.eppclient.config.EPPparams");
+      thisClass = Class.forName("com.codetotime.eppclient.config.EppParams");
     } catch (ClassNotFoundException e) {
       log.error("Class not found", e);
     }
@@ -50,8 +50,8 @@ public class EPPparams {
 
   private static final Preferences prefs = Preferences.userNodeForPackage(thisClass);
 
-  public static void setPrefix(String INparamPrefix) {
-    paramPrefix = INparamPrefix;
+  public static void setPrefix(String inParamPrefix) {
+    paramPrefix = inParamPrefix;
   }
 
   /**

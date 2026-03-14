@@ -20,7 +20,7 @@
 
 package com.codetotime.eppclient.uplink;
 
-import com.codetotime.eppclient.config.EPPparams;
+import com.codetotime.eppclient.config.EppParams;
 import com.codetotime.eppclient.main;
 import it.nic.epp.client.commands.interfaces.IEppRequest;
 import it.nic.epp.client.responses.HttpBaseResponse;
@@ -44,10 +44,10 @@ public class EppUplink {
 
   /** Applies proxy settings from application parameters and starts the EPP thread. */
   public void start() {
-    if (EPPparams.getParameter("EppClient.proxyHost").length() > 0
-        && EPPparams.getParameter("EppClient.proxyPort").length() > 0) {
-      System.setProperty("https.proxyHost", EPPparams.getParameter("EppClient.proxyHost"));
-      System.setProperty("https.proxyPort", EPPparams.getParameter("EppClient.proxyPort"));
+    if (EppParams.getParameter("EppClient.proxyHost").length() > 0
+        && EppParams.getParameter("EppClient.proxyPort").length() > 0) {
+      System.setProperty("https.proxyHost", EppParams.getParameter("EppClient.proxyHost"));
+      System.setProperty("https.proxyPort", EppParams.getParameter("EppClient.proxyPort"));
     } else {
       System.setProperty("https.proxyHost", "");
       System.setProperty("https.proxyPort", "");

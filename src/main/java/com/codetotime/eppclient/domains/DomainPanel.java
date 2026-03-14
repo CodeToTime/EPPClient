@@ -20,7 +20,7 @@
 
 package com.codetotime.eppclient.domains;
 
-import com.codetotime.eppclient.config.EPPparams;
+import com.codetotime.eppclient.config.EppParams;
 import com.codetotime.eppclient.contacts.ContactSelection;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -57,7 +57,7 @@ import javax.swing.event.DocumentListener;
  */
 public class DomainPanel extends JPanel {
   boolean dnsSecEnabled =
-      Boolean.parseBoolean(EPPparams.getParameter("EppClient.implement.DNSSEC"));
+      Boolean.parseBoolean(EppParams.getParameter("EppClient.implement.DNSSEC"));
 
   /** Creates new form AddressPanel. */
   private void createUIComponents() {
@@ -1540,15 +1540,15 @@ public class DomainPanel extends JPanel {
     if (getOpType() == 1) {
       setRegistrant.setText("Selezione Registrant");
 
-      if (EPPparams.getParameter("EppClient.defaultTech").length() > 0) {
-        String[] defaultTech = EPPparams.getParameter("EppClient.defaultTech").split(";");
+      if (EppParams.getParameter("EppClient.defaultTech").length() > 0) {
+        String[] defaultTech = EppParams.getParameter("EppClient.defaultTech").split(";");
         for (String defaultTechToAdd : defaultTech) {
           techModel.add(txtTech.getModel().getSize(), defaultTechToAdd.trim());
         }
       }
 
-      if (EPPparams.getParameter("EppClient.defaultNS").length() > 0) {
-        String[] defaultNS = EPPparams.getParameter("EppClient.defaultNS").split(";");
+      if (EppParams.getParameter("EppClient.defaultNS").length() > 0) {
+        String[] defaultNS = EppParams.getParameter("EppClient.defaultNS").split(";");
         for (String defaultNStoAdd : defaultNS) {
           nameServerModel.add(txtNameServer.getModel().getSize(), defaultNStoAdd.trim());
         }

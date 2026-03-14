@@ -20,7 +20,7 @@
 
 package com.codetotime.eppclient.messages;
 
-import com.codetotime.eppclient.config.EPPparams;
+import com.codetotime.eppclient.config.EppParams;
 import com.codetotime.eppclient.db.messagesDao;
 import com.codetotime.eppclient.importer.ImportDomain;
 import com.codetotime.eppclient.main;
@@ -500,13 +500,13 @@ public class MessageDetail extends JFrame {
     }
 
     if (doOp) {
-      if (resData.getTranferMsgReID().equals(EPPparams.getParameter("EppClient.defaultUser"))) {
+      if (resData.getTranferMsgReID().equals(EppParams.getParameter("EppClient.defaultUser"))) {
         // We requested this transfer
         txtTransfer.setText(
             "The transfer of the domain name "
                 + resData.getTranferMsgName()
                 + " to Registrar "
-                + EPPparams.getParameter("EppClient.defaultUser")
+                + EppParams.getParameter("EppClient.defaultUser")
                 + " has been ");
         if (resData.getTranferMsgTrStatus().equals("clientApproved")) {
           ImportDomain transferredDomain = new ImportDomain(mainFrame, true);
@@ -734,13 +734,13 @@ public class MessageDetail extends JFrame {
         actionTab.setEnabledAt(1, true);
         actionTab.setSelectedIndex(1);
 
-        if (resData.getTranferMsgReID().equals(EPPparams.getParameter("EppClient.defaultUser"))) {
+        if (resData.getTranferMsgReID().equals(EppParams.getParameter("EppClient.defaultUser"))) {
           // We requested this transfer
           txtTransfer.setText(
               "The transfer of the domain name "
                   + resData.getTranferMsgName()
                   + " to Registrar "
-                  + EPPparams.getParameter("EppClient.defaultUser")
+                  + EppParams.getParameter("EppClient.defaultUser")
                   + " has been ");
           if (resData.getTranferMsgTrStatus().equals("clientRejected")) {
             txtTransfer.setText(txtTransfer.getText() + "REJECTED by the Losing Registrar.");
@@ -768,7 +768,7 @@ public class MessageDetail extends JFrame {
                 "There is a new request to transfer the domain name "
                     + resData.getTranferMsgName()
                     + " to Registrar "
-                    + EPPparams.getParameter("EppClient.defaultUser")
+                    + EppParams.getParameter("EppClient.defaultUser")
                     + " to Registrar "
                     + resData.getTranferMsgReID()
                     + ". Please click the button below to ACK o REJ the Transfer (will also ACK"

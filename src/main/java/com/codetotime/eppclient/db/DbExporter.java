@@ -19,7 +19,7 @@
 
 package com.codetotime.eppclient.db;
 
-import com.codetotime.eppclient.config.EPPparams;
+import com.codetotime.eppclient.config.EppParams;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -78,7 +78,7 @@ public class DbExporter {
   /**
    * Export a single table (determined by the provided properties resource name) into a CSV entry in
    * the given zip. Properties files must contain: db.table, db.schema and default
-   * derby.url/derby.driver (will be overridden by EPPparams).
+   * derby.url/derby.driver (will be overridden by EppParams).
    */
   private void exportSingleTableToZipEntry(
       ZipOutputStream zos, String propertiesResourceName, String entryName) throws Exception {
@@ -90,14 +90,14 @@ public class DbExporter {
       }
     }
 
-    // Override with runtime configuration from EPPparams
+    // Override with runtime configuration from EppParams
     props.put("derby.driver", "org.apache.derby.jdbc.EmbeddedDriver");
-    props.put("derby.url", EPPparams.getParameter("EppClient.dburl"));
-    props.put("db.schema", EPPparams.getParameter("EppClient.dbname"));
-    props.put("user", EPPparams.getParameter("EppClient.dbuid"));
-    props.put("password", EPPparams.getParameter("EppClient.dbpwd"));
+    props.put("derby.url", EppParams.getParameter("EppClient.dburl"));
+    props.put("db.schema", EppParams.getParameter("EppClient.dbname"));
+    props.put("user", EppParams.getParameter("EppClient.dbuid"));
+    props.put("password", EppParams.getParameter("EppClient.dbpwd"));
 
-    if (EPPparams.getParameter("EppClient.dburl").contains("postgresql")) {
+    if (EppParams.getParameter("EppClient.dburl").contains("postgresql")) {
       props.put("db.schema", "public");
     }
 
@@ -184,7 +184,7 @@ public class DbExporter {
 
   private static char resolveDelimiter() {
     try {
-      String cfg = EPPparams.getParameter("EppClient.csv.delimiter");
+      String cfg = EppParams.getParameter("EppClient.csv.delimiter");
       if (cfg != null) {
         cfg = cfg.trim().toLowerCase();
         switch (cfg) {
