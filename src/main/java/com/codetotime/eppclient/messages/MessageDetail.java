@@ -178,16 +178,6 @@ public class MessageDetail extends JFrame {
 
       // ======== jPanel4 ========
       {
-        jPanel4.addPropertyChangeListener(
-            new java.beans.PropertyChangeListener() {
-              @Override
-              public void propertyChange(java.beans.PropertyChangeEvent e) {
-                if ("borde\u0072".equals(e.getPropertyName())) {
-                  throw new RuntimeException();
-                }
-              }
-            });
-
         // ======== jScrollPane3 ========
         {
 
@@ -477,16 +467,6 @@ public class MessageDetail extends JFrame {
 
     // ======== jPanel2 ========
     {
-      jPanel2.addPropertyChangeListener(
-          new java.beans.PropertyChangeListener() {
-            @Override
-            public void propertyChange(java.beans.PropertyChangeEvent e) {
-              if ("bord\u0065r".equals(e.getPropertyName())) {
-                throw new RuntimeException();
-              }
-            }
-          });
-
       GroupLayout jPanel2Layout = new GroupLayout(jPanel2);
       jPanel2.setLayout(jPanel2Layout);
       jPanel2Layout.setHorizontalGroup(

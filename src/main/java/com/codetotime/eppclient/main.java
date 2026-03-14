@@ -289,7 +289,7 @@ public class main extends JFrame implements WindowListener {
 
     // ---- lblResCredit ----
     lblResCredit.setFont(new Font("Tahoma", Font.PLAIN, 10));
-    lblResCredit.setText("Credito disponibile (\u20ac):");
+    lblResCredit.setText("Credito disponibile (€):");
     contentPane.add(
         lblResCredit,
         new GridBagConstraints(

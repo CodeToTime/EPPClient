@@ -66,7 +66,7 @@ public class TxtImport extends JFrame {
     // ---- textArea1 ----
     textArea1.setEditable(false);
     textArea1.setText(
-        "Questa procedura permette di acquisire nel database locale eventuali domini gi\u00e0 presenti sul server EPP del Registro.\nPer poter procedere occorre predisporre un file .txt contenente l'elenco dei domini, uno per riga.\n");
+        "Questa procedura permette di acquisire nel database locale eventuali domini già presenti sul server EPP del Registro.\nPer poter procedere occorre predisporre un file .txt contenente l'elenco dei domini, uno per riga.\n");
 
     GroupLayout contentPaneLayout = new GroupLayout(contentPane);
     contentPane.setLayout(contentPaneLayout);
