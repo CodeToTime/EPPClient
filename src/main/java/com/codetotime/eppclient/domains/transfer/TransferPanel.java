@@ -398,28 +398,28 @@ public class TransferPanel extends JPanel {
   /**
    * Enables or disables all input fields.
    *
-   * @param bEditable {@code true} to allow editing
+   * @param editable {@code true} to allow editing
    */
-  public void setEditable(boolean bEditable) {
-    txtDomainName.setEditable(bEditable);
-    txtAuthInfo.setEditable(bEditable);
+  public void setEditable(boolean editable) {
+    txtDomainName.setEditable(editable);
+    txtAuthInfo.setEditable(editable);
 
-    txtIsTrade.setEnabled(bEditable);
-    txtIsCancel.setEnabled(bEditable);
+    txtIsTrade.setEnabled(editable);
+    txtIsCancel.setEnabled(editable);
 
-    txtIsCancel.setVisible(bEditable && !txtIsTrade.isSelected());
-    txtIsTrade.setVisible(bEditable && !txtIsCancel.isSelected());
+    txtIsCancel.setVisible(editable && !txtIsTrade.isSelected());
+    txtIsTrade.setVisible(editable && !txtIsCancel.isSelected());
 
-    lblRegistrant.setVisible(bEditable && txtIsTrade.isSelected());
-    txtRegistrant.setVisible(bEditable && txtIsTrade.isSelected());
-    setRegistrant.setVisible(bEditable && txtIsTrade.isSelected());
-    setRegistrant.setEnabled(bEditable && txtIsTrade.isSelected());
+    lblRegistrant.setVisible(editable && txtIsTrade.isSelected());
+    txtRegistrant.setVisible(editable && txtIsTrade.isSelected());
+    setRegistrant.setVisible(editable && txtIsTrade.isSelected());
+    setRegistrant.setEnabled(editable && txtIsTrade.isSelected());
 
-    lblNewAuthInfo.setVisible(bEditable && txtIsTrade.isSelected());
-    txtNewAuthInfo.setVisible(bEditable && txtIsTrade.isSelected());
-    txtNewAuthInfo.setEnabled(bEditable && txtIsTrade.isSelected());
+    lblNewAuthInfo.setVisible(editable && txtIsTrade.isSelected());
+    txtNewAuthInfo.setVisible(editable && txtIsTrade.isSelected());
+    txtNewAuthInfo.setEnabled(editable && txtIsTrade.isSelected());
 
-    isEditable = bEditable;
+    isEditable = editable;
   }
 
   public boolean isEditable() {

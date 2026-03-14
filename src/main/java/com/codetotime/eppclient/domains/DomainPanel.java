@@ -1529,14 +1529,14 @@ public class DomainPanel extends JPanel {
   /**
    * Enables or disables all input fields.
    *
-   * @param bEditable {@code true} to allow editing
+   * @param editable {@code true} to allow editing
    */
-  public void setEditable(boolean bEditable) {
-    txtDomainName.setEditable(bEditable && (getOpType() == 1));
+  public void setEditable(boolean editable) {
+    txtDomainName.setEditable(editable && (getOpType() == 1));
     txtPunyDomainName.setEditable(false);
 
-    txtAuthInfo.setEditable(bEditable);
-    txtValidationCode.setEditable(bEditable);
+    txtAuthInfo.setEditable(editable);
+    txtValidationCode.setEditable(editable);
 
     if (getOpType() == 1) {
       setRegistrant.setText("Selezione Registrant");
@@ -1558,25 +1558,25 @@ public class DomainPanel extends JPanel {
       setRegistrant.setText("Cambio Registrant");
     }
 
-    setRegistrant.setVisible(bEditable);
-    btnRndAuthinfo.setVisible(bEditable);
+    setRegistrant.setVisible(editable);
+    btnRndAuthinfo.setVisible(editable);
 
-    txtStatus.setEnabled(bEditable);
-    txtAdmin.setEnabled(bEditable);
-    addAdmin.setVisible(bEditable);
-    remAdmin.setVisible(bEditable);
+    txtStatus.setEnabled(editable);
+    txtAdmin.setEnabled(editable);
+    addAdmin.setVisible(editable);
+    remAdmin.setVisible(editable);
 
-    txtTech.setEnabled(bEditable);
-    addTech.setVisible(bEditable);
-    remTech.setVisible(bEditable);
+    txtTech.setEnabled(editable);
+    addTech.setVisible(editable);
+    remTech.setVisible(editable);
 
-    lblDnsExpl.setVisible(bEditable);
-    txtNameServerToAdd.setVisible(bEditable);
-    txtNameServer.setEnabled(bEditable);
-    addNameServer.setVisible(bEditable);
-    remNameServer.setVisible(bEditable);
-    chkDNSSEC.setEnabled(bEditable && dnsSecEnabled);
-    isEditable = bEditable;
+    lblDnsExpl.setVisible(editable);
+    txtNameServerToAdd.setVisible(editable);
+    txtNameServer.setEnabled(editable);
+    addNameServer.setVisible(editable);
+    remNameServer.setVisible(editable);
+    chkDNSSEC.setEnabled(editable && dnsSecEnabled);
+    isEditable = editable;
     toggleDnsSecFields();
   }
 
