@@ -32,7 +32,6 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.LayoutStyle;
-import javax.swing.table.DefaultTableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,29 +80,29 @@ public class MessageManagement extends JFrame {
   @SuppressWarnings("unchecked")
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents() {
-    jScrollPane1 = new JScrollPane();
+    messagesScroll = new JScrollPane();
     messagesTable = new JTable();
-    refresh = new JButton();
-    refresh1 = new JButton();
+    btnRefresh = new JButton();
+    btnAckAll = new JButton();
 
     // ======== this ========
     setTitle("Gestione MESSAGGI");
 
-    // ======== jScrollPane1 ========
+    // ======== messagesScroll ========
     {
 
       // ---- messagesTable ----
       messagesTable.setModel(model);
-      jScrollPane1.setViewportView(messagesTable);
+      messagesScroll.setViewportView(messagesTable);
     }
 
-    // ---- refresh ----
-    refresh.setText("refresh list");
-    refresh.addActionListener(e -> refreshActionPerformed(e));
+    // ---- btnRefresh ----
+    btnRefresh.setText("refresh list");
+    btnRefresh.addActionListener(e -> refreshActionPerformed(e));
 
-    // ---- refresh1 ----
-    refresh1.setText("ACK ALL");
-    refresh1.addActionListener(e -> ACKALLActionPerformed(e));
+    // ---- btnAckAll ----
+    btnAckAll.setText("ACK ALL");
+    btnAckAll.addActionListener(e -> ackAllActionPerformed(e));
 
     Container contentPane = getContentPane();
     GroupLayout contentPaneLayout = new GroupLayout(contentPane);
@@ -119,14 +118,14 @@ public class MessageManagement extends JFrame {
                         contentPaneLayout
                             .createParallelGroup()
                             .addComponent(
-                                jScrollPane1, GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE)
+                                    messagesScroll, GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE)
                             .addGroup(
                                 GroupLayout.Alignment.TRAILING,
                                 contentPaneLayout
                                     .createSequentialGroup()
-                                    .addComponent(refresh1)
+                                    .addComponent(btnAckAll)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(refresh)))
+                                    .addComponent(btnRefresh)))
                     .addContainerGap()));
     contentPaneLayout.setVerticalGroup(
         contentPaneLayout
@@ -139,10 +138,10 @@ public class MessageManagement extends JFrame {
                     .addGroup(
                         contentPaneLayout
                             .createParallelGroup(GroupLayout.Alignment.BASELINE)
-                            .addComponent(refresh)
-                            .addComponent(refresh1))
+                            .addComponent(btnRefresh)
+                            .addComponent(btnAckAll))
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
+                    .addComponent(messagesScroll, GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
                     .addContainerGap()));
     pack();
     setLocationRelativeTo(getOwner());
@@ -151,12 +150,12 @@ public class MessageManagement extends JFrame {
   /**
    * Stores the EPP connection status so message actions can be enabled or disabled accordingly.
    *
-   * @param EPPstatus {@code true} if the EPP connection is active
+   * @param eppStatus {@code true} if the EPP connection is active
    */
-  public void setEPPEnablement(boolean EPPstatus) {
-    this.EPPstatus = EPPstatus;
+  public void setEppEnablement(boolean eppStatus) {
+    this.eppStatus = eppStatus;
     for (int i = 0; i < messageDetailWindows.size(); i++) {
-      ((MessageDetail) messageDetailWindows.get(i)).setEPPEnablement(EPPstatus);
+      ((MessageDetail) messageDetailWindows.get(i)).setEppEnablement(eppStatus);
     }
   }
 
@@ -165,10 +164,10 @@ public class MessageManagement extends JFrame {
     updateTableContent();
   } // GEN-LAST:event_refreshActionPerformed
 
-  private void ACKALLActionPerformed(
-      java.awt.event.ActionEvent evt) { // GEN-FIRST:event_ACKALLActionPerformed
+  private void ackAllActionPerformed(
+      java.awt.event.ActionEvent evt) { // GEN-FIRST:event_ackAllActionPerformed
     ackAllMessages();
-  } // GEN-LAST:event_ACKALLActionPerformed
+  } // GEN-LAST:event_ackAllActionPerformed
 
   @Override
   public void setVisible(boolean b) {
@@ -184,13 +183,13 @@ public class MessageManagement extends JFrame {
       Integer imsg = 1;
       while (!terminateMassAck) {
 
-        refresh1.setText("ACK ALL " + imsg);
+        btnAckAll.setText("ACK ALL " + imsg);
 
         if (!eppUplink.pollMsg()) {
           terminateMassAck = true;
         }
       }
-      refresh1.setText("ACK ALL");
+      btnAckAll.setText("ACK ALL");
     } catch (Exception ex) {
       log.error("Error in ackAllMessages", ex);
     }
@@ -214,7 +213,7 @@ public class MessageManagement extends JFrame {
         Message selectedMessage =
             db.getMessage((String) messagesTable.getValueAt(messagesTable.getSelectedRow(), 0));
         MessageDetail messageDetail = new MessageDetail(mainFrame, this, selectedMessage);
-        messageDetail.setEPPEnablement(EPPstatus);
+        messageDetail.setEppEnablement(eppStatus);
         messageDetail.setVisible(true);
         messageDetailWindows.add(messageDetail);
       }
@@ -252,21 +251,14 @@ public class MessageManagement extends JFrame {
   }
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  private JScrollPane jScrollPane1;
+  private JScrollPane messagesScroll;
   private JTable messagesTable;
-  private JButton refresh;
-  private JButton refresh1;
+  private JButton btnRefresh;
+  private JButton btnAckAll;
   // End of variables declaration//GEN-END:variables
   private EppUplink eppUplink;
   // DefaultTableModel model = new DefaultTableModel();
   NotEditableTableModel model = new NotEditableTableModel();
   private messagesDao db;
-  private boolean EPPstatus;
-}
-
-class NotEditableTableModel extends DefaultTableModel {
-  @Override
-  public boolean isCellEditable(int column, int row) {
-    return false;
-  }
+  private boolean eppStatus;
 }

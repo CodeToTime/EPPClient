@@ -802,7 +802,7 @@ public class main extends JFrame implements WindowListener {
 
     domainsMenu.setEPPEnablement(isActiveEPP);
     contactsMenu.setEPPEnablement(isActiveEPP);
-    messagesMenu.setEPPEnablement(isActiveEPP);
+    messagesMenu.setEppEnablement(isActiveEPP);
     configMenu.setEPPEnablement(isActiveEPP);
     if (importMenu.isVisible()) {
       importMenu.setVisible(isActiveEPP);

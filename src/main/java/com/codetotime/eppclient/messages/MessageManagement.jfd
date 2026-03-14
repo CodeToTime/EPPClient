@@ -4,13 +4,13 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq {space :::p, par l {comp jScrollPane1::l::580:x, seq t {comp refresh1:::p::p, space :::p, comp refresh:::p::p}}, space :::p}}"
-			"$verticalGroup": "par l {seq t {space :p::p, par b {comp refresh::b:p::p, comp refresh1::b:p::p}, space :::p, comp jScrollPane1::::257:x, space :p::p}}"
+			"$horizontalGroup": "par l {seq {space :::p, par l {comp messagesScroll::l::580:x, seq t {comp btnAckAll:::p::p, space :::p, comp btnRefresh:::p::p}}, space :::p}}"
+			"$verticalGroup": "par l {seq t {space :p::p, par b {comp btnRefresh::b:p::p, comp btnAckAll::b:p::p}, space :::p, comp messagesScroll::::257:x, space :p::p}}"
 		} ) {
 			name: "this"
 			"title": "Gestione MESSAGGI"
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-				name: "jScrollPane1"
+				name: "messagesScroll"
 				add( new FormComponent( "javax.swing.JTable" ) {
 					name: "messagesTable"
 					auxiliary() {
@@ -19,14 +19,14 @@ new FormModel {
 				} )
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
-				name: "refresh"
+				name: "btnRefresh"
 				"text": "refresh list"
 				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "refreshActionPerformed", true ) )
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
-				name: "refresh1"
+				name: "btnAckAll"
 				"text": "ACK ALL"
-				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "ACKALLActionPerformed", true ) )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "ackAllActionPerformed", true ) )
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"size": new java.awt.Dimension( 400, 300 )
