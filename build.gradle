@@ -5,7 +5,7 @@ plugins {
     id 'java'
     id 'application'
     id 'com.gradleup.shadow' version '9.3.1'
-    id "pl.allegro.tech.build.axion-release" version "1.20.1"
+    id 'pl.allegro.tech.build.axion-release' version '1.20.1'
     id 'com.diffplug.spotless' version '8.3.0'
     id 'checkstyle'
 }
@@ -83,8 +83,8 @@ tasks.register('generateBuildInfo') {
         outputFile.text = """package com.codetotime.eppclient;
 
 /**
- * Build-time metadata injected by Gradle: version string, build date,
- * and registrar-specific fields (company, VAT number, tag, order).
+ * Build-time metadata injected by Gradle: version string, build date, and registrar-specific fields
+ * (company, VAT number, tag, order).
  */
 public class BuildInfo {
   public static final String BUILD_VERSION = "$buildVersion";

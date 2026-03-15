@@ -811,7 +811,7 @@ public class ManageParameters extends JFrame implements WindowListener {
       } else {
         try {
           // sets the serverUri
-          URI serverUri = new URI(EppParams.getParameter("EppClient.EppThread"));
+          URI serverUri = new URI(EppParams.getParameter("EppClient.Epp.serverUri"));
           // creates a new client
           Client client = new Client(serverUri.toString());
 
@@ -939,9 +939,9 @@ public class ManageParameters extends JFrame implements WindowListener {
               + "entering here an accreditation server hostname will cause the test to fail.",
           "ACCREDITATION SERVER FOUND",
           JOptionPane.INFORMATION_MESSAGE);
-      serverUri.setText(EppParams.getParameter("EppClient.EppThread"));
+      serverUri.setText(EppParams.getParameter("EppClient.serverUri"));
     } else {
-      EppParams.setParameter("EppClient.EppThread", serverUri.getText());
+      EppParams.setParameter("EppClient.serverUri", serverUri.getText());
     }
 
     EppParams.setParameter("EppClient.proxyHost", proxyHost.getText());
@@ -1045,7 +1045,7 @@ public class ManageParameters extends JFrame implements WindowListener {
     if (b) {
       defaultUser.setText(EppParams.getParameter("EppClient.defaultUser"));
       defaultPassword.setText(EppParams.getParameter("EppClient.defaultPassword"));
-      serverUri.setText(EppParams.getParameter("EppClient.EppThread"));
+      serverUri.setText(EppParams.getParameter("EppClient.serverUri"));
       proxyHost.setText(EppParams.getParameter("EppClient.proxyHost"));
       proxyPort.setText(EppParams.getParameter("EppClient.proxyPort"));
       contactPrefix.setText(EppParams.getParameter("EppClient.contactPrefix"));
