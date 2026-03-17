@@ -221,7 +221,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
     if (!contactId.equals("")) {
 
       try {
-        // Delete the contact — the contact must not be linked with any domain name
+        // Delete the contact. The contact must not be linked with any domain name
         ContactDelete contactDelete = new ContactDelete();
         contactDelete.setId(contactId);
         log.debug("CLIENT: {}", contactDelete);
