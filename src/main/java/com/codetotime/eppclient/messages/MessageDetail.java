@@ -135,7 +135,6 @@ public class MessageDetail extends JFrame {
     btnOther = new JButton();
     messageScroll = new JScrollPane();
     messageTxt = new JTextArea();
-    unusedPanel = new JPanel();
 
     // ======== this ========
     setTitle("Dettaglio MESSAGGIO");
@@ -465,16 +464,6 @@ public class MessageDetail extends JFrame {
                     .addContainerGap()));
     pack();
     setLocationRelativeTo(getOwner());
-
-    // ======== unusedPanel ========
-    {
-      GroupLayout unusedPanelLayout = new GroupLayout(unusedPanel);
-      unusedPanel.setLayout(unusedPanelLayout);
-      unusedPanelLayout.setHorizontalGroup(
-          unusedPanelLayout.createParallelGroup().addGap(0, 100, Short.MAX_VALUE));
-      unusedPanelLayout.setVerticalGroup(
-          unusedPanelLayout.createParallelGroup().addGap(0, 100, Short.MAX_VALUE));
-    }
   } // </editor-fold>//GEN-END:initComponents
 
   private void btnAckActionPerformed(
@@ -890,7 +879,6 @@ public class MessageDetail extends JFrame {
   private JButton btnOther;
   private JScrollPane messageScroll;
   private JTextArea messageTxt;
-  private JPanel unusedPanel;
   // End of variables declaration//GEN-END:variables
 
 }

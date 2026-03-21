@@ -485,7 +485,7 @@ new FormModel {
 					"weighty": 1.0
 				} )
  			add( new FormComponent( "javax.swing.JCheckBox" ) {
- 				name: "chkDnssec"
+ 				name: "chkDnsSec"
  				"text": "Abilita DNSSEC"
 					"verticalTextPosition": 3
 				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {

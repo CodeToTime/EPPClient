@@ -59,11 +59,6 @@ public class DomainPanel extends JPanel {
   boolean dnsSecEnabled =
       Boolean.parseBoolean(EppParams.getParameter("EppClient.implement.DNSSEC"));
 
-  /** Creates new form AddressPanel. */
-  private void createUiComponents() {
-    isEditable = false;
-  }
-
   private void dbengineActionPerformed(ActionEvent e) {
     // TODO: add your code here
   }
@@ -141,7 +136,7 @@ public class DomainPanel extends JPanel {
     lblDigest = new JLabel();
     scrollPane1 = new JScrollPane();
     txtDigest = new JTextArea();
-    chkDnssec = new JCheckBox();
+    chkDnsSec = new JCheckBox();
 
     // ======== this ========
     setMinimumSize(new Dimension(600, 327));
@@ -939,14 +934,14 @@ public class DomainPanel extends JPanel {
               0,
               0));
 
-      // ---- chkDnssec ----
-      chkDnssec.setText("Abilita DNSSEC");
-      chkDnssec.addActionListener(e -> toggleDnsSecFields());
+      // ---- chkDnsSec ----
+      chkDnsSec.setText("Abilita DNSSEC");
+      chkDnsSec.addActionListener(e -> toggleDnsSecFields());
 
-      chkDnssec.setEnabled(isEditable && dnsSecEnabled);
-      chkDnssec.setVerticalTextPosition(SwingConstants.BOTTOM);
+      chkDnsSec.setEnabled(isEditable && dnsSecEnabled);
+      chkDnsSec.setVerticalTextPosition(SwingConstants.BOTTOM);
       panelDnsSec.add(
-          chkDnssec,
+          chkDnsSec,
           new GridBagConstraints(
               1,
               4,
@@ -1112,7 +1107,7 @@ public class DomainPanel extends JPanel {
    * @return {@code true} if the DNSSec checkbox is selected
    */
   public boolean isDnsSecEnabled() {
-    boolean enabled = chkDnssec.isSelected();
+    boolean enabled = chkDnsSec.isSelected();
     domain.setDnsSec(enabled);
     return enabled;
   }
@@ -1123,7 +1118,7 @@ public class DomainPanel extends JPanel {
    * @return the key tag string
    */
   public String getDnsSecKeyTag() {
-    String keyTag = chkDnssec.isSelected() ? txtAlg.getText().trim() : "";
+    String keyTag = chkDnsSec.isSelected() ? txtAlg.getText().trim() : "";
     domain.setKeyTag(keyTag);
     return keyTag;
   }
@@ -1135,7 +1130,7 @@ public class DomainPanel extends JPanel {
    */
   public int getDnsSecAlgorithm() {
     int alg = -1;
-    if (chkDnssec.isSelected()) {
+    if (chkDnsSec.isSelected()) {
       String selected = (String) cmbAlg.getSelectedItem();
       if (selected != null) {
         alg = Integer.parseInt(selected.split(" - ")[0]);
@@ -1152,7 +1147,7 @@ public class DomainPanel extends JPanel {
    */
   public int getDnsSecDigestType() {
     int digestType = -1;
-    if (chkDnssec.isSelected()) {
+    if (chkDnsSec.isSelected()) {
       String selected = (String) cmbDigestType.getSelectedItem();
       if (selected != null) {
         digestType = Integer.parseInt(selected.split(" - ")[0]);
@@ -1168,7 +1163,7 @@ public class DomainPanel extends JPanel {
    * @return the digest string
    */
   public String getDnsSecDigest() {
-    String digest = chkDnssec.isSelected() ? txtDigest.getText().trim() : "";
+    String digest = chkDnsSec.isSelected() ? txtDigest.getText().trim() : "";
     domain.setDigest(digest);
     return digest;
   }
@@ -1176,9 +1171,9 @@ public class DomainPanel extends JPanel {
   void setDnsSec(boolean isDnsSec) {
     domain.setDnsSec(isDnsSec);
     if (dnsSecEnabled) {
-      chkDnssec.setSelected(isDnsSec);
+      chkDnsSec.setSelected(isDnsSec);
     } else {
-      chkDnssec.setSelected(false);
+      chkDnsSec.setSelected(false);
     }
     toggleDnsSecFields();
   }
@@ -1574,13 +1569,13 @@ public class DomainPanel extends JPanel {
     txtNameServer.setEnabled(editable);
     addNameServer.setVisible(editable);
     remNameServer.setVisible(editable);
-    chkDnssec.setEnabled(editable && dnsSecEnabled);
+    chkDnsSec.setEnabled(editable && dnsSecEnabled);
     isEditable = editable;
     toggleDnsSecFields();
   }
 
   private void toggleDnsSecFields() {
-    boolean enabled = chkDnssec.isSelected() && isEditable;
+    boolean enabled = chkDnsSec.isSelected() && isEditable;
 
     txtAlg.setEnabled(enabled);
     cmbAlg.setEnabled(enabled);
@@ -1645,7 +1640,7 @@ public class DomainPanel extends JPanel {
   private JLabel lblDigest;
   private JScrollPane scrollPane1;
   private JTextArea txtDigest;
-  private JCheckBox chkDnssec;
+  private JCheckBox chkDnsSec;
   // End of variables declaration//GEN-END:variables
 
   DefaultListModel<String> adminModel = new DefaultListModel<String>();

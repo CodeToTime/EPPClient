@@ -132,13 +132,5 @@ new FormModel {
 			"size": new java.awt.Dimension( 520, 460 )
 			"location": new java.awt.Point( 0, 0 )
 		} )
-		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {space :0:100:x}"
-			"$verticalGroup": "par l {space :0:100:x}"
-		} ) {
-			name: "unusedPanel"
-		}, new FormLayoutConstraints( null ) {
-			"location": new java.awt.Point( 0, 316 )
-		} )
 	}
 }

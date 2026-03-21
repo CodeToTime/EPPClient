@@ -379,7 +379,7 @@ new FormModel {
 				"insets": #Insets0
 			} )
 			add( new FormComponent( "javax.swing.JCheckBox" ) {
-				name: "chkDnssec"
+				name: "chkDnsSec"
 				"text": "Abilita supporto a DNSSEC"
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 				"gridx": 1

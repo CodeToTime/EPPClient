@@ -112,7 +112,7 @@ public class ManageParameters extends JFrame implements WindowListener {
     lblTechExample = new JLabel();
     lblNsExample = new JLabel();
     lblDnssec = new JLabel();
-    chkDnssec = new JCheckBox();
+    chkDnsSec = new JCheckBox();
 
     // ======== this ========
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -756,10 +756,10 @@ public class ManageParameters extends JFrame implements WindowListener {
             0,
             0));
 
-    // ---- chkDnssec ----
-    chkDnssec.setText("Abilita supporto a DNSSEC");
+    // ---- chkDnsSec ----
+    chkDnsSec.setText("Abilita supporto a DNSSEC");
     contentPane.add(
-        chkDnssec,
+        chkDnsSec,
         new GridBagConstraints(
             1,
             13,
@@ -911,7 +911,7 @@ public class ManageParameters extends JFrame implements WindowListener {
   private JLabel lblTechExample;
   private JLabel lblNsExample;
   private JLabel lblDnssec;
-  private JCheckBox chkDnssec;
+  private JCheckBox chkDnsSec;
 
   // End of variables declaration//GEN-END:variables
 
@@ -975,7 +975,7 @@ public class ManageParameters extends JFrame implements WindowListener {
     EppParams.setParameter("EppClient.dbhost", dbhost.getText());
     EppParams.setParameter("EppClient.dbuid", dbuid.getText());
     EppParams.setParameter("EppClient.dbpwd", dbpwd.getText());
-    EppParams.setParameter("EppClient.implement.DNSSEC", Boolean.toString(chkDnssec.isSelected()));
+    EppParams.setParameter("EppClient.implement.DNSSEC", Boolean.toString(chkDnsSec.isSelected()));
 
     switch (dbengine.getSelectedIndex()) { // 0: derby, 1: mysql/mariadb, 2: postgresql
       case 0:
@@ -1057,7 +1057,7 @@ public class ManageParameters extends JFrame implements WindowListener {
       dbhost.setText(EppParams.getParameter("EppClient.dbhost"));
       dbuid.setText(EppParams.getParameter("EppClient.dbuid"));
       dbpwd.setText(EppParams.getParameter("EppClient.dbpwd"));
-      chkDnssec.setSelected(
+      chkDnsSec.setSelected(
           Boolean.parseBoolean(EppParams.getParameter("EppClient.implement.DNSSEC")));
       setVisibleOnDbEngine();
     } else {
