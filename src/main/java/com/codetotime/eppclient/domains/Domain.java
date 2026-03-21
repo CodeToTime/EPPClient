@@ -14,7 +14,7 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.domains;
@@ -24,6 +24,10 @@ import it.nic.epp.client.commands.converters.AbstractHostsConverter.Host;
 import java.util.Date;
 import java.util.Vector;
 
+/**
+ * Holds all fields for an EPP domain object, including registrant, contacts, name servers, auth
+ * info, status vectors, and DNSSec data, with old/new field pairs for building update commands.
+ */
 public class Domain {
 
   /** Creates a new instance of Address. */
@@ -32,6 +36,24 @@ public class Domain {
     this.newStatusV = new Vector();
   }
 
+  /**
+   * Creates a fully populated domain including DNSSec fields.
+   *
+   * @param domainName the fully qualified domain name
+   * @param registrant the registrant contact handle
+   * @param admin admin contact handles
+   * @param tech tech contact handles
+   * @param nameServer name server strings (name optionally followed by {@code @ip})
+   * @param authInfo the domain auth-info token
+   * @param oldStatus current status vector
+   * @param expire the domain expiry date
+   * @param validationCode Italian registry validation code
+   * @param isDnsSec whether DNSSec is enabled
+   * @param keyTag DNSSec key tag
+   * @param alg DNSSec algorithm identifier
+   * @param digestType DNSSec digest type
+   * @param digest DNSSec digest value
+   */
   public Domain(
       String domainName,
       String registrant,
@@ -42,7 +64,7 @@ public class Domain {
       Vector oldStatus,
       Date expire,
       String validationCode,
-      boolean isDNSSec,
+      boolean isDnsSec,
       String keyTag,
       int alg,
       int digestType,
@@ -71,13 +93,26 @@ public class Domain {
     this.oldStatusV = oldStatus;
     this.expire = expire;
     this.validationCode = validationCode;
-    this.isDNSSec = isDNSSec;
+    this.isDnsSec = isDnsSec;
     this.keyTag = keyTag;
     this.alg = alg;
     this.digestType = digestType;
     this.digest = digest;
   }
 
+  /**
+   * Creates a domain from a Host array response, converting name servers and status strings to
+   * their internal representations.
+   *
+   * @param domainName the fully qualified domain name
+   * @param registrant the registrant contact handle
+   * @param admin admin contact handles
+   * @param tech tech contact handles
+   * @param nameServer name server Host objects from the EPP response
+   * @param authInfo the domain auth-info token
+   * @param oldStatus current status strings from the EPP response
+   * @param expire the domain expiry date
+   */
   public Domain(
       String domainName,
       String registrant,
@@ -180,6 +215,21 @@ public class Domain {
     this.nameServer = nameServer;
   }
 
+  /**
+   * Sets name servers from a Host array, converting each entry to {@code "name@ip"} format.
+   *
+   * @param nameServers the Host objects from an EPP response
+   */
+  public void setNameServer(Host[] nameServers) {
+    if (nameServers != null) {
+      String[] newNameServer = new String[nameServers.length];
+      for (int i = 0; i < nameServers.length; i++) {
+        newNameServer[i] = nameServers[i].name + ":" + nameServers[i].getIps()[0].address;
+      }
+      setNameServer(newNameServer);
+    }
+  }
+
   public String[] getNameServer() {
     return this.nameServer;
   }
@@ -208,12 +258,12 @@ public class Domain {
     this.alg = alg;
   }
 
-  public boolean isDNSSec() {
-    return isDNSSec;
+  public boolean isDnsSec() {
+    return isDnsSec;
   }
 
-  public void setDNSSec(boolean DNSSec) {
-    isDNSSec = DNSSec;
+  public void setDnsSec(boolean dnsSec) {
+    isDnsSec = dnsSec;
   }
 
   public String getKeyTag() {
@@ -222,16 +272,6 @@ public class Domain {
 
   public void setKeyTag(String keyTag) {
     this.keyTag = keyTag;
-  }
-
-  public void setNameServer(Host[] nameServers) {
-    if (nameServers != null) {
-      String[] newNameServer = new String[nameServers.length];
-      for (int i = 0; i < nameServers.length; i++) {
-        newNameServer[i] = nameServers[i].name + ":" + nameServers[i].getIps()[0].address;
-      }
-      setNameServer(newNameServer);
-    }
   }
 
   public void setOldNameServer(String[] oldNameServer) {
@@ -348,7 +388,7 @@ public class Domain {
 
   private static final int PRIMENO = 37;
 
-  private boolean isDNSSec;
+  private boolean isDnsSec;
   private int alg;
   private int digestType;
   private String digest;

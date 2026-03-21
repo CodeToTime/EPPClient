@@ -14,19 +14,23 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.domains;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Component;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
 
+/** List cell renderer that displays a domain list entry as its domain name. */
 public class ListEntryRenderer extends DefaultListCellRenderer {
 
   /** Creates a new instance of ListEntryRenderer. */
   public ListEntryRenderer() {}
 
+  /** {@inheritDoc} */
   public Component getListCellRendererComponent(
       JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
     super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);

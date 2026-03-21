@@ -14,36 +14,56 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.domains;
 
-import com.codetotime.eppclient.config.EPPparams;
+import com.codetotime.eppclient.config.EppParams;
 import com.codetotime.eppclient.contacts.ContactSelection;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
 import java.net.IDN;
 import java.util.Date;
 import java.util.Vector;
-import javax.swing.*;
+import javax.swing.AbstractListModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+/**
+ * Panel for viewing and editing all fields of an EPP domain object, including registrant, contacts,
+ * name servers, auth-info, status, validation code and DNSSec configuration.
+ */
 public class DomainPanel extends JPanel {
   boolean dnsSecEnabled =
-      Boolean.parseBoolean(EPPparams.getParameter("EppClient.implement.DNSSEC"));
-
-  /** Creates new form AddressPanel. */
-  private void createUIComponents() {
-    // TODO: add custom component creation code here
-  }
+      Boolean.parseBoolean(EppParams.getParameter("EppClient.implement.DNSSEC"));
 
   private void dbengineActionPerformed(ActionEvent e) {
-    // TODO add your code here
+    // TODO: add your code here
   }
 
+  /** Creates a new DomainPanel with an empty domain object. */
   public DomainPanel() {
     initComponents();
     domain = new Domain();
@@ -83,19 +103,19 @@ public class DomainPanel extends JPanel {
                 updatePunyDomainName();
               }
             });
-    jScrollPane1 = new JScrollPane();
+    statusScroll = new JScrollPane();
     txtStatus = new JList<>();
-    jScrollPane2 = new JScrollPane();
+    nameServerScroll = new JScrollPane();
     txtNameServer = new javax.swing.JList(nameServerModel);
     addNameServer = new JButton();
     remNameServer = new JButton();
-    jScrollPane3 = new JScrollPane();
+    techScroll = new JScrollPane();
     txtTech = new javax.swing.JList(techModel);
     addTech = new JButton();
     remTech = new JButton();
     addAdmin = new JButton();
     remAdmin = new JButton();
-    jScrollPane4 = new JScrollPane();
+    adminScroll = new JScrollPane();
     txtAdmin = new javax.swing.JList(adminModel);
     setRegistrant = new JButton();
     lblDnsExpl = new JLabel();
@@ -116,7 +136,7 @@ public class DomainPanel extends JPanel {
     lblDigest = new JLabel();
     scrollPane1 = new JScrollPane();
     txtDigest = new JTextArea();
-    chkDNSSEC = new JCheckBox();
+    chkDnsSec = new JCheckBox();
 
     // ======== this ========
     setMinimumSize(new Dimension(600, 327));
@@ -341,12 +361,12 @@ public class DomainPanel extends JPanel {
       txtStatus.setMinimumSize(new Dimension(150, 80));
       txtStatus.setPreferredSize(new Dimension(150, 80));
       txtStatus.setVisibleRowCount(4);
-      jScrollPane1.setViewportView(txtStatus);
-      jScrollPane1.setMinimumSize(new Dimension(180, 88));
-      jScrollPane1.setPreferredSize(new Dimension(180, 88));
+      statusScroll.setViewportView(txtStatus);
+      statusScroll.setMinimumSize(new Dimension(180, 88));
+      statusScroll.setPreferredSize(new Dimension(180, 88));
     }
     add(
-        jScrollPane1,
+        statusScroll,
         new GridBagConstraints(
             4,
             1,
@@ -366,10 +386,10 @@ public class DomainPanel extends JPanel {
       // ---- txtNameServer ----
       txtNameServer.setFixedCellWidth(198);
       txtNameServer.setPreferredSize(new Dimension(150, 50));
-      jScrollPane2.setViewportView(txtNameServer);
+      nameServerScroll.setViewportView(txtNameServer);
     }
     add(
-        jScrollPane2,
+        nameServerScroll,
         new GridBagConstraints(
             1,
             12,
@@ -432,12 +452,12 @@ public class DomainPanel extends JPanel {
       txtTech.setMaximumSize(new Dimension(150, 60));
       txtTech.setMinimumSize(new Dimension(150, 60));
       txtTech.setPreferredSize(new Dimension(150, 60));
-      jScrollPane3.setViewportView(txtTech);
-      jScrollPane3.setMinimumSize(new Dimension(180, 68));
-      jScrollPane3.setPreferredSize(new Dimension(180, 68));
+      techScroll.setViewportView(txtTech);
+      techScroll.setMinimumSize(new Dimension(180, 68));
+      techScroll.setPreferredSize(new Dimension(180, 68));
     }
     add(
-        jScrollPane3,
+        techScroll,
         new GridBagConstraints(
             1,
             10,
@@ -540,12 +560,12 @@ public class DomainPanel extends JPanel {
       txtAdmin.setMaximumSize(new Dimension(150, 60));
       txtAdmin.setMinimumSize(new Dimension(150, 60));
       txtAdmin.setPreferredSize(new Dimension(150, 60));
-      jScrollPane4.setViewportView(txtAdmin);
-      jScrollPane4.setMinimumSize(new Dimension(180, 68));
-      jScrollPane4.setPreferredSize(new Dimension(180, 68));
+      adminScroll.setViewportView(txtAdmin);
+      adminScroll.setMinimumSize(new Dimension(180, 68));
+      adminScroll.setPreferredSize(new Dimension(180, 68));
     }
     add(
-        jScrollPane4,
+        adminScroll,
         new GridBagConstraints(
             1,
             8,
@@ -589,7 +609,12 @@ public class DomainPanel extends JPanel {
     // ---- lblDnsExpl ----
     lblDnsExpl.setFont(new Font("Tahoma", Font.PLAIN, 10));
     lblDnsExpl.setText(
-        "<HTML><P ALIGN=\"CENTER\"><B>NOTE DI COMPILAZIONE</B></P><BR/>\n<P>In caso di nameserver subordinati al dominio &egrave; necessario indicare il/gli indirizzi IP separandoli con il carattere \"@\".<BR/>\nSono supportati sia IPv4 che IPv6, es.:<BR/>\nSolo IPv4: \"dns.example.it@11.22.33.44\"<BR/>\nIPv4+IPv6: \"dns.example.it@11.22.33.44@3ff3:1:2:3:4:5:6:7\"</P></HTML>");
+        "<HTML><P ALIGN=\"CENTER\"><B>NOTE DI COMPILAZIONE</B></P><BR/>\n"
+            + "<P>In caso di nameserver subordinati al dominio &egrave; necessario indicare il/gli"
+            + " indirizzi IP separandoli con il carattere \"@\".<BR/>\n"
+            + "Sono supportati sia IPv4 che IPv6, es.:<BR/>\n"
+            + "Solo IPv4: \"dns.example.it@11.22.33.44\"<BR/>\n"
+            + "IPv4+IPv6: \"dns.example.it@11.22.33.44@3ff3:1:2:3:4:5:6:7\"</P></HTML>");
     lblDnsExpl.setVerticalAlignment(SwingConstants.TOP);
     lblDnsExpl.setMaximumSize(new Dimension(150, 120));
     lblDnsExpl.setMinimumSize(new Dimension(150, 120));
@@ -909,14 +934,14 @@ public class DomainPanel extends JPanel {
               0,
               0));
 
-      // ---- chkDNSSEC ----
-      chkDNSSEC.setText("Abilita DNSSEC");
-      chkDNSSEC.addActionListener(e -> toggleDnsSecFields());
+      // ---- chkDnsSec ----
+      chkDnsSec.setText("Abilita DNSSEC");
+      chkDnsSec.addActionListener(e -> toggleDnsSecFields());
 
-      chkDNSSEC.setEnabled(isEditable && dnsSecEnabled);
-      chkDNSSEC.setVerticalTextPosition(SwingConstants.BOTTOM);
+      chkDnsSec.setEnabled(isEditable && dnsSecEnabled);
+      chkDnsSec.setVerticalTextPosition(SwingConstants.BOTTOM);
       panelDnsSec.add(
-          chkDNSSEC,
+          chkDnsSec,
           new GridBagConstraints(
               1,
               4,
@@ -953,14 +978,14 @@ public class DomainPanel extends JPanel {
     if (txtNameServerToAdd.getText().length() > 0) {
       try {
         if (txtNameServerToAdd.getText().contains("@")) {
-          String[] dNameServer = txtNameServerToAdd.getText().split("@");
-          for (int i = 1; i < dNameServer.length; i++) {
-            ipAddressValidator.validateIpAddress(dNameServer[i]);
+          String[] domainNameServer = txtNameServerToAdd.getText().split("@");
+          for (int i = 1; i < domainNameServer.length; i++) {
+            IpAddressValidator.validateIpAddress(domainNameServer[i]);
           }
         }
         nameServerModel.add(txtNameServer.getModel().getSize(), txtNameServerToAdd.getText());
         txtNameServerToAdd.setText("");
-      } catch (invalidIpAddressException e) {
+      } catch (InvalidIpAddressException e) {
         JOptionPane.showMessageDialog(
             this,
             "The IP Address entered is not a valid IPv4 or IPv6 address.",
@@ -1076,21 +1101,36 @@ public class DomainPanel extends JPanel {
     return validationCode;
   }
 
+  /**
+   * Returns whether DNSSec is currently enabled in the panel.
+   *
+   * @return {@code true} if the DNSSec checkbox is selected
+   */
   public boolean isDnsSecEnabled() {
-    boolean enabled = chkDNSSEC.isSelected();
-    domain.setDNSSec(enabled);
+    boolean enabled = chkDnsSec.isSelected();
+    domain.setDnsSec(enabled);
     return enabled;
   }
 
+  /**
+   * Returns the DNSSec key tag from the panel, or an empty string if DNSSec is disabled.
+   *
+   * @return the key tag string
+   */
   public String getDnsSecKeyTag() {
-    String keyTag = chkDNSSEC.isSelected() ? txtAlg.getText().trim() : "";
+    String keyTag = chkDnsSec.isSelected() ? txtAlg.getText().trim() : "";
     domain.setKeyTag(keyTag);
     return keyTag;
   }
 
+  /**
+   * Returns the selected DNSSec algorithm identifier, or {@code -1} if DNSSec is disabled.
+   *
+   * @return the algorithm ID
+   */
   public int getDnsSecAlgorithm() {
     int alg = -1;
-    if (chkDNSSEC.isSelected()) {
+    if (chkDnsSec.isSelected()) {
       String selected = (String) cmbAlg.getSelectedItem();
       if (selected != null) {
         alg = Integer.parseInt(selected.split(" - ")[0]);
@@ -1100,9 +1140,14 @@ public class DomainPanel extends JPanel {
     return alg;
   }
 
+  /**
+   * Returns the selected DNSSec digest type, or {@code -1} if DNSSec is disabled.
+   *
+   * @return the digest type ID
+   */
   public int getDnsSecDigestType() {
     int digestType = -1;
-    if (chkDNSSEC.isSelected()) {
+    if (chkDnsSec.isSelected()) {
       String selected = (String) cmbDigestType.getSelectedItem();
       if (selected != null) {
         digestType = Integer.parseInt(selected.split(" - ")[0]);
@@ -1112,16 +1157,24 @@ public class DomainPanel extends JPanel {
     return digestType;
   }
 
+  /**
+   * Returns the DNSSec digest value from the panel, or an empty string if DNSSec is disabled.
+   *
+   * @return the digest string
+   */
   public String getDnsSecDigest() {
-    String digest = chkDNSSEC.isSelected() ? txtDigest.getText().trim() : "";
+    String digest = chkDnsSec.isSelected() ? txtDigest.getText().trim() : "";
     domain.setDigest(digest);
     return digest;
   }
 
   void setDnsSec(boolean isDnsSec) {
-    domain.setDNSSec(isDnsSec);
-    if (dnsSecEnabled) chkDNSSEC.setSelected(isDnsSec);
-    else chkDNSSEC.setSelected(false);
+    domain.setDnsSec(isDnsSec);
+    if (dnsSecEnabled) {
+      chkDnsSec.setSelected(isDnsSec);
+    } else {
+      chkDnsSec.setSelected(false);
+    }
     toggleDnsSecFields();
   }
 
@@ -1342,24 +1395,32 @@ public class DomainPanel extends JPanel {
     domain.setNewStatus(newStatus);
     txtStatus.clearSelection();
     if (newStatus != null) {
-      for (int i = 0; i < newStatus.size(); i++)
+      for (int i = 0; i < newStatus.size(); i++) {
         txtStatus.addSelectionInterval((Integer) newStatus.get(i), (Integer) newStatus.get(i));
+      }
     }
     lblIsPendingDelete.setEnabled(false);
-    if (newStatus != null) if (newStatus.contains(99)) lblIsPendingDelete.setEnabled(true);
+    if (newStatus != null) {
+      if (newStatus.contains(99)) {
+        lblIsPendingDelete.setEnabled(true);
+      }
+    }
   }
 
   /*    int[] getNewStatus() {
       int[] newStatus;
-      if (lblIsPendingDelete.isEnabled())
-          newStatus = new int[txtStatus.getSelectedIndices().length+1];
-      else
+      if (lblIsPendingDelete.isEnabled()) {
+          newStatus = new int[txtStatus.getSelectedIndices().length + 1];
+      } else {
           newStatus = new int[txtStatus.getSelectedIndices().length];
+      }
 
-      if (lblIsPendingDelete.isEnabled())
-          newStatus[newStatus.length-1] = 99;
+      if (lblIsPendingDelete.isEnabled()) {
+          newStatus[newStatus.length - 1] = 99;
+      }
 
-      System.arraycopy(txtStatus.getSelectedIndices(), 0, newStatus, 0, txtStatus.getSelectedIndices().length);
+      System.arraycopy(txtStatus.getSelectedIndices(), 0, newStatus, 0,
+          txtStatus.getSelectedIndices().length);
       domain.setNewStatus(newStatus);
       return newStatus;
   }*/
@@ -1370,13 +1431,20 @@ public class DomainPanel extends JPanel {
       newStatus.add(selectedStatus);
     }
 
-    if (lblIsPendingDelete.isEnabled()) newStatus.add(99);
+    if (lblIsPendingDelete.isEnabled()) {
+      newStatus.add(99);
+    }
 
     domain.setNewStatus(newStatus);
 
     return newStatus;
   }
 
+  /**
+   * Populates all panel fields from the given domain object.
+   *
+   * @param domain the domain whose data should be displayed
+   */
   public void setAddress(Domain domain) {
     if (domain != null) {
       setDomainName(domain.getDomainName());
@@ -1398,7 +1466,7 @@ public class DomainPanel extends JPanel {
       setExpire(domain.getExpire());
 
       // DNSSEC
-      setDnsSec(domain.isDNSSec());
+      setDnsSec(domain.isDnsSec());
       setDnsSecKeyTag(domain.getKeyTag());
       setDnsSecAlg(domain.getAlg());
       setDnsSecDigestType(domain.getDigestType());
@@ -1406,6 +1474,11 @@ public class DomainPanel extends JPanel {
     }
   }
 
+  /**
+   * Reads all panel fields and returns a {@link Domain} populated with the current input.
+   *
+   * @return the domain built from the current field values
+   */
   public Domain getAddress() {
     getDomainName();
     getRegistrant();
@@ -1430,6 +1503,7 @@ public class DomainPanel extends JPanel {
     return domain;
   }
 
+  /** Clears all input fields and resets the internal domain object. */
   public void clear() {
     txtDomainName.setText(null);
     txtPunyDomainName.setText(null);
@@ -1446,57 +1520,62 @@ public class DomainPanel extends JPanel {
     domain = new Domain();
   }
 
-  public void setEditable(boolean bEditable) {
-    txtDomainName.setEditable(bEditable && (getOpType() == 1));
+  /**
+   * Enables or disables all input fields.
+   *
+   * @param editable {@code true} to allow editing
+   */
+  public void setEditable(boolean editable) {
+    txtDomainName.setEditable(editable && (getOpType() == 1));
     txtPunyDomainName.setEditable(false);
 
-    txtAuthInfo.setEditable(bEditable);
-    txtValidationCode.setEditable(bEditable);
+    txtAuthInfo.setEditable(editable);
+    txtValidationCode.setEditable(editable);
 
     if (getOpType() == 1) {
       setRegistrant.setText("Selezione Registrant");
 
-      if (EPPparams.getParameter("EppClient.defaultTech").length() > 0) {
-        String[] defaultTech = EPPparams.getParameter("EppClient.defaultTech").split(";");
+      if (EppParams.getParameter("EppClient.defaultTech").length() > 0) {
+        String[] defaultTech = EppParams.getParameter("EppClient.defaultTech").split(";");
         for (String defaultTechToAdd : defaultTech) {
           techModel.add(txtTech.getModel().getSize(), defaultTechToAdd.trim());
         }
       }
 
-      if (EPPparams.getParameter("EppClient.defaultNS").length() > 0) {
-        String[] defaultNS = EPPparams.getParameter("EppClient.defaultNS").split(";");
-        for (String defaultNStoAdd : defaultNS) {
-          nameServerModel.add(txtNameServer.getModel().getSize(), defaultNStoAdd.trim());
+      if (EppParams.getParameter("EppClient.defaultNS").length() > 0) {
+        String[] defaultNs = EppParams.getParameter("EppClient.defaultNS").split(";");
+        for (String defaultNsToAdd : defaultNs) {
+          nameServerModel.add(txtNameServer.getModel().getSize(), defaultNsToAdd.trim());
         }
       }
     } else {
       setRegistrant.setText("Cambio Registrant");
     }
 
-    setRegistrant.setVisible(bEditable);
-    btnRndAuthinfo.setVisible(bEditable);
+    setRegistrant.setVisible(editable);
+    btnRndAuthinfo.setVisible(editable);
 
-    txtStatus.setEnabled(bEditable);
-    txtAdmin.setEnabled(bEditable);
-    addAdmin.setVisible(bEditable);
-    remAdmin.setVisible(bEditable);
+    txtStatus.setEnabled(editable);
+    txtAdmin.setEnabled(editable);
+    addAdmin.setVisible(editable);
+    remAdmin.setVisible(editable);
 
-    txtTech.setEnabled(bEditable);
-    addTech.setVisible(bEditable);
-    remTech.setVisible(bEditable);
+    txtTech.setEnabled(editable);
+    addTech.setVisible(editable);
+    remTech.setVisible(editable);
 
-    lblDnsExpl.setVisible(bEditable);
-    txtNameServerToAdd.setVisible(bEditable);
-    txtNameServer.setEnabled(bEditable);
-    addNameServer.setVisible(bEditable);
-    remNameServer.setVisible(bEditable);
-    chkDNSSEC.setEnabled(bEditable && dnsSecEnabled);
-    isEditable = bEditable;
+    lblDnsExpl.setVisible(editable);
+    txtNameServerToAdd.setVisible(editable);
+    txtNameServer.setEnabled(editable);
+    addNameServer.setVisible(editable);
+    remNameServer.setVisible(editable);
+    chkDnsSec.setEnabled(editable && dnsSecEnabled);
+    isEditable = editable;
     toggleDnsSecFields();
   }
 
   private void toggleDnsSecFields() {
-    boolean enabled = chkDNSSEC.isSelected() && isEditable;
+    boolean enabled = chkDnsSec.isSelected() && isEditable;
 
     txtAlg.setEnabled(enabled);
     cmbAlg.setEnabled(enabled);
@@ -1528,19 +1607,19 @@ public class DomainPanel extends JPanel {
   private JTextField txtNameServerToAdd;
   private JLabel lblDomainName;
   private JTextField txtDomainName;
-  private JScrollPane jScrollPane1;
+  private JScrollPane statusScroll;
   private JList<String> txtStatus;
-  private JScrollPane jScrollPane2;
+  private JScrollPane nameServerScroll;
   private JList txtNameServer;
   private JButton addNameServer;
   private JButton remNameServer;
-  private JScrollPane jScrollPane3;
+  private JScrollPane techScroll;
   private JList txtTech;
   private JButton addTech;
   private JButton remTech;
   private JButton addAdmin;
   private JButton remAdmin;
-  private JScrollPane jScrollPane4;
+  private JScrollPane adminScroll;
   private JList txtAdmin;
   private JButton setRegistrant;
   private JLabel lblDnsExpl;
@@ -1561,7 +1640,7 @@ public class DomainPanel extends JPanel {
   private JLabel lblDigest;
   private JScrollPane scrollPane1;
   private JTextArea txtDigest;
-  private JCheckBox chkDNSSEC;
+  private JCheckBox chkDnsSec;
   // End of variables declaration//GEN-END:variables
 
   DefaultListModel<String> adminModel = new DefaultListModel<String>();

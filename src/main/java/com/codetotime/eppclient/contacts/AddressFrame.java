@@ -14,23 +14,32 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.contacts;
 
-import com.codetotime.eppclient.db.contactsDao;
-import java.awt.*;
+import com.codetotime.eppclient.db.ContactsDao;
+import java.awt.BorderLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URL;
 import java.util.List;
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+/**
+ * Frame combining the contact list, detail panel, and action toolbar to provide a local view of
+ * cached EPP contact records stored in the embedded database.
+ */
 public class AddressFrame extends JFrame implements ActionListener, ListSelectionListener {
 
   /** Creates new form AddressFrame. */
@@ -39,7 +48,7 @@ public class AddressFrame extends JFrame implements ActionListener, ListSelectio
     loadFrameIcon();
     windowAdapter = new WindowCloser();
     this.addWindowListener(windowAdapter);
-    db = new contactsDao();
+    db = new ContactsDao();
     db.connect();
     addressActionPanel.addActionListener(this);
     addressPanel.setEditable(false);
@@ -147,6 +156,7 @@ public class AddressFrame extends JFrame implements ActionListener, ListSelectio
     }
   }
 
+  /** {@inheritDoc} */
   public void actionPerformed(ActionEvent e) {
     String actionCommand = e.getActionCommand();
     if (actionCommand.equalsIgnoreCase("CANCEL_ADDRESS")) {
@@ -162,6 +172,7 @@ public class AddressFrame extends JFrame implements ActionListener, ListSelectio
     }
   }
 
+  /** {@inheritDoc} */
   public void valueChanged(ListSelectionEvent e) {
     if (e.getValueIsAdjusting()) {
       return;
@@ -185,7 +196,7 @@ public class AddressFrame extends JFrame implements ActionListener, ListSelectio
   // End of variables declaration//GEN-END:variables
 
   private int selectedEntry = -1;
-  private contactsDao db;
+  private ContactsDao db;
   private WindowAdapter windowAdapter;
 
   class WindowCloser extends WindowAdapter {

@@ -14,18 +14,48 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.contacts;
 
-import com.codetotime.eppclient.config.EPPparams;
+import com.codetotime.eppclient.config.EppParams;
 
+/**
+ * Holds all contact fields for an EPP contact object, including postal info, registry-specific
+ * Italian fields (nationality code, entity type, reg code, school/IPA/UO codes), and tracks which
+ * fields have been modified to build partial update commands.
+ */
 public class Address {
 
   /** Creates a new instance of Address. */
   public Address() {}
 
+  /**
+   * Creates a fully populated Address with all contact and registry-specific fields.
+   *
+   * @param name contact's full name
+   * @param org organisation name
+   * @param street street address
+   * @param city city
+   * @param stateOrProvince state or province
+   * @param postalCode postal code
+   * @param countryCode two-letter ISO country code
+   * @param voice voice phone number
+   * @param fax fax number
+   * @param email email address
+   * @param consentForPublishing whether the contact consents to WHOIS publishing
+   * @param isRegistrant whether this contact is the domain registrant
+   * @param nationalityCode Italian nationality code
+   * @param entityType Italian entity type identifier
+   * @param regCode Italian fiscal/VAT code
+   * @param oldStatus current EPP status array
+   * @param contactId EPP contact handle
+   * @param schoolCode school code (Italian registry)
+   * @param ipaCode IPA code (Italian public administration)
+   * @param uoCode UO code (Italian organisational unit)
+   */
   public Address(
       String name,
       String org,
@@ -260,10 +290,15 @@ public class Address {
     return this.isNewContact;
   }
 
+  /**
+   * Generates a random contact ID by appending a 7-digit random number to the configured prefix.
+   *
+   * @return a new random contact ID string
+   */
   public String getRandomContactId() {
     String contactId = Integer.toString((int) (Math.random() * 100000000));
     contactId =
-        EPPparams.getParameter("EppClient.contactPrefix")
+        EppParams.getParameter("EppClient.contactPrefix")
             + contactId.substring(contactId.length() - 7);
     return contactId;
   }
@@ -312,6 +347,11 @@ public class Address {
     return isConsentForPublishingChanged;
   }
 
+  /**
+   * Sets whether the registrant flag has been changed.
+   *
+   * @param isIsRegistrantChanged {@code true} if the registrant flag was modified
+   */
   public void isIsRegistrantChanged(boolean isIsRegistrantChanged) {
     this.isIsRegistrantChanged = isIsRegistrantChanged;
   }

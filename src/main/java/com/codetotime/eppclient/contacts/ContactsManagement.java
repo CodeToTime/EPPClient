@@ -14,15 +14,16 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.contacts;
 
-import com.codetotime.eppclient.db.contactsDao;
+import com.codetotime.eppclient.Main;
+import com.codetotime.eppclient.db.ContactsDao;
 import com.codetotime.eppclient.importer.ImportContact;
-import com.codetotime.eppclient.main;
-import com.codetotime.eppclient.uplink.EPPuplink;
+import com.codetotime.eppclient.uplink.EppUplink;
 import it.nic.epp.client.commands.query.ContactCheck;
 import it.nic.epp.client.commands.query.ContactInfo;
 import it.nic.epp.client.commands.transform.ContactCreate;
@@ -50,12 +51,16 @@ import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Main frame for managing EPP contacts: lists cached contacts from the local database and
+ * dispatches create, update, delete, info, check and sync commands to the registry.
+ */
 public class ContactsManagement extends JFrame implements ActionListener, ListSelectionListener {
 
-  private main mainFrame;
+  private Main mainFrame;
 
   /** Creates new form ContactsManagement. */
-  public ContactsManagement(main mainFrame) {
+  public ContactsManagement(Main mainFrame) {
     initComponents();
 
     windowAdapter = new WindowCloser();
@@ -65,7 +70,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
     addressListPanel.addListSelectionListener(this);
 
     this.mainFrame = mainFrame;
-    this.EPPuplink = mainFrame.EPPuplink;
+    this.eppUplink = mainFrame.eppUplink;
     this.db = mainFrame.contactsDao;
 
     refreshContactList();
@@ -165,15 +170,20 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
 
   private void refreshContactList() {
     addressListPanel.deleteAllEntries();
-    //        db = new contactsDao();
+    //        db = new ContactsDao();
     //        db.connect();
     List<ListEntry> entries = db.getListEntries();
     //        db.disconnect();
     addressListPanel.addListEntries(entries);
   }
 
-  public void setEPPEnablement(boolean EPPstatus) {
-    addressActionPanel.setVisible(EPPstatus);
+  /**
+   * Shows or hides the action toolbar based on whether the EPP connection is active.
+   *
+   * @param eppStatus {@code true} if the EPP connection is active
+   */
+  public void setEppEnablement(boolean eppStatus) {
+    addressActionPanel.setVisible(eppStatus);
   }
 
   private void cancelAddress() {
@@ -182,7 +192,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
     ListEntry entry = addressListPanel.getSelectedListEntry();
     if (entry != null) {
       String contactId = entry.getContactId();
-      //            db = new contactsDao();
+      //            db = new ContactsDao();
       //            db.connect();
       Address address = db.getAddress(contactId);
       //            db.disconnect();
@@ -211,15 +221,15 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
     if (!contactId.equals("")) {
 
       try {
-        /** Delete the contact The contact MUSTN'T BE LINKED with any domain name */
+        // Delete the contact. The contact must not be linked with any domain name
         ContactDelete contactDelete = new ContactDelete();
         contactDelete.setId(contactId);
         log.debug("CLIENT: {}", contactDelete);
-        HttpBaseResponse response = EPPuplink.sendCommand(contactDelete);
+        HttpBaseResponse response = eppUplink.sendCommand(contactDelete);
         log.debug("SERVER: {}", response);
 
         if (response.isSuccessfully()) {
-          //                    db = new contactsDao();
+          //                    db = new ContactsDao();
           //                    db.connect();
           db.deleteRecord(contactId);
           //                    db.disconnect();
@@ -229,7 +239,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
             ListEntry entry = addressListPanel.getSelectedListEntry();
             if (entry != null) {
               contactId = entry.getContactId();
-              //                            db = new contactsDao();
+              //                            db = new ContactsDao();
               //                            db.connect();
               Address address = db.getAddress(contactId);
               //                            db.disconnect();
@@ -242,7 +252,8 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
         } else {
           if (JOptionPane.showConfirmDialog(
                   this,
-                  "An error occurred while deleting contact on the Registry.\n\nDo you want to see the Registry XML response?",
+                  "An error occurred while deleting contact on the Registry.\n\n"
+                      + "Do you want to see the Registry XML response?",
                   "Registry delete failure",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.WARNING_MESSAGE)
@@ -253,8 +264,11 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
         }
 
       } catch (NullPointerException v) {
+        log.error("NullPointerException in deleteAddress", v);
       } catch (XmlException v) {
+        log.error("XmlException in deleteAddress", v);
       } catch (IOException v) {
+        log.error("IOException in deleteAddress", v);
       }
 
     } else {
@@ -282,16 +296,21 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
             ContactCheck contactCheck = new ContactCheck();
             contactCheck.addId(address.getContactId());
             try {
-              HttpBaseResponse response = EPPuplink.sendCommand(contactCheck);
+              HttpBaseResponse response = eppUplink.sendCommand(contactCheck);
               log.debug("SERVER: {}", response);
               if (response.isSuccessfully()) {
                 ContactCheckResponseResData resData =
                     (ContactCheckResponseResData) response.getResponseResData();
-                if (resData.getChkAvail(0)) break;
+                if (resData.getChkAvail(0)) {
+                  break;
+                }
               }
             } catch (NullPointerException v) {
+              log.error("NullPointerException in saveAddress (new check)", v);
             } catch (XmlException v) {
+              log.error("XmlException in saveAddress (new check)", v);
             } catch (IOException v) {
+              log.error("IOException in saveAddress (new check)", v);
             }
           }
         }
@@ -314,14 +333,17 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
 
           contactCreate.setFax(address.getFax());
           contactCreate.setOrg(address.getOrg());
-          if (!address.getSchoolCode().isEmpty())
+          if (!address.getSchoolCode().isEmpty()) {
             contactCreate.setExtSchoolCode(address.getSchoolCode());
+          }
 
-          if (!address.getIpaCode().isEmpty() && address.getUoCode().isEmpty())
+          if (!address.getIpaCode().isEmpty() && address.getUoCode().isEmpty()) {
             contactCreate.setExtGovRegistrant(address.getIpaCode());
+          }
 
-          if (!address.getIpaCode().isEmpty() && !address.getUoCode().isEmpty())
+          if (!address.getIpaCode().isEmpty() && !address.getUoCode().isEmpty()) {
             contactCreate.setExtGovRegistrant(address.getIpaCode(), address.getUoCode());
+          }
 
           if (address.getIsRegistrant()) {
             contactCreate.setExtRegistrant(
@@ -329,11 +351,11 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
           }
 
           log.debug("CLIENT: {}", contactCreate);
-          HttpBaseResponse response = EPPuplink.sendCommand(contactCreate);
+          HttpBaseResponse response = eppUplink.sendCommand(contactCreate);
           log.debug("SERVER: {}", response);
 
           if (response.isSuccessfully()) {
-            //                        db = new contactsDao();
+            //                        db = new ContactsDao();
             //                        db.connect();
             contactId = db.saveRecord(address);
             //                        db.disconnect();
@@ -350,7 +372,8 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
           } else {
             if (JOptionPane.showConfirmDialog(
                     this,
-                    "An error occurred while applying changes to the Registry.\n\nDo you want to see the Registry XML response?",
+                    "An error occurred while applying changes to the Registry.\n\n"
+                        + "Do you want to see the Registry XML response?",
                     "Registry update failure",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.WARNING_MESSAGE)
@@ -360,8 +383,11 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
           }
 
         } catch (NullPointerException v) {
+          log.error("NullPointerException in saveAddress (edit check)", v);
         } catch (XmlException v) {
+          log.error("XmlException in saveAddress (edit check)", v);
         } catch (IOException v) {
+          log.error("IOException in saveAddress (edit check)", v);
         }
 
       } else {
@@ -369,7 +395,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
         try {
           ContactInfo contactInfo = new ContactInfo();
           contactInfo.setId(address.getContactId());
-          HttpBaseResponse response = EPPuplink.sendCommand(contactInfo);
+          HttpBaseResponse response = eppUplink.sendCommand(contactInfo);
           log.debug("ContactInfo PRIMA: {}", response);
           ContactInfoResponseResData contactInfoResData =
               (ContactInfoResponseResData) response.getResponseResData();
@@ -378,7 +404,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
 
           ContactUpdate contactUpdate = new ContactUpdate(address.getContactId());
 
-          Boolean migratedUpdateOK = true;
+          Boolean migratedUpdateOk = true;
 
           if (!contactInfoExt.isRegistrant()) {
             if (address.isIsRegistrantChanged()) {
@@ -421,14 +447,15 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
 
             if (updateMigrated) {
               log.debug("CLIENT: {}", contactUpdate);
-              response = EPPuplink.sendCommand(contactUpdate);
+              response = eppUplink.sendCommand(contactUpdate);
               log.debug("SERVER: {}", response);
 
               if (!response.isSuccessfully()) {
-                migratedUpdateOK = false;
+                migratedUpdateOk = false;
                 if (JOptionPane.showConfirmDialog(
                         this,
-                        "An error occurred while applying changes to the Registry.\n\nDo you want to see the Registry XML response?",
+                        "An error occurred while applying changes to the Registry.\n\n"
+                            + "Do you want to see the Registry XML response?",
                         "Registry (M) update failure",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.WARNING_MESSAGE)
@@ -440,7 +467,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
             }
           }
 
-          if (migratedUpdateOK) {
+          if (migratedUpdateOk) {
 
             contactUpdate.setFax(address.getFax());
             contactUpdate.setVoice(address.getVoice());
@@ -457,13 +484,14 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
             contactUpdate.setSp(address.getStateOrProvince());
             contactUpdate.setPc(address.getPostalCode());
             contactUpdate.setCc(address.getCountryCode());
-            if (!address.getSchoolCode().isEmpty())
+            if (!address.getSchoolCode().isEmpty()) {
               contactUpdate.setExtSchoolCode(address.getSchoolCode());
+            }
 
             contactUpdate.setExtConsForPub(address.getConsentForPublishing());
 
             log.debug("CLIENT: {}", contactUpdate);
-            response = EPPuplink.sendCommand(contactUpdate);
+            response = eppUplink.sendCommand(contactUpdate);
             log.debug("SERVER: {}", response);
 
             if (response.isSuccessfully()) {
@@ -476,7 +504,8 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
             } else {
               if (JOptionPane.showConfirmDialog(
                       this,
-                      "An error occurred while applying changes to the Registry.\n\nDo you want to see the Registry XML response?",
+                      "An error occurred while applying changes to the Registry.\n\n"
+                          + "Do you want to see the Registry XML response?",
                       "Registry update failure",
                       JOptionPane.YES_NO_OPTION,
                       JOptionPane.WARNING_MESSAGE)
@@ -516,7 +545,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
       }
 
       log.debug("CLIENT: {}", contactCheck);
-      HttpBaseResponse response = EPPuplink.sendCommand(contactCheck);
+      HttpBaseResponse response = eppUplink.sendCommand(contactCheck);
       log.debug("SERVER: {}", response);
 
       if (response.isSuccessfully()) {
@@ -529,8 +558,9 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
             msgAvailabilityResult += "Available";
           } else {
             msgAvailabilityResult += "NOT Available";
-            if (resData.getChkReasonText(i) != null)
+            if (resData.getChkReasonText(i) != null) {
               msgAvailabilityResult += " (" + resData.getChkReasonText(i) + ")";
+            }
           }
           msgAvailabilityResult += "\n";
         }
@@ -539,7 +569,8 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
       } else {
         if (JOptionPane.showConfirmDialog(
                 this,
-                "An error occurred while checking contact availability on the Registry.\n\nDo you want to see the Registry XML response?",
+                "An error occurred while checking contact availability on the Registry.\n\n"
+                    + "Do you want to see the Registry XML response?",
                 "Registry contact check failure",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE)
@@ -549,8 +580,11 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
       }
 
     } catch (NullPointerException v) {
+      log.error("NullPointerException in checkContact", v);
     } catch (XmlException v) {
+      log.error("XmlException in checkContact", v);
     } catch (IOException v) {
+      log.error("IOException in checkContact", v);
     }
   }
 
@@ -561,7 +595,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
       try {
         ContactInfo contactInfo = new ContactInfo(contactId);
         log.debug("CLIENT: {}", contactInfo);
-        HttpBaseResponse response = EPPuplink.sendCommand(contactInfo);
+        HttpBaseResponse response = eppUplink.sendCommand(contactInfo);
         log.debug("SERVER: {}", response);
 
         if (response.isSuccessfully()) {
@@ -570,7 +604,8 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
         } else {
           if (JOptionPane.showConfirmDialog(
                   this,
-                  "An error occurred while asking for Contact Info on the Registry.\n\nDo you want to see the Registry XML response?",
+                  "An error occurred while asking for Contact Info on the Registry.\n\n"
+                      + "Do you want to see the Registry XML response?",
                   "Registry delete failure",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.WARNING_MESSAGE)
@@ -581,12 +616,16 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
         }
 
       } catch (NullPointerException v) {
+        log.error("NullPointerException in infoContact", v);
       } catch (XmlException v) {
+        log.error("XmlException in infoContact", v);
       } catch (IOException v) {
+        log.error("IOException in infoContact", v);
       }
     }
   }
 
+  /** Fetches the current contact info from the registry and updates the local database record. */
   public void syncContactInfo() {
     String contactId =
         (String)
@@ -626,7 +665,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
         case 2303:
           if (response.getReasonCode() == 9003) {
             // Cancello il contatto dal db locale
-            //                        db = new contactsDao();
+            //                        db = new ContactsDao();
             //                        db.connect();
 
             /*2012.06.15: Modifica libreria ITNIC*/
@@ -639,7 +678,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
               selectedIndex = addressListPanel.setSelectedIndex(selectedIndex);
               ListEntry entry = addressListPanel.getSelectedListEntry();
               if (entry != null) {
-                //                                db = new contactsDao();
+                //                                db = new ContactsDao();
                 //                                db.connect();
                 Address address = db.getAddress(entry.getContactId());
                 //                                db.disconnect();
@@ -658,6 +697,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
     }
   }
 
+  /** {@inheritDoc} */
   public void actionPerformed(ActionEvent e) {
     String actionCommand = e.getActionCommand();
     if (actionCommand.equalsIgnoreCase("CANCEL_ADDRESS")) {
@@ -683,6 +723,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
     }
   }
 
+  /** {@inheritDoc} */
   public void valueChanged(ListSelectionEvent e) {
     cancelAddress();
     if (e.getValueIsAdjusting()) {
@@ -693,7 +734,7 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
     ListEntry entry = (ListEntry) entryList.getSelectedValue();
     if (entry != null) {
       String contactId = entry.getContactId();
-      //            db = new contactsDao();
+      //            db = new ContactsDao();
       //            db.connect();
       Address address = db.getAddress(contactId);
       //            db.disconnect();
@@ -706,9 +747,10 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
   private static String selectedContactId;
 
   private int selectedEntry = -1;
-  private contactsDao db;
+  private ContactsDao db;
   private WindowAdapter windowAdapter;
 
+  /** {@inheritDoc} */
   public void setVisible(boolean b) {
     super.setVisible(b);
     if (b) {
@@ -728,5 +770,5 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
   private AddressListPanel addressListPanel;
   // End of variables declaration//GEN-END:variables
   private Logger log;
-  private EPPuplink EPPuplink;
+  private EppUplink eppUplink;
 }

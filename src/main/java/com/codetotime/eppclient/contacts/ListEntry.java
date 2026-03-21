@@ -14,11 +14,13 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.contacts;
 
+/** A contact list item holding a display name and its EPP contact ID. */
 public class ListEntry {
 
   /** Creates a new instance of ListEntry. */
@@ -26,6 +28,12 @@ public class ListEntry {
     this("", "");
   }
 
+  /**
+   * Creates a list entry with the given name and contact ID.
+   *
+   * @param name the contact's display name
+   * @param contactId the EPP contact handle
+   */
   public ListEntry(String name, String contactId) {
     this.name = name;
     //        this.firstName = firstName;
@@ -49,6 +57,11 @@ public class ListEntry {
     this.contactId = contactId;
   }
 
+  /**
+   * Returns a human-readable representation as {@code "name: contactId"}.
+   *
+   * @return formatted string
+   */
   public String toString() {
     String value = name + ": " + contactId; // + ", " + firstName + " " + middleName + ": " + id;
     return value;

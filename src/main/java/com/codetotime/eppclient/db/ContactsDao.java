@@ -14,12 +14,13 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.db;
 
-import com.codetotime.eppclient.config.EPPparams;
+import com.codetotime.eppclient.config.EppParams;
 import com.codetotime.eppclient.contacts.Address;
 import com.codetotime.eppclient.contacts.ListEntry;
 import java.io.File;
@@ -39,13 +40,20 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class contactsDao {
-  private static final Logger log = LoggerFactory.getLogger(contactsDao.class);
+/** DAO for persisting and retrieving EPP contact records from the local database. */
+public class ContactsDao {
+  private static final Logger log = LoggerFactory.getLogger(ContactsDao.class);
 
   private static final String BUNDLE_NAME = "com.codetotime.eppclient.db.contacts";
 
   private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
+  /**
+   * Returns the string value for the given resource bundle key.
+   *
+   * @param key the property key
+   * @return the value, or {@code !key!} if not found
+   */
   public static String getString(String key) {
     try {
       return RESOURCE_BUNDLE.getString(key);
@@ -55,15 +63,20 @@ public class contactsDao {
   }
 
   /** Creates a new instance of AddressDao. */
-  public contactsDao() {
+  public ContactsDao() {
     this("contacts");
   }
 
-  public contactsDao(String addressBookName) {
+  /**
+   * Creates a DAO bound to the given database name.
+   *
+   * @param addressBookName the Derby database name to use
+   */
+  public ContactsDao(String addressBookName) {
     this.dbName = addressBookName;
 
-    setDBSystemDir();
-    dbProperties = loadDBProperties();
+    setDbSystemDir();
+    dbProperties = loadDbProperties();
 
     if (dbProperties.getProperty("derby.url").contains("postgresql")) {
       dbProperties.put("db.schema", "public");
@@ -265,7 +278,9 @@ public class contactsDao {
               .getMetaData()
               .getTables(dbProperties.getProperty("db.schema"), null, "%", null);
       while (rs.next()) {
-        if (rs.getString(3).toLowerCase().equals(tableName.toLowerCase())) tableExists = true;
+        if (rs.getString(3).toLowerCase().equals(tableName.toLowerCase())) {
+          tableExists = true;
+        }
       }
     } catch (SQLException ex) {
       log.error("Error checking table existence", ex);
@@ -277,16 +292,16 @@ public class contactsDao {
   }
 
   private boolean dbExists() {
-    boolean bExists = false;
+    boolean exists = false;
     String dbLocation = getDatabaseLocation();
     File dbFileDir = new File(dbLocation);
     if (dbFileDir.exists()) {
-      bExists = true;
+      exists = true;
     }
-    return bExists;
+    return exists;
   }
 
-  private void setDBSystemDir() {
+  private void setDbSystemDir() {
     // decide on the db system directory
     String userHomeDir = System.getProperty("user.home", ".");
     String systemDir = userHomeDir + "/.eppclient";
@@ -314,14 +329,14 @@ public class contactsDao {
     }
   }
 
-  private Properties loadDBProperties() {
+  private Properties loadDbProperties() {
     InputStream dbPropInputStream = null;
-    dbPropInputStream = contactsDao.class.getResourceAsStream("contacts.properties");
+    dbPropInputStream = ContactsDao.class.getResourceAsStream("contacts.properties");
     dbProperties = new Properties();
     try {
       dbProperties.load(dbPropInputStream);
 
-      String dbUrl = EPPparams.getParameter("EppClient.dburl");
+      String dbUrl = EppParams.getParameter("EppClient.dburl");
       if (dbUrl.contains("mariadb")) {
         dbProperties.put("derby.driver", "org.mariadb.jdbc.Driver");
       } else if (dbUrl.contains("postgresql")) {
@@ -330,9 +345,9 @@ public class contactsDao {
         dbProperties.put("derby.driver", "org.apache.derby.jdbc.EmbeddedDriver");
       }
       dbProperties.put("derby.url", dbUrl);
-      dbProperties.put("db.schema", EPPparams.getParameter("EppClient.dbname"));
-      dbProperties.put("user", EPPparams.getParameter("EppClient.dbuid"));
-      dbProperties.put("password", EPPparams.getParameter("EppClient.dbpwd"));
+      dbProperties.put("db.schema", EppParams.getParameter("EppClient.dbname"));
+      dbProperties.put("user", EppParams.getParameter("EppClient.dbuid"));
+      dbProperties.put("password", EppParams.getParameter("EppClient.dbpwd"));
 
     } catch (IOException ex) {
       log.error("Error loading database properties", ex);
@@ -341,7 +356,7 @@ public class contactsDao {
   }
 
   private boolean createTables(Connection dbConnection) {
-    boolean bCreatedTables = false;
+    boolean createdTables = false;
     Statement statement = null;
     try {
       statement = dbConnection.createStatement();
@@ -352,31 +367,36 @@ public class contactsDao {
             strCreateAddressTable.replace("create table ", "create table IF NOT EXISTS ");
       }
       statement.execute(createTableSql);
-      bCreatedTables = true;
+      createdTables = true;
     } catch (SQLException ex) {
       if (ex.getSQLState().equals("X0Y32") || ex.getMessage().contains("already exists")) {
-        bCreatedTables = true;
+        createdTables = true;
       } else {
         log.error("Error creating tables", ex);
       }
     }
-    return bCreatedTables;
+    return createdTables;
   }
 
+  /**
+   * Drops all contact tables from the database.
+   *
+   * @return {@code true} if the tables were dropped successfully
+   */
   public boolean dropTables() {
-    boolean bDroppedTables = false;
+    boolean droppedTables = false;
     try {
       stmtDropContactTable.clearParameters();
       stmtDropContactTable.execute();
-      bDroppedTables = true;
+      droppedTables = true;
     } catch (SQLException ex) {
       log.error("Error dropping tables", ex);
     }
-    return bDroppedTables;
+    return droppedTables;
   }
 
   private boolean createDatabase() {
-    boolean bCreated = false;
+    boolean created = false;
     Connection dbConnection = null;
 
     String dbUrl = getDatabaseUrl();
@@ -384,13 +404,19 @@ public class contactsDao {
 
     try {
       dbConnection = DriverManager.getConnection(dbUrl, dbProperties);
-      bCreated = createTables(dbConnection);
+      created = createTables(dbConnection);
     } catch (SQLException ex) {
+      log.error("Error creating database", ex);
     }
     dbProperties.remove("create");
-    return bCreated;
+    return created;
   }
 
+  /**
+   * Opens a connection to the database, creating it if it does not exist.
+   *
+   * @return {@code true} if the connection was established successfully
+   */
   public boolean connect() {
     String dbUrl = getDatabaseUrl();
     try {
@@ -415,6 +441,7 @@ public class contactsDao {
     return System.getProperty("user.home");
   }
 
+  /** Closes the database connection. */
   public void disconnect() {
     if (isConnected) {
       String dbUrl = getDatabaseUrl();
@@ -422,22 +449,41 @@ public class contactsDao {
       try {
         DriverManager.getConnection(dbUrl, dbProperties);
       } catch (SQLException ex) {
+        log.debug("Database shutdown: {}", ex.getMessage());
       }
       isConnected = false;
     }
   }
 
+  /**
+   * Returns the filesystem path of the Derby database directory.
+   *
+   * @return the absolute database path
+   */
   public String getDatabaseLocation() {
     String dbLocation = System.getProperty("derby.system.home") + "/" + dbName;
     return dbLocation;
   }
 
+  /**
+   * Returns the JDBC URL for the Derby database.
+   *
+   * @return the JDBC connection URL
+   */
   public String getDatabaseUrl() {
     String dbUrl = dbProperties.getProperty("derby.url");
-    if (!dbUrl.contains("mariadb") && !dbUrl.contains("postgresql")) dbUrl += dbName;
+    if (!dbUrl.contains("mariadb") && !dbUrl.contains("postgresql")) {
+      dbUrl += dbName;
+    }
     return dbUrl;
   }
 
+  /**
+   * Inserts a new contact record into the database.
+   *
+   * @param record the contact to save
+   * @return the contact ID used as the record key
+   */
   public String saveRecord(Address record) {
     try {
       stmtSaveNewRecord.clearParameters();
@@ -479,8 +525,14 @@ public class contactsDao {
     return record.getContactId();
   }
 
+  /**
+   * Updates an existing contact record in the database.
+   *
+   * @param record the contact with updated fields
+   * @return {@code true} if the record was updated successfully
+   */
   public boolean editRecord(Address record) {
-    boolean bEdited = false;
+    boolean edited = false;
     try {
       stmtUpdateExistingRecord.clearParameters();
 
@@ -510,7 +562,9 @@ public class contactsDao {
 
       if (newStatuses != null) {
         for (int statusIndex = 0; statusIndex < newStatuses.length; statusIndex++) {
-          if (newStatus.length() > 0) newStatus = newStatus + ",";
+          if (newStatus.length() > 0) {
+            newStatus = newStatus + ",";
+          }
           newStatus = newStatus + newStatuses[statusIndex];
         }
       }
@@ -522,27 +576,39 @@ public class contactsDao {
       stmtUpdateExistingRecord.setString(20, record.getContactId()); // shifted from 17 to 20
 
       stmtUpdateExistingRecord.executeUpdate();
-      bEdited = true;
+      edited = true;
     } catch (SQLException sqle) {
       log.error("Error editing contact record", sqle);
     }
-    return bEdited;
+    return edited;
   }
 
-  public boolean deleteRecord(String contactID) {
-    boolean bDeleted = false;
+  /**
+   * Deletes the contact with the given ID from the database.
+   *
+   * @param contactId the contact ID to delete
+   * @return {@code true} if the record was deleted successfully
+   */
+  public boolean deleteRecord(String contactId) {
+    boolean deleted = false;
     try {
       stmtDeleteAddress.clearParameters();
-      stmtDeleteAddress.setString(1, contactID);
+      stmtDeleteAddress.setString(1, contactId);
       stmtDeleteAddress.executeUpdate();
-      bDeleted = true;
+      deleted = true;
     } catch (SQLException sqle) {
       log.error("Error deleting contact record", sqle);
     }
 
-    return bDeleted;
+    return deleted;
   }
 
+  /**
+   * Deletes the given contact record from the database.
+   *
+   * @param record the contact to delete
+   * @return {@code true} if the record was deleted successfully
+   */
   public boolean deleteRecord(Address record) {
     String contactId = record.getContactId();
     return deleteRecord(contactId);
@@ -556,6 +622,12 @@ public class contactsDao {
     return getSelectiveEntries(strGetListEntries);
   }
 
+  /**
+   * Executes the given SQL query and returns matching contact entries.
+   *
+   * @param preparedStatement the SQL query to execute
+   * @return the list of matching {@link ListEntry} objects
+   */
   public List<ListEntry> getSelectiveEntries(String preparedStatement) {
     List<ListEntry> listEntries = new ArrayList<ListEntry>();
     Statement queryStatement = null;
@@ -579,6 +651,12 @@ public class contactsDao {
     return listEntries;
   }
 
+  /**
+   * Retrieves the contact with the given ID from the database.
+   *
+   * @param contactId the contact ID to look up
+   * @return the matching {@link Address}, or {@code null} if not found
+   */
   public Address getAddress(String contactId) {
     Address address = null;
     try {

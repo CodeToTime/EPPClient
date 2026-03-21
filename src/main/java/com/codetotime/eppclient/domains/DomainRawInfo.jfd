@@ -4,13 +4,13 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq t {space :p::p, comp jLabel1:::p::p, space u:::p, comp domainNameTxt:::p::p, space ::335:x}, comp jLabel2::l::483:x, seq l {space :::p, comp jScrollPane1::::463:x, space :::p}}"
-			"$verticalGroup": "par l {seq t {comp jLabel2:::p::p, space :p:8:p, par b {comp jLabel1::b:p::p, comp domainNameTxt::b:p::p}, space s:p::p, comp jScrollPane1::::203:x, space :p::p}}"
+			"$horizontalGroup": "par l {seq t {space :p::p, comp lblDomainName:::p::p, space u:::p, comp domainNameTxt:::p::p, space ::335:x}, comp lblTitle::l::483:x, seq l {space :::p, comp rawInfoScroll::::463:x, space :::p}}"
+			"$verticalGroup": "par l {seq t {comp lblTitle:::p::p, space :p:8:p, par b {comp lblDomainName::b:p::p, comp domainNameTxt::b:p::p}, space s:p::p, comp rawInfoScroll::::203:x, space :p::p}}"
 		} ) {
 			name: "this"
 			"title": "Domain INFO Output"
 			add( new FormComponent( "javax.swing.JLabel" ) {
-				name: "jLabel1"
+				name: "lblDomainName"
 				"text": "Domain Name:"
 			} )
 			add( new FormComponent( "javax.swing.JTextField" ) {
@@ -19,13 +19,13 @@ new FormModel {
 				"text": "jTextField1"
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
-				name: "jLabel2"
+				name: "lblTitle"
 				"font": new java.awt.Font( "Tahoma", 1, 11 )
 				"horizontalAlignment": 0
 				"text": "DOMAIN INFO OUTPUT"
 			} )
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-				name: "jScrollPane1"
+				name: "rawInfoScroll"
 				add( new FormComponent( "javax.swing.JTextArea" ) {
 					name: "domainRawInfoTxt"
 					"columns": 20

@@ -14,16 +14,17 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.domains;
 
-import com.codetotime.eppclient.db.domainsDao;
+import com.codetotime.eppclient.Main;
+import com.codetotime.eppclient.db.DomainsDao;
 import com.codetotime.eppclient.domains.transfer.TransferManagement;
 import com.codetotime.eppclient.importer.ImportDomain;
-import com.codetotime.eppclient.main;
-import com.codetotime.eppclient.uplink.EPPuplink;
+import com.codetotime.eppclient.uplink.EppUplink;
 import it.nic.epp.client.commands.converters.AbstractHostsConverter.Host;
 import it.nic.epp.client.commands.query.DomainCheck;
 import it.nic.epp.client.commands.query.DomainInfo;
@@ -57,12 +58,16 @@ import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Main frame for managing EPP domains: lists cached domains from the local database and dispatches
+ * create, update, delete, info, check, sync, restore and transfer commands to the registry.
+ */
 public class DomainsManagement extends JFrame implements ActionListener, ListSelectionListener {
 
-  private main mainFrame;
+  private Main mainFrame;
 
   /** Creates new form ContactsManagement. */
-  public DomainsManagement(main mainFrame) {
+  public DomainsManagement(Main mainFrame) {
     initComponents();
 
     windowAdapter = new WindowCloser();
@@ -72,7 +77,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
     addressListPanel.addListSelectionListener(this);
 
     this.mainFrame = mainFrame;
-    this.EPPuplink = mainFrame.EPPuplink;
+    this.eppUplink = mainFrame.eppUplink;
     this.db = mainFrame.domainsDao;
 
     refreshDomainList();
@@ -174,13 +179,18 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
     setLocationRelativeTo(getOwner());
   } // </editor-fold>//GEN-END:initComponents
 
-  public void setEPPEnablement(boolean EPPstatus) {
-    addressActionPanel.setVisible(EPPstatus);
+  /**
+   * Shows or hides the action toolbar based on whether the EPP connection is active.
+   *
+   * @param eppStatus {@code true} if the EPP connection is active
+   */
+  public void setEppEnablement(boolean eppStatus) {
+    addressActionPanel.setVisible(eppStatus);
   }
 
   private void refreshDomainList() {
     addressListPanel.deleteAllEntries();
-    //        db = new domainsDao();
+    //        db = new DomainsDao();
     //        db.connect();
     List<ListEntry> entries = db.getListEntries();
     //        db.disconnect();
@@ -193,7 +203,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
     ListEntry entry = addressListPanel.getSelectedListEntry();
     if (entry != null) {
       String contactId = entry.getDomainName();
-      //            db = new domainsDao();
+      //            db = new DomainsDao();
       //            db.connect();
       Domain address = db.getDomain(contactId);
       //            db.disconnect();
@@ -210,7 +220,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
   private void transferAddress() {
     //        addressPanel.clear();
 
-    TransferManagement domainTransferFrame = new TransferManagement(EPPuplink);
+    TransferManagement domainTransferFrame = new TransferManagement(eppUplink);
 
     domainTransferFrame.setVisible(true);
   }
@@ -234,7 +244,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
         try {
           DomainDelete domainDelete = new DomainDelete(domainName);
           log.debug("CLIENT: {}", domainDelete);
-          HttpBaseResponse response = EPPuplink.sendCommand(domainDelete);
+          HttpBaseResponse response = eppUplink.sendCommand(domainDelete);
           log.debug("SERVER: {}", response);
 
           if (response.isSuccessfully()) {
@@ -242,14 +252,15 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
             Vector newStatus = domain.getNewStatusV();
             newStatus.add(99);
             domain.setNewStatus(newStatus);
-            //                db = new domainsDao();
+            //                db = new DomainsDao();
             //                db.connect();
             db.editRecord(domain);
             //                db.disconnect();
           } else {
             if (JOptionPane.showConfirmDialog(
                     this,
-                    "An error occurred while deleting the domain on Registry.\n\nDo you want to see the Registry XML response?",
+                    "An error occurred while deleting the domain on Registry.\n\n"
+                        + "Do you want to see the Registry XML response?",
                     "Registry update failure",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.WARNING_MESSAGE)
@@ -266,8 +277,11 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                          logger.logmessage("SERVER: "+ response.toString());
           */
         } catch (NullPointerException v) {
+          log.error("NullPointerException in deleteDomain", v);
         } catch (XmlException v) {
+          log.error("XmlException in deleteDomain", v);
         } catch (IOException v) {
+          log.error("IOException in deleteDomain", v);
         }
 
       } else {
@@ -307,12 +321,14 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
           String[] newNameServer = domain.getNameServer();
           for (int j = 0; j < newNameServer.length; j++) {
             if (newNameServer[j].contains("@")) {
-              String[] dNameServer = newNameServer[j].split("@");
+              String[] nameServerParts = newNameServer[j].split("@");
               try {
-                domainCreate.addHostAttrName(dNameServer[0]);
-                for (int i = 1; i < dNameServer.length; i++) {
+                domainCreate.addHostAttrName(nameServerParts[0]);
+                for (int i = 1; i < nameServerParts.length; i++) {
                   domainCreate.addHostAttrAddr(
-                      j, dNameServer[i], ipAddressValidator.validateIpAddress(dNameServer[i]));
+                      j,
+                      nameServerParts[i],
+                      IpAddressValidator.validateIpAddress(nameServerParts[i]));
                 }
               } catch (Exception e) {
                 log.warn("Invalid IP Address: {}", e.getMessage());
@@ -326,7 +342,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
           if (!domain.getValidationCode().isEmpty()) {
             domainCreate.setExtValidationCode(domain.getValidationCode());
           }
-          if (domain.isDNSSec()) {
+          if (domain.isDnsSec()) {
             domainCreate.addDsData(
                 Integer.parseInt(domain.getKeyTag()),
                 (short) domain.getAlg(),
@@ -334,7 +350,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                 parseHex(domain.getDigest()));
           }
           log.debug("CLIENT: {}", domainCreate);
-          HttpBaseResponse response = EPPuplink.sendCommand(domainCreate);
+          HttpBaseResponse response = eppUplink.sendCommand(domainCreate);
           log.debug("SERVER: {}", response);
 
           if (response.isSuccessfully()) {
@@ -352,7 +368,8 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
           } else {
             if (JOptionPane.showConfirmDialog(
                     this,
-                    "An error occurred while applying changes to the Registry.\n\nDo you want to see the Registry XML response?",
+                    "An error occurred while applying changes to the Registry.\n\n"
+                        + "Do you want to see the Registry XML response?",
                     "Registry update failure",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.WARNING_MESSAGE)
@@ -374,7 +391,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
         try {
           DomainInfo domainInfo = new DomainInfo();
           domainInfo.setName(domain.getDomainName());
-          HttpBaseResponse response = EPPuplink.sendCommand(domainInfo);
+          HttpBaseResponse response = eppUplink.sendCommand(domainInfo);
           if (response.isSuccessfully()) {
             log.debug("DomainInfo PRIMA: {}", response);
             DomainInfoResponseResData domainInfoResData =
@@ -382,7 +399,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
 
             DomainUpdate domainUpdate = new DomainUpdate(domain.getDomainName());
             // domainUpdate.setAllToSecDNSRem();
-            if (domain.isDNSSec()) {
+            if (domain.isDnsSec()) {
               domainUpdate.addDsDataToSecDNSAdd(
                   Integer.parseInt(domain.getKeyTag()),
                   (short) domain.getAlg(),
@@ -436,7 +453,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
               domainUpdate.setRegistrant(domain.getRegistrant());
 
               log.debug("CLIENT: {}", domainUpdate);
-              response = EPPuplink.sendCommand(domainUpdate);
+              response = eppUplink.sendCommand(domainUpdate);
               log.debug("SERVER: {}", response);
 
               domainUpdate = new DomainUpdate(domain.getDomainName());
@@ -454,10 +471,13 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                 }
                 boolean removeOldStatus = true;
                 for (int i = 0; i < domain.getNewStatusV().size(); i++) {
-                  if (domain.getNewStatusV().get(i) instanceof Integer)
-                    if (status == (Integer) domain.getNewStatusV().get(i)) removeOldStatus = false;
+                  if (domain.getNewStatusV().get(i) instanceof Integer) {
+                    if (status == (Integer) domain.getNewStatusV().get(i)) {
+                      removeOldStatus = false;
+                    }
+                  }
                 }
-                if (removeOldStatus)
+                if (removeOldStatus) {
                   switch (status) {
                     case 0:
                       domainUpdate.addStatusToRem(DomainUpdateStatusType.CLIENT_DELETE_PROHIBITED);
@@ -469,7 +489,10 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                     case 2:
                       domainUpdate.addStatusToRem(DomainUpdateStatusType.CLIENT_UPDATE_PROHIBITED);
                       break;
+                    default:
+                      break;
                   }
+                }
               }
 
               for (int i = 0; i < domain.getNewStatusV().size(); i++) {
@@ -483,10 +506,12 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                   } else if (oldStatus.equals("clientUpdateProhibited")) {
                     status = 2;
                   }
-                  if (status == (Integer) domain.getNewStatusV().get(i)) addNewStatus = false;
+                  if (status == (Integer) domain.getNewStatusV().get(i)) {
+                    addNewStatus = false;
+                  }
                 }
 
-                if (addNewStatus)
+                if (addNewStatus) {
                   switch ((Integer) domain.getNewStatusV().get(i)) {
                     case 0:
                       domainUpdate.addStatusToAdd(DomainUpdateStatusType.CLIENT_DELETE_PROHIBITED);
@@ -498,7 +523,10 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                     case 2:
                       domainUpdate.addStatusToAdd(DomainUpdateStatusType.CLIENT_UPDATE_PROHIBITED);
                       break;
+                    default:
+                      break;
                   }
+                }
               }
 
               String[] newTech = domain.getTech();
@@ -549,34 +577,42 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                   for (Host oldHost : domainInfoResData.getNs()) {
                     if (newNameServer[j].contains("@")) {
 
-                      String[] dNameServer = newNameServer[j].split("@");
+                      String[] nameServerParts = newNameServer[j].split("@");
 
-                      if (dNameServer[0].equals(oldHost.name)) {
+                      if (nameServerParts[0].equals(oldHost.name)) {
 
-                        /*if (dNameServer[0].equals(oldHost.name)) {
+                        /*if (nameServerParts[0].equals(oldHost.name)) {
                             if (oldHost.getIpSize()>0)
-                                if (dNameServer[1].equals(oldHost.getIp(0).address))
+                                if (nameServerParts[1].equals(oldHost.getIp(0).address))
                                     isNameServerToAdd = false;
                         }*/
 
                         Boolean hostMatch = true;
-                        for (int i = 1; i < dNameServer.length; i++) {
+                        for (int i = 1; i < nameServerParts.length; i++) {
                           Boolean ipFound = false;
 
                           for (int k = 0; k < oldHost.getIpSize(); k++) {
-                            if (dNameServer[i].equals(oldHost.getIp(k).address)) ipFound = true;
+                            if (nameServerParts[i].equals(oldHost.getIp(k).address)) {
+                              ipFound = true;
+                            }
                           }
 
-                          if (!ipFound) hostMatch = false;
+                          if (!ipFound) {
+                            hostMatch = false;
+                          }
                         }
 
                         for (int i = 0; i < oldHost.getIpSize(); i++) {
                           Boolean ipFound = false;
-                          for (int k = 1; k < dNameServer.length; k++) {
-                            if (oldHost.getIp(i).address.equals(dNameServer[k])) ipFound = true;
+                          for (int k = 1; k < nameServerParts.length; k++) {
+                            if (oldHost.getIp(i).address.equals(nameServerParts[k])) {
+                              ipFound = true;
+                            }
                           }
 
-                          if (!ipFound) hostMatch = false;
+                          if (!ipFound) {
+                            hostMatch = false;
+                          }
                         }
                         if (hostMatch) {
                           isNameServerToAdd = false;
@@ -584,7 +620,9 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                       }
 
                     } else {
-                      if (newNameServer[j].equals(oldHost.name)) isNameServerToAdd = false;
+                      if (newNameServer[j].equals(oldHost.name)) {
+                        isNameServerToAdd = false;
+                      }
                     }
                   }
                 }
@@ -593,15 +631,15 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                   countNameServerToAdd += 1;
 
                   if (newNameServer[j].contains("@")) {
-                    String[] dNameServer = newNameServer[j].split("@");
+                    String[] nameServerParts = newNameServer[j].split("@");
                     try {
 
-                      domainUpdate.addHostAttrNameToAdd(dNameServer[0]);
-                      for (int i = 1; i < dNameServer.length; i++) {
+                      domainUpdate.addHostAttrNameToAdd(nameServerParts[0]);
+                      for (int i = 1; i < nameServerParts.length; i++) {
                         domainUpdate.addHostAttrAddrToAdd(
                             countNameServerToAdd - 1,
-                            dNameServer[i],
-                            ipAddressValidator.validateIpAddress(dNameServer[i]));
+                            nameServerParts[i],
+                            IpAddressValidator.validateIpAddress(nameServerParts[i]));
                       }
 
                     } catch (Exception e) {
@@ -620,33 +658,43 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                   if (newNameServer != null) {
                     for (int k = 0; k < newNameServer.length; k++) {
                       if (newNameServer[k].contains("@")) {
-                        String[] dNameServer = newNameServer[k].split("@");
-                        if (dNameServer[0].equals(oldHost.name)) {
+                        String[] nameServerParts = newNameServer[k].split("@");
+                        if (nameServerParts[0].equals(oldHost.name)) {
                           Boolean hostMatch = true;
-                          for (int i = 1; i < dNameServer.length; i++) {
+                          for (int i = 1; i < nameServerParts.length; i++) {
                             Boolean ipFound = false;
 
-                            for (int j = 0; j < oldHost.getIpSize(); j++) {
-                              if (dNameServer[i].equals(oldHost.getIp(j).address)) ipFound = true;
+                            for (int m = 0; m < oldHost.getIpSize(); m++) {
+                              if (nameServerParts[i].equals(oldHost.getIp(m).address)) {
+                                ipFound = true;
+                              }
                             }
 
-                            if (!ipFound) hostMatch = false;
+                            if (!ipFound) {
+                              hostMatch = false;
+                            }
                           }
 
                           for (int i = 0; i < oldHost.getIpSize(); i++) {
                             Boolean ipFound = false;
-                            for (int j = 1; j < dNameServer.length; j++) {
-                              if (oldHost.getIp(i).address.equals(dNameServer[j])) ipFound = true;
+                            for (int m = 1; m < nameServerParts.length; m++) {
+                              if (oldHost.getIp(i).address.equals(nameServerParts[m])) {
+                                ipFound = true;
+                              }
                             }
 
-                            if (!ipFound) hostMatch = false;
+                            if (!ipFound) {
+                              hostMatch = false;
+                            }
                           }
                           if (hostMatch) {
                             isNameServerToRem = false;
                           }
                         }
                       } else {
-                        if (newNameServer[k].equals(oldHost.getName())) isNameServerToRem = false;
+                        if (newNameServer[k].equals(oldHost.getName())) {
+                          isNameServerToRem = false;
+                        }
                       }
                     }
                   }
@@ -658,13 +706,13 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
               }
 
               log.debug("CLIENT: {}", domainUpdate);
-              response = EPPuplink.sendCommand(domainUpdate);
+              response = eppUplink.sendCommand(domainUpdate);
               log.debug("SERVER: {}", response);
 
               if (response.isSuccessfully()
                   || (response.getResultCode() == 2003 && response.getReasonCode() == 9019)) {
 
-                response = EPPuplink.sendCommand(domainInfo);
+                response = eppUplink.sendCommand(domainInfo);
                 log.debug("DomainInfo DOPO: {}", response);
 
                 domainInfoResData = (DomainInfoResponseResData) response.getResponseResData();
@@ -674,7 +722,8 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
               } else {
                 if (JOptionPane.showConfirmDialog(
                         this,
-                        "An error occurred while applying changes to the Registry.\n\nDo you want to see the Registry XML response?",
+                        "An error occurred while applying changes to the Registry.\n\n"
+                            + "Do you want to see the Registry XML response?",
                         "Registry update failure",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.WARNING_MESSAGE)
@@ -687,14 +736,15 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
             } else {
               if (JOptionPane.showConfirmDialog(
                       this,
-                      "An error occurred while applying changes to the Registry.\n\nDo you want to see the Registry XML response?",
+                      "An error occurred while applying changes to the Registry.\n\n"
+                          + "Do you want to see the Registry XML response?",
                       "Registry update failure",
                       JOptionPane.YES_NO_OPTION,
                       JOptionPane.WARNING_MESSAGE)
                   == 0) {
                 JOptionPane.showMessageDialog(this, response.toString());
               }
-              //                            db = new domainsDao();
+              //                            db = new DomainsDao();
               //                            db.connect();
               Domain address = db.getDomain(domain.getDomainName());
               //                            db.disconnect();
@@ -704,14 +754,15 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
           } else {
             if (JOptionPane.showConfirmDialog(
                     this,
-                    "An error occurred while making an InfoDomain to build change-list.\n\nDo you want to see the Registry XML response?",
+                    "An error occurred while making an InfoDomain to build change-list.\n\n"
+                        + "Do you want to see the Registry XML response?",
                     "Registry Domain Info failure",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.WARNING_MESSAGE)
                 == 0) {
               JOptionPane.showMessageDialog(this, response.toString());
             }
-            //                        db = new domainsDao();
+            //                        db = new DomainsDao();
             //                        db.connect();
             Domain address = db.getDomain(domain.getDomainName());
             //                        db.disconnect();
@@ -741,6 +792,12 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
     }
   }
 
+  /**
+   * Converts a hex string to a byte array.
+   *
+   * @param hex the hex-encoded string (must have even length)
+   * @return the decoded byte array
+   */
   public static byte[] parseHex(String hex) {
     if ((hex.length() & 1) != 0) {
       throw new IllegalArgumentException("Hex string must have even length");
@@ -770,7 +827,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
       try {
         DomainInfo domainInfo = new DomainInfo(domainName);
         log.debug("CLIENT: {}", domainInfo);
-        HttpBaseResponse response = EPPuplink.sendCommand(domainInfo);
+        HttpBaseResponse response = eppUplink.sendCommand(domainInfo);
         log.debug("SERVER: {}", response);
 
         if (response.isSuccessfully()) {
@@ -779,7 +836,8 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
         } else {
           if (JOptionPane.showConfirmDialog(
                   this,
-                  "An error occurred while asking for Info Domain on Registry.\n\nDo you want to see the Registry XML response?",
+                  "An error occurred while asking for Info Domain on Registry.\n\n"
+                      + "Do you want to see the Registry XML response?",
                   "Registry update failure",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.WARNING_MESSAGE)
@@ -796,12 +854,16 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                        logger.logmessage("SERVER: "+ response.toString());
         */
       } catch (NullPointerException v) {
+        log.error("NullPointerException in infoDomain", v);
       } catch (XmlException v) {
+        log.error("XmlException in infoDomain", v);
       } catch (IOException v) {
+        log.error("IOException in infoDomain", v);
       }
     }
   }
 
+  /** {@inheritDoc} */
   public void actionPerformed(ActionEvent e) {
     String actionCommand = e.getActionCommand();
     if (actionCommand.equalsIgnoreCase("CANCEL_ADDRESS")) {
@@ -827,6 +889,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
     }
   }
 
+  /** {@inheritDoc} */
   public void valueChanged(ListSelectionEvent e) {
     cancelAddress();
     if (e.getValueIsAdjusting()) {
@@ -837,7 +900,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
     ListEntry entry = (ListEntry) entryList.getSelectedValue();
     if (entry != null) {
       String domainName = entry.getDomainName();
-      //            db = new domainsDao();
+      //            db = new DomainsDao();
       //            db.connect();
       Domain address = db.getDomain(domainName);
       //            db.disconnect();
@@ -847,6 +910,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
     }
   }
 
+  /** Fetches the current domain info from the registry and updates the local database record. */
   public void syncDomainInfo() {
     String domainName =
         (String)
@@ -863,7 +927,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
       ImportDomain syncDomain = new ImportDomain(mainFrame, true);
       if (syncDomain.execute(domainName)) {
         addressListPanel.deleteAllEntries();
-        //                db = new domainsDao();
+        //                db = new DomainsDao();
         //                db.connect();
         List<ListEntry> entries = db.getListEntries();
         //                db.disconnect();
@@ -879,6 +943,11 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                     "Dominio inesistente",
                     JOptionPane.WARNING_MESSAGE);
                 break;
+              default:
+                log.debug(
+                    "Unhandled sync reason code {} for result code 2303",
+                    syncDomain.getReasonCode());
+                break;
             }
             break;
           case 2202:
@@ -890,7 +959,15 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                     "Dominio di altro Registrar",
                     JOptionPane.WARNING_MESSAGE);
                 break;
+              default:
+                log.debug(
+                    "Unhandled sync reason code {} for result code 2202",
+                    syncDomain.getReasonCode());
+                break;
             }
+            break;
+          default:
+            log.debug("Unhandled sync result code {}", syncDomain.getResultCode());
             break;
         }
       }
@@ -916,7 +993,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
         domainCheck.addName(domainName);
       }
 
-      HttpBaseResponse response = EPPuplink.sendCommand(domainCheck);
+      HttpBaseResponse response = eppUplink.sendCommand(domainCheck);
       log.debug("SERVER: {}", response);
 
       if (response.isSuccessfully()) {
@@ -929,8 +1006,9 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
             msgAvailabilityResult += "Available";
           } else {
             msgAvailabilityResult += "NOT Available";
-            if (resData.getChkReasonText(i) != null)
+            if (resData.getChkReasonText(i) != null) {
               msgAvailabilityResult += " (" + resData.getChkReasonText(i) + ")";
+            }
           }
           msgAvailabilityResult += "\n";
         }
@@ -939,7 +1017,8 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
       } else {
         if (JOptionPane.showConfirmDialog(
                 this,
-                "An error occurred while checking contact availability on the Registry.\n\nDo you want to see the Registry XML response?",
+                "An error occurred while checking contact availability on the Registry.\n\n"
+                    + "Do you want to see the Registry XML response?",
                 "Registry contact check failure",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE)
@@ -949,11 +1028,15 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
       }
 
     } catch (NullPointerException v) {
+      log.error("NullPointerException in checkDomain", v);
     } catch (XmlException v) {
+      log.error("XmlException in checkDomain", v);
     } catch (IOException v) {
+      log.error("IOException in checkDomain", v);
     }
   }
 
+  /** Sends a restore request to the registry for a domain in pendingDelete status. */
   public void restoreDomain() {
     String domainName =
         (String)
@@ -974,13 +1057,13 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
       try {
 
         log.debug("CLIENT: {}", domainUpdate);
-        HttpBaseResponse response = EPPuplink.sendCommand(domainUpdate);
+        HttpBaseResponse response = eppUplink.sendCommand(domainUpdate);
         log.debug("SERVER: {}", response);
         if (response.isSuccessfully()) {
           ImportDomain syncDomain = new ImportDomain(mainFrame, true);
           if (syncDomain.execute(domainName)) {
             addressListPanel.deleteAllEntries();
-            //                        db = new domainsDao();
+            //                        db = new DomainsDao();
             //                        db.connect();
             List<ListEntry> entries = db.getListEntries();
             //                        db.disconnect();
@@ -1004,8 +1087,11 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
         }
 
       } catch (NullPointerException v) {
+        log.error("NullPointerException in restoreDomain", v);
       } catch (XmlException v) {
+        log.error("NullPointerException in restoreDomain", v);
       } catch (IOException v) {
+        log.error("IOException in restoreDomain", v);
       }
     }
   }
@@ -1059,6 +1145,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
     }
   }
 
+  /** {@inheritDoc} */
   public void setVisible(boolean b) {
     super.setVisible(b);
     if (b) {
@@ -1068,7 +1155,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
   }
 
   private int selectedEntry = -1;
-  private domainsDao db;
+  private DomainsDao db;
   private WindowAdapter windowAdapter;
 
   class WindowCloser extends WindowAdapter {
@@ -1083,5 +1170,5 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
   // End of variables declaration//GEN-END:variables
 
   private Logger log;
-  private EPPuplink EPPuplink;
+  private EppUplink eppUplink;
 }

@@ -13,7 +13,8 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient;
@@ -22,17 +23,26 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.*;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Queries the GitHub Releases API to detect versions newer than the one currently running and
+ * prompts the user with a dialog listing what changed in each missed release.
+ */
 public class UpdateChecker {
 
   private static final Logger log = LoggerFactory.getLogger(UpdateChecker.class);
@@ -40,6 +50,14 @@ public class UpdateChecker {
   private static final String GITHUB_API_URL =
       "https://api.github.com/repos/CodeToTime/EPPClient/releases";
 
+  /**
+   * Spawns a background thread to check for newer releases; shows an update dialog if any are
+   * found. SNAPSHOT builds are skipped entirely. Network errors are logged and silently swallowed
+   * to avoid disrupting startup.
+   *
+   * @param parent the parent component used to anchor the update dialog
+   * @param currentVersion the running application version (e.g. {@code "1.2.3"})
+   */
   public static void checkForUpdates(Component parent, String currentVersion) {
     // Non controllare se è una versione SNAPSHOT
     if (currentVersion.contains("SNAPSHOT")) {
@@ -63,8 +81,6 @@ public class UpdateChecker {
   }
 
   private static List<ReleaseInfo> fetchNewerReleases(String currentVersion) throws Exception {
-    List<ReleaseInfo> newerReleases = new ArrayList<>();
-
     URL url = new URL(GITHUB_API_URL);
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     conn.setRequestMethod("GET");
@@ -72,6 +88,7 @@ public class UpdateChecker {
     conn.setConnectTimeout(5000);
     conn.setReadTimeout(5000);
 
+    List<ReleaseInfo> newerReleases = new ArrayList<>();
     if (conn.getResponseCode() != 200) {
       return newerReleases;
     }
@@ -150,13 +167,12 @@ public class UpdateChecker {
 
   private static void showUpdateDialog(
       Component parent, String currentVersion, List<ReleaseInfo> newerReleases) {
-    ReleaseInfo latestRelease = newerReleases.get(0);
-
     StringBuilder message = new StringBuilder();
     message.append("============================================================\n");
     message.append("       NUOVA VERSIONE DISPONIBILE DI EPPCLIENT!\n");
     message.append("============================================================\n\n");
 
+    ReleaseInfo latestRelease = newerReleases.get(0);
     message.append("  Versione attuale:  ").append(currentVersion).append("\n");
     message.append("  Ultima versione:   ").append(latestRelease.tagName).append("\n\n");
 

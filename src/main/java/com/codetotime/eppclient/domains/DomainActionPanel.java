@@ -14,17 +14,25 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.domains;
 
-import java.awt.*;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JPanel;
 import javax.swing.event.EventListenerList;
 
+/**
+ * Toolbar panel with buttons for domain operations (New, Transfer, Check, Edit, Delete, Cancel,
+ * Save, Sync, Restore, Info). Each button fires an {@link ActionEvent} to registered listeners.
+ */
 public class DomainActionPanel extends JPanel {
 
   /** Creates new form AddressActionPanel. */
@@ -192,10 +200,20 @@ public class DomainActionPanel extends JPanel {
     }
   }
 
+  /**
+   * Registers a listener to receive action events from all buttons in this panel.
+   *
+   * @param listener the listener to add
+   */
   public void addActionListener(ActionListener listener) {
     listeners.add(ActionListener.class, listener);
   }
 
+  /**
+   * Removes a previously registered action listener.
+   *
+   * @param listener the listener to remove
+   */
   public void removeActionListener(ActionListener listener) {
     if (listeners != null) {
       listeners.remove(ActionListener.class, listener);

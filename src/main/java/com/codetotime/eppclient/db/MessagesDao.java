@@ -14,12 +14,13 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.db;
 
-import com.codetotime.eppclient.config.EPPparams;
+import com.codetotime.eppclient.config.EppParams;
 import com.codetotime.eppclient.messages.Message;
 import java.io.File;
 import java.io.IOException;
@@ -37,13 +38,20 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class messagesDao {
-  private static final Logger log = LoggerFactory.getLogger(messagesDao.class);
+/** DAO for persisting and retrieving EPP poll messages from the local database. */
+public class MessagesDao {
+  private static final Logger log = LoggerFactory.getLogger(MessagesDao.class);
 
   private static final String BUNDLE_NAME = "com.codetotime.eppclient.db.messages";
 
   private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
+  /**
+   * Returns the string value for the given resource bundle key.
+   *
+   * @param key the property key
+   * @return the value, or {@code !key!} if not found
+   */
   public static String getString(String key) {
     try {
       return RESOURCE_BUNDLE.getString(key);
@@ -53,15 +61,20 @@ public class messagesDao {
   }
 
   /** Creates a new instance of AddressDao. */
-  public messagesDao() {
+  public MessagesDao() {
     this("messages");
   }
 
-  public messagesDao(String addressBookName) {
+  /**
+   * Creates a DAO bound to the given database name.
+   *
+   * @param addressBookName the Derby database name to use
+   */
+  public MessagesDao(String addressBookName) {
     this.dbName = addressBookName;
 
-    setDBSystemDir();
-    dbProperties = loadDBProperties();
+    setDbSystemDir();
+    dbProperties = loadDbProperties();
 
     if (dbProperties.getProperty("derby.url").contains("postgresql")) {
       dbProperties.put("db.schema", "public");
@@ -88,7 +101,7 @@ public class messagesDao {
             + "    ACTIONEDFLAG          SMALLINT"
             + ")";
 
-    strCreateAddressTableMYSQL =
+    strCreateAddressTableMysql =
         "create table IF NOT EXISTS "
             + dbProperties.getProperty("db.schema")
             + "."
@@ -171,7 +184,9 @@ public class messagesDao {
               .getMetaData()
               .getTables(dbProperties.getProperty("db.schema"), null, "%", null);
       while (rs.next()) {
-        if (rs.getString(3).toLowerCase().equals(tableName.toLowerCase())) tableExists = true;
+        if (rs.getString(3).toLowerCase().equals(tableName.toLowerCase())) {
+          tableExists = true;
+        }
       }
     } catch (SQLException ex) {
       log.error("Error checking table existence", ex);
@@ -183,16 +198,16 @@ public class messagesDao {
   }
 
   private boolean dbExists() {
-    boolean bExists = false;
+    boolean exists = false;
     String dbLocation = getDatabaseLocation();
     File dbFileDir = new File(dbLocation);
     if (dbFileDir.exists()) {
-      bExists = true;
+      exists = true;
     }
-    return bExists;
+    return exists;
   }
 
-  private void setDBSystemDir() {
+  private void setDbSystemDir() {
     // decide on the db system directory
     String userHomeDir = System.getProperty("user.home", ".");
     String systemDir = userHomeDir + "/.eppclient";
@@ -220,17 +235,17 @@ public class messagesDao {
     }
   }
 
-  private Properties loadDBProperties() {
+  private Properties loadDbProperties() {
     InputStream dbPropInputStream = null;
-    dbPropInputStream = messagesDao.class.getResourceAsStream("messages.properties");
+    dbPropInputStream = MessagesDao.class.getResourceAsStream("messages.properties");
     dbProperties = new Properties();
     try {
       dbProperties.load(dbPropInputStream);
       dbProperties.put("derby.locks.monitor", "true");
       dbProperties.put("derby.locks.deadlockTrace", "true");
       dbProperties.put("derby.language.logStatementText", "true");
-      String dbUrl = EPPparams.getParameter("EppClient.dburl");
-      log.debug("Loaded dbUrl from EPPparams: [{}]", dbUrl);
+      String dbUrl = EppParams.getParameter("EppClient.dburl");
+      log.debug("Loaded dbUrl from EppParams: [{}]", dbUrl);
       if (dbUrl.contains("mariadb")) {
         dbProperties.put("derby.driver", "org.mariadb.jdbc.Driver");
       } else if (dbUrl.contains("postgresql")) {
@@ -239,9 +254,9 @@ public class messagesDao {
         dbProperties.put("derby.driver", "org.apache.derby.jdbc.EmbeddedDriver");
       }
       dbProperties.put("derby.url", dbUrl);
-      String dbSchema = EPPparams.getParameter("EppClient.dbname");
-      String dbUser = EPPparams.getParameter("EppClient.dbuid");
-      String dbPwd = EPPparams.getParameter("EppClient.dbpwd");
+      String dbSchema = EppParams.getParameter("EppClient.dbname");
+      String dbUser = EppParams.getParameter("EppClient.dbuid");
+      String dbPwd = EppParams.getParameter("EppClient.dbpwd");
       log.debug("Loaded dbSchema: [{}]", dbSchema);
       log.debug("Loaded dbUser: [{}]", dbUser);
       log.debug("Loaded dbPwd: [{}]", dbPwd);
@@ -257,17 +272,17 @@ public class messagesDao {
 
   private boolean createTables(Connection dbConnection) {
     log.info("Creazione tabelle in corso...");
-    boolean bCreatedTables = false;
+    boolean createdTables = false;
     Statement statement = null;
     try {
       statement = dbConnection.createStatement();
       if (dbProperties.getProperty("derby.url").contains("mariadb")
           || dbProperties.getProperty("derby.url").contains("postgresql")) {
-        statement.execute(strCreateAddressTableMYSQL);
+        statement.execute(strCreateAddressTableMysql);
       } else {
         statement.execute(strCreateAddressTable);
       }
-      bCreatedTables = true;
+      createdTables = true;
       try {
         Thread.sleep(1000);
       } catch (InterruptedException e) {
@@ -276,37 +291,47 @@ public class messagesDao {
     } catch (SQLException ex) {
       log.error("Error creating tables", ex);
     }
-    return bCreatedTables;
+    return createdTables;
   }
 
+  /**
+   * Drops all message tables from the database.
+   *
+   * @return {@code true} if the tables were dropped successfully
+   */
   public boolean dropTables() {
-    boolean bDroppedTables = false;
+    boolean droppedTables = false;
     try {
       stmtDropMessageTable.clearParameters();
       stmtDropMessageTable.execute();
-      bDroppedTables = true;
+      droppedTables = true;
     } catch (SQLException ex) {
       log.error("Error dropping tables", ex);
     }
-    return bDroppedTables;
+    return droppedTables;
   }
 
   private boolean createDatabase() {
-    boolean bCreated = false;
+    boolean created = false;
     Connection dbConnection = null;
 
     String dbUrl = getDatabaseUrl();
     dbProperties.put("create", "true");
     try {
       dbConnection = DriverManager.getConnection(dbUrl, dbProperties);
-      bCreated = createTables(dbConnection);
+      created = createTables(dbConnection);
     } catch (SQLException ex) {
       log.error("Error creating database", ex);
     }
     dbProperties.remove("create");
-    return bCreated;
+    return created;
   }
 
+  /**
+   * Opens a connection to the database, creating it if it does not exist.
+   *
+   * @return {@code true} if the connection was established successfully
+   */
   public boolean connect() {
     String dbUrl = getDatabaseUrl();
 
@@ -335,6 +360,7 @@ public class messagesDao {
     return System.getProperty("user.home");
   }
 
+  /** Closes the database connection. */
   public void disconnect() {
     if (isConnected) {
       String dbUrl = getDatabaseUrl();
@@ -342,22 +368,41 @@ public class messagesDao {
       try {
         DriverManager.getConnection(dbUrl, dbProperties);
       } catch (SQLException ex) {
+        log.debug("Database shutdown: {}", ex.getMessage());
       }
       isConnected = false;
     }
   }
 
+  /**
+   * Returns the filesystem path of the Derby database directory.
+   *
+   * @return the absolute database path
+   */
   public String getDatabaseLocation() {
     String dbLocation = System.getProperty("derby.system.home") + "/" + dbName;
     return dbLocation;
   }
 
+  /**
+   * Returns the JDBC URL for the Derby database.
+   *
+   * @return the JDBC connection URL
+   */
   public String getDatabaseUrl() {
     String dbUrl = dbProperties.getProperty("derby.url");
-    if (!dbUrl.contains("mariadb") && !dbUrl.contains("postgresql")) dbUrl += dbName;
+    if (!dbUrl.contains("mariadb") && !dbUrl.contains("postgresql")) {
+      dbUrl += dbName;
+    }
     return dbUrl;
   }
 
+  /**
+   * Inserts a new message record into the database.
+   *
+   * @param record the message to save
+   * @return the generated message ID, or {@code null} on failure
+   */
   public String saveRecord(Message record) {
     try {
       stmtSaveNewRecord.clearParameters();
@@ -387,8 +432,14 @@ public class messagesDao {
     return record.getMsgId();
   }
 
+  /**
+   * Updates an existing message record in the database.
+   *
+   * @param record the message with updated fields
+   * @return {@code true} if the record was updated successfully
+   */
   public boolean editRecord(Message record) {
-    boolean bEdited = false;
+    boolean edited = false;
     try {
       stmtUpdateExistingRecord.clearParameters();
 
@@ -404,27 +455,39 @@ public class messagesDao {
       stmtUpdateExistingRecord.setString(4, record.getMsgId());
 
       stmtUpdateExistingRecord.executeUpdate();
-      bEdited = true;
+      edited = true;
     } catch (SQLException sqle) {
       log.error("Error editing message record", sqle);
     }
-    return bEdited;
+    return edited;
   }
 
+  /**
+   * Deletes the message with the given ID from the database.
+   *
+   * @param msgId the message ID to delete
+   * @return {@code true} if the record was deleted successfully
+   */
   public boolean deleteRecord(String msgId) {
-    boolean bDeleted = false;
+    boolean deleted = false;
     try {
       stmtDeleteAddress.clearParameters();
       stmtDeleteAddress.setString(1, msgId);
       stmtDeleteAddress.executeUpdate();
-      bDeleted = true;
+      deleted = true;
     } catch (SQLException sqle) {
       log.error("Error deleting message record", sqle);
     }
 
-    return bDeleted;
+    return deleted;
   }
 
+  /**
+   * Deletes the given message record from the database.
+   *
+   * @param record the message to delete
+   * @return {@code true} if the record was deleted successfully
+   */
   public boolean deleteRecord(Message record) {
     String contactId = record.getMsgId();
     return deleteRecord(contactId);
@@ -434,6 +497,12 @@ public class messagesDao {
     return getSelectiveEntries(strGetListEntries);
   }
 
+  /**
+   * Executes the given prepared statement and returns matching message entries.
+   *
+   * @param preparedStatement the SQL query to execute
+   * @return a vector of matching {@link com.codetotime.eppclient.messages.Message} objects
+   */
   public Vector getSelectiveEntries(String preparedStatement) {
     Vector listEntries = new Vector();
 
@@ -464,6 +533,13 @@ public class messagesDao {
     return listEntries;
   }
 
+  /**
+   * Retrieves the message with the given ID from the database.
+   *
+   * @param msgId the message ID to look up
+   * @return the matching {@link com.codetotime.eppclient.messages.Message}, or {@code null} if not
+   *     found
+   */
   public Message getMessage(String msgId) {
     Message message = null;
     try {
@@ -501,7 +577,7 @@ public class messagesDao {
 
   private final String strDropMessageTable;
   private final String strCreateAddressTable;
-  private final String strCreateAddressTableMYSQL;
+  private final String strCreateAddressTableMysql;
   private final String strGetAddress;
   private final String strSaveAddress;
   private final String strGetListEntries;

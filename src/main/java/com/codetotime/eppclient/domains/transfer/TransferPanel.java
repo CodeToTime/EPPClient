@@ -14,17 +14,30 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.domains.transfer;
 
 import com.codetotime.eppclient.contacts.ContactSelection;
 import com.codetotime.eppclient.domains.Domain;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.SoftBevelBorder;
 
+/**
+ * Panel for entering domain transfer or trade request details: domain name, auth-info, new
+ * auth-info, registrant (for trades), and operation type flags.
+ */
 public class TransferPanel extends JPanel {
 
   /** Creates new form AddressPanel. */
@@ -343,6 +356,11 @@ public class TransferPanel extends JPanel {
     return isCancel;
   }
 
+  /**
+   * Populates the panel fields from the given domain object.
+   *
+   * @param domain the domain whose name, registrant and auth-info should be pre-filled
+   */
   public void setAddress(Domain domain) {
     if (domain != null) {
       setDomainName(domain.getDomainName());
@@ -351,6 +369,11 @@ public class TransferPanel extends JPanel {
     }
   }
 
+  /**
+   * Reads all fields and returns a {@link DomainTransfer} populated with the current input.
+   *
+   * @return the transfer request built from the current field values
+   */
   public DomainTransfer getDomainTransfer() {
     getDomainName();
     getRegistrant();
@@ -361,6 +384,7 @@ public class TransferPanel extends JPanel {
     return domain;
   }
 
+  /** Clears all input fields and resets the internal transfer data object. */
   public void clear() {
     txtDomainName.setText(null);
     txtAuthInfo.setText(null);
@@ -371,26 +395,31 @@ public class TransferPanel extends JPanel {
     domain = new DomainTransfer();
   }
 
-  public void setEditable(boolean bEditable) {
-    txtDomainName.setEditable(bEditable);
-    txtAuthInfo.setEditable(bEditable);
+  /**
+   * Enables or disables all input fields.
+   *
+   * @param editable {@code true} to allow editing
+   */
+  public void setEditable(boolean editable) {
+    txtDomainName.setEditable(editable);
+    txtAuthInfo.setEditable(editable);
 
-    txtIsTrade.setEnabled(bEditable);
-    txtIsCancel.setEnabled(bEditable);
+    txtIsTrade.setEnabled(editable);
+    txtIsCancel.setEnabled(editable);
 
-    txtIsCancel.setVisible(bEditable && !txtIsTrade.isSelected());
-    txtIsTrade.setVisible(bEditable && !txtIsCancel.isSelected());
+    txtIsCancel.setVisible(editable && !txtIsTrade.isSelected());
+    txtIsTrade.setVisible(editable && !txtIsCancel.isSelected());
 
-    lblRegistrant.setVisible(bEditable && txtIsTrade.isSelected());
-    txtRegistrant.setVisible(bEditable && txtIsTrade.isSelected());
-    setRegistrant.setVisible(bEditable && txtIsTrade.isSelected());
-    setRegistrant.setEnabled(bEditable && txtIsTrade.isSelected());
+    lblRegistrant.setVisible(editable && txtIsTrade.isSelected());
+    txtRegistrant.setVisible(editable && txtIsTrade.isSelected());
+    setRegistrant.setVisible(editable && txtIsTrade.isSelected());
+    setRegistrant.setEnabled(editable && txtIsTrade.isSelected());
 
-    lblNewAuthInfo.setVisible(bEditable && txtIsTrade.isSelected());
-    txtNewAuthInfo.setVisible(bEditable && txtIsTrade.isSelected());
-    txtNewAuthInfo.setEnabled(bEditable && txtIsTrade.isSelected());
+    lblNewAuthInfo.setVisible(editable && txtIsTrade.isSelected());
+    txtNewAuthInfo.setVisible(editable && txtIsTrade.isSelected());
+    txtNewAuthInfo.setEnabled(editable && txtIsTrade.isSelected());
 
-    isEditable = bEditable;
+    isEditable = editable;
   }
 
   public boolean isEditable() {

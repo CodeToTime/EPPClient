@@ -14,60 +14,88 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient;
 
-import com.codetotime.eppclient.config.EPPparams;
-import com.codetotime.eppclient.config.manageParameters;
+import com.codetotime.eppclient.config.EppParams;
+import com.codetotime.eppclient.config.ManageParameters;
 import com.codetotime.eppclient.contacts.ContactsManagement;
+import com.codetotime.eppclient.db.ContactsDao;
 import com.codetotime.eppclient.db.DbExporter;
-import com.codetotime.eppclient.db.contactsDao;
-import com.codetotime.eppclient.db.domainsDao;
-import com.codetotime.eppclient.db.messagesDao;
+import com.codetotime.eppclient.db.DomainsDao;
+import com.codetotime.eppclient.db.MessagesDao;
 import com.codetotime.eppclient.domains.DomainsManagement;
 import com.codetotime.eppclient.importer.TxtImport;
 import com.codetotime.eppclient.messages.Message;
 import com.codetotime.eppclient.messages.MessageManagement;
-import com.codetotime.eppclient.uplink.EPPuplink;
-import java.awt.*;
-import java.awt.event.*;
+import com.codetotime.eppclient.uplink.EppUplink;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
+import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class main extends JFrame implements WindowListener {
-  public EPPuplink EPPuplink;
+/**
+ * Application Main frame: initialises the EPP connection, DAOs, and all management panels, and
+ * wires together the UI lifecycle with the EPP session lifecycle.
+ */
+public class Main extends JFrame implements WindowListener {
 
-  public messagesDao messagesDao;
-  public domainsDao domainsDao;
-  public contactsDao contactsDao;
+  private static final Logger log = LoggerFactory.getLogger(Main.class);
+  public EppUplink eppUplink;
+
+  public MessagesDao messagesDao;
+  public DomainsDao domainsDao;
+  public ContactsDao contactsDao;
 
   public String paramPrefix;
 
   /**
+   * Application entry point.
+   *
    * @param args the command line arguments
    */
+  @SuppressWarnings("unused")
   public static void main(String[] args) {
     if (args.length > 0) {
-      EPPparams.setPrefix(args[0]);
+      EppParams.setPrefix(args[0]);
     }
 
     EventQueue.invokeLater(
         new Runnable() {
           public void run() {
-            new main().setVisible(true);
+            new Main().setVisible(true);
           }
         });
   }
 
   /** Creates new form mainFrame. */
-  public main() {
+  public Main() {
     System.setProperty(
         "org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
     initComponents();
@@ -75,28 +103,32 @@ public class main extends JFrame implements WindowListener {
     setVersion(com.codetotime.eppclient.BuildInfo.BUILD_VERSION);
 
     try {
-      messagesDao = new messagesDao();
+      messagesDao = new MessagesDao();
       messagesDao.connect();
-      domainsDao = new domainsDao();
+      domainsDao = new DomainsDao();
       domainsDao.connect();
-      contactsDao = new contactsDao();
+      contactsDao = new ContactsDao();
       contactsDao.connect();
 
-      EPPuplink = new EPPuplink(this);
+      eppUplink = new EppUplink(this);
 
       domainsMenu = new DomainsManagement(this);
       contactsMenu = new ContactsManagement(this);
       messagesMenu = new MessageManagement(this);
       importMenu = new TxtImport(this);
     } catch (Exception ex) {
+      log.error("Error during DAO or menu initialization", ex);
       JOptionPane.showMessageDialog(
           this,
-          "Si è verificato un errore durante l'accesso al database.\nVerificare che i dati immessi nel menu \"Configurazione\" siano corretti\ne riavviare il client.\n\nAl momento è possibile aprire solo la finestra \"Configurazione\"!",
+          "Si è verificato un errore durante l'accesso al database.\n"
+              + "Verificare che i dati immessi nel menu \"Configurazione\" siano corretti\n"
+              + "e riavviare il client.\n\n"
+              + "Al momento è possibile aprire solo la finestra \"Configurazione\"!",
           "Errore connessione al database",
           JOptionPane.WARNING_MESSAGE);
     }
 
-    configMenu = new manageParameters(this);
+    configMenu = new ManageParameters(this);
     if (com.codetotime.eppclient.BuildInfo.BUILD_VERSION.contains("SNAPSHOT")) {
       JOptionPane.showMessageDialog(
           this,
@@ -110,15 +142,16 @@ public class main extends JFrame implements WindowListener {
     UpdateChecker.checkForUpdates(this, com.codetotime.eppclient.BuildInfo.BUILD_VERSION);
   }
 
+  /** Reinitialises the DAO connections and refreshes the UI after a configuration change. */
   public void windowReset() {
-    messagesDao = new messagesDao();
+    messagesDao = new MessagesDao();
     messagesDao.connect();
-    domainsDao = new domainsDao();
+    domainsDao = new DomainsDao();
     domainsDao.connect();
-    contactsDao = new contactsDao();
+    contactsDao = new ContactsDao();
     contactsDao.connect();
 
-    EPPuplink = new EPPuplink(this);
+    eppUplink = new EppUplink(this);
 
     domainsMenu = new DomainsManagement(this);
     contactsMenu = new ContactsManagement(this);
@@ -126,15 +159,17 @@ public class main extends JFrame implements WindowListener {
     importMenu = new TxtImport(this);
   }
 
+  /** {@inheritDoc} */
   public void windowOpened(WindowEvent e) {
-    EPPuplink.start();
+    eppUplink.start();
   }
 
+  /** {@inheritDoc} */
   public void windowClosing(WindowEvent e) {
-    if (EPPuplink == null) {
+    if (eppUplink == null) {
       System.exit(0);
     } else {
-      boolean isClosed = EPPuplink.gracefulStop();
+      boolean isClosed = eppUplink.gracefulStop();
       if (isClosed) {
         System.exit(0);
       } else {
@@ -142,12 +177,13 @@ public class main extends JFrame implements WindowListener {
         while (!isCancelled) {
           switch (JOptionPane.showConfirmDialog(
               this,
-              "The application is still waiting for the EPP Server to logout.\nDo you want to wait 5 seconds for a graceful close?",
+              "The application is still waiting for the EPP Server to logout.\n"
+                  + "Do you want to wait 5 seconds for a graceful close?",
               "Exiting application",
               JOptionPane.YES_NO_CANCEL_OPTION,
               JOptionPane.WARNING_MESSAGE)) {
             case JOptionPane.YES_OPTION:
-              isClosed = EPPuplink.gracefulStop();
+              isClosed = eppUplink.gracefulStop();
               if (isClosed) {
                 System.exit(0);
               }
@@ -160,7 +196,7 @@ public class main extends JFrame implements WindowListener {
             default:
               // Annullo chiusura
               isCancelled = true;
-              EPPuplink.restart();
+              eppUplink.restart();
               break;
           }
         }
@@ -168,18 +204,23 @@ public class main extends JFrame implements WindowListener {
     }
   }
 
+  /** {@inheritDoc} */
   public void windowActivated(WindowEvent e) {}
 
+  /** {@inheritDoc} */
   public void windowClosed(WindowEvent e) {}
 
+  /** {@inheritDoc} */
   public void windowDeactivated(WindowEvent e) {}
 
+  /** {@inheritDoc} */
   public void windowDeiconified(WindowEvent e) {}
 
   private void btnInformazioni(ActionEvent e) {
     InfoDialog.show(null);
   }
 
+  /** {@inheritDoc} */
   public void windowIconified(WindowEvent e) {}
 
   /**
@@ -198,8 +239,8 @@ public class main extends JFrame implements WindowListener {
     lblSoci = new JLabel();
     nextMsg = new JTextField();
     lblNextMsg = new JLabel();
-    lblEPPworking = new JLabel();
-    EPPonoff = new JButton();
+    lblEppWorking = new JLabel();
+    eppOnOff = new JButton();
     lblVersion = new JLabel();
     btnContact = new JButton();
     btnDomain = new JButton();
@@ -274,7 +315,7 @@ public class main extends JFrame implements WindowListener {
 
     // ---- lblResCredit ----
     lblResCredit.setFont(new Font("Tahoma", Font.PLAIN, 10));
-    lblResCredit.setText("Credito disponibile (\u20ac):");
+    lblResCredit.setText("Credito disponibile (€):");
     contentPane.add(
         lblResCredit,
         new GridBagConstraints(
@@ -383,14 +424,14 @@ public class main extends JFrame implements WindowListener {
             0,
             0));
 
-    // ---- lblEPPworking ----
-    lblEPPworking.setFont(new Font("Tahoma", Font.PLAIN, 10));
-    lblEPPworking.setHorizontalAlignment(SwingConstants.TRAILING);
-    lblEPPworking.setIcon(new ImageIcon(getClass().getResource("/gear.gif")));
-    lblEPPworking.setText("sessione EPP non attiva");
-    lblEPPworking.setHorizontalTextPosition(SwingConstants.LEADING);
+    // ---- lblEppWorking ----
+    lblEppWorking.setFont(new Font("Tahoma", Font.PLAIN, 10));
+    lblEppWorking.setHorizontalAlignment(SwingConstants.TRAILING);
+    lblEppWorking.setIcon(new ImageIcon(getClass().getResource("/gear.gif")));
+    lblEppWorking.setText("sessione EPP non attiva");
+    lblEppWorking.setHorizontalTextPosition(SwingConstants.LEADING);
     contentPane.add(
-        lblEPPworking,
+        lblEppWorking,
         new GridBagConstraints(
             1,
             16,
@@ -404,11 +445,11 @@ public class main extends JFrame implements WindowListener {
             0,
             0));
 
-    // ---- EPPonoff ----
-    EPPonoff.setText("Attiva Sessione");
-    EPPonoff.addActionListener(e -> EPPonoffActionPerformed(e));
+    // ---- eppOnOff ----
+    eppOnOff.setText("Attiva Sessione");
+    eppOnOff.addActionListener(e -> eppOnOffActionPerformed(e));
     contentPane.add(
-        EPPonoff,
+        eppOnOff,
         new GridBagConstraints(
             0,
             16,
@@ -612,12 +653,12 @@ public class main extends JFrame implements WindowListener {
     messagesMenu.setVisible(true);
   } // GEN-LAST:event_btnMsgActionPerformed
 
-  private void EPPonoffActionPerformed(
+  private void eppOnOffActionPerformed(
       java.awt.event.ActionEvent evt) { // GEN-FIRST:event_EPPonoffActionPerformed
-    if (isActiveEPP) {
-      EPPuplink.gracefulStop();
+    if (isActiveEpp) {
+      eppUplink.gracefulStop();
     } else {
-      EPPuplink.start();
+      eppUplink.start();
     }
   } // GEN-LAST:event_EPPonoffActionPerformed
 
@@ -632,6 +673,7 @@ public class main extends JFrame implements WindowListener {
       File suggested = new File(System.getProperty("user.home"), "epp-backup-" + ts + ".zip");
       chooser.setSelectedFile(suggested);
     } catch (Exception ignore) {
+      log.debug("Failed to set suggested backup file: {}", ignore.getMessage());
     }
 
     int result = chooser.showSaveDialog(this);
@@ -653,7 +695,9 @@ public class main extends JFrame implements WindowListener {
               "Conferma sovrascrittura",
               JOptionPane.YES_NO_OPTION,
               JOptionPane.WARNING_MESSAGE);
-      if (ow != JOptionPane.YES_OPTION) return;
+      if (ow != JOptionPane.YES_OPTION) {
+        return;
+      }
     }
 
     final File destFile = file;
@@ -679,13 +723,13 @@ public class main extends JFrame implements WindowListener {
             if (error != null) {
               error.printStackTrace();
               JOptionPane.showMessageDialog(
-                  main.this,
+                  Main.this,
                   "Errore durante l'esportazione: " + error.getMessage(),
                   "Errore",
                   JOptionPane.ERROR_MESSAGE);
             } else {
               JOptionPane.showMessageDialog(
-                  main.this,
+                  Main.this,
                   "Esportazione completata:\n" + destFile.getAbsolutePath(),
                   "Operazione completata",
                   JOptionPane.INFORMATION_MESSAGE);
@@ -697,51 +741,78 @@ public class main extends JFrame implements WindowListener {
 
   private void btnImportFromTxtActionPerformed(
       java.awt.event.ActionEvent evt) { // GEN-FIRST:event_btnImportFromTxtActionPerformed
-    if (EPPuplink.isActive()) {
+    if (eppUplink.isActive()) {
       importMenu.setVisible(true);
     } else {
       sessionNotActiveWarning();
     }
   } // GEN-LAST:event_btnImportFromTxtActionPerformed
 
-  public void setMSGQ(String txt) {
+  /**
+   * Updates the message queue count label in the status bar.
+   *
+   * @param txt the text to display
+   */
+  public void setMsgQ(String txt) {
     msgQ.setText(txt);
   }
 
+  /**
+   * Updates the residual credit label in the status bar.
+   *
+   * @param txt the text to display
+   */
   public void setResCredit(String txt) {
     resCredit.setText(txt);
   }
 
+  /**
+   * Updates the next message timestamp label in the status bar.
+   *
+   * @param txt the text to display
+   */
   public void setNextMsg(String txt) {
     nextMsg.setText(txt);
   }
 
+  /**
+   * Appends a received EPP poll message to the messages panel.
+   *
+   * @param message the message to add
+   */
   public void addMsgtoList(Message message) {
     messagesMenu.addMessage(message);
   }
 
-  public void setActiveEPP(int enableFlag) {
-    isActiveEPP = enableFlag == 1;
+  /**
+   * Enables or disables EPP-dependent controls based on the connection state.
+   *
+   * @param enableFlag {@code 1} to enable, {@code 0} to disable
+   */
+  public void setActiveEpp(int enableFlag) {
+    isActiveEpp = enableFlag == 1;
     if (enableFlag == 1) {
-      EPPonoff.setText("Termina Sessione");
-      lblEPPworking.setText("Sessione EPP attiva");
-      lblEPPworking.setEnabled(true);
-      EPPonoff.setEnabled(true);
+      eppOnOff.setText("Termina Sessione");
+      lblEppWorking.setText("Sessione EPP attiva");
+      lblEppWorking.setEnabled(true);
+      eppOnOff.setEnabled(true);
     } else if (enableFlag == 0) {
-      EPPonoff.setText("Attiva Sessione");
-      lblEPPworking.setText("Sessione EPP non attiva");
-      lblEPPworking.setEnabled(false);
-      EPPonoff.setEnabled(true);
+      eppOnOff.setText("Attiva Sessione");
+      lblEppWorking.setText("Sessione EPP non attiva");
+      lblEppWorking.setEnabled(false);
+      eppOnOff.setEnabled(true);
     } else if (enableFlag == 2) {
-      EPPonoff.setEnabled(false);
-      lblEPPworking.setEnabled(false);
+      eppOnOff.setEnabled(false);
+      lblEppWorking.setEnabled(false);
     }
 
-    domainsMenu.setEPPEnablement(isActiveEPP);
-    contactsMenu.setEPPEnablement(isActiveEPP);
-    messagesMenu.setEPPEnablement(isActiveEPP);
-    configMenu.setEPPEnablement(isActiveEPP);
-    if (importMenu.isVisible()) importMenu.setVisible(isActiveEPP);
+    domainsMenu.setEppEnablement(isActiveEpp);
+    contactsMenu.setEppEnablement(isActiveEpp);
+    messagesMenu.setEppEnablement(isActiveEpp);
+    configMenu.setEppEnablement(isActiveEpp);
+    if (importMenu.isVisible()) {
+      importMenu.setVisible(isActiveEpp);
+    }
   }
 
   private void setVersion(String version) {
@@ -751,7 +822,8 @@ public class main extends JFrame implements WindowListener {
   private void sessionNotActiveWarning() {
     JOptionPane.showMessageDialog(
         this,
-        "Attenzione! Non è attiva alcuna sessione EPP con il server del Registro.\nImpossibile procedere!",
+        "Attenzione! Non è attiva alcuna sessione EPP con il server del Registro.\n"
+            + "Impossibile procedere!",
         "Sessione EPP non attiva",
         JOptionPane.WARNING_MESSAGE);
   }
@@ -767,8 +839,8 @@ public class main extends JFrame implements WindowListener {
   private JLabel lblSoci;
   private JTextField nextMsg;
   private JLabel lblNextMsg;
-  private JLabel lblEPPworking;
-  private JButton EPPonoff;
+  private JLabel lblEppWorking;
+  private JButton eppOnOff;
   private JLabel lblVersion;
   private JButton btnContact;
   private JButton btnDomain;
@@ -779,17 +851,17 @@ public class main extends JFrame implements WindowListener {
   private JButton btnImportFromTxt;
   // End of variables declaration//GEN-END:variables
 
-  private boolean isActiveEPP = false;
+  private boolean isActiveEpp = false;
 
   private DomainsManagement domainsMenu;
   private ContactsManagement contactsMenu;
-  private manageParameters configMenu;
+  private ManageParameters configMenu;
   private MessageManagement messagesMenu;
 
   private TxtImport importMenu;
 
-  private class btnInformazioni extends AbstractAction {
-    private btnInformazioni() {
+  private class BtnInformazioni extends AbstractAction {
+    private BtnInformazioni() {
       // JFormDesigner - Action initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
       // @formatter:off
 
@@ -799,7 +871,7 @@ public class main extends JFrame implements WindowListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      // TODO add your code here
+      // TODO: add your code here
     }
   }
 }

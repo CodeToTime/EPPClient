@@ -14,14 +14,24 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.domains;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Container;
+import java.awt.Font;
+import javax.swing.GroupLayout;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.LayoutStyle;
+import javax.swing.SwingConstants;
 
+/** Frame that displays the raw EPP info response for a domain. */
 public class DomainRawInfo extends JFrame {
 
   /** Creates new form DomainRawInfo. */
@@ -39,37 +49,37 @@ public class DomainRawInfo extends JFrame {
   @SuppressWarnings("unchecked")
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents() {
-    jLabel1 = new JLabel();
+    lblDomainName = new JLabel();
     domainNameTxt = new JTextField();
-    jLabel2 = new JLabel();
-    jScrollPane1 = new JScrollPane();
+    lblTitle = new JLabel();
+    rawInfoScroll = new JScrollPane();
     domainRawInfoTxt = new JTextArea();
 
     // ======== this ========
     setTitle("Domain INFO Output");
-    Container contentPane = getContentPane();
 
-    // ---- jLabel1 ----
-    jLabel1.setText("Domain Name:");
+    // ---- lblDomainName ----
+    lblDomainName.setText("Domain Name:");
 
     // ---- domainNameTxt ----
     domainNameTxt.setEditable(false);
     domainNameTxt.setText("jTextField1");
 
-    // ---- jLabel2 ----
-    jLabel2.setFont(new Font("Tahoma", Font.BOLD, 11));
-    jLabel2.setHorizontalAlignment(SwingConstants.CENTER);
-    jLabel2.setText("DOMAIN INFO OUTPUT");
+    // ---- lblTitle ----
+    lblTitle.setFont(new Font("Tahoma", Font.BOLD, 11));
+    lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
+    lblTitle.setText("DOMAIN INFO OUTPUT");
 
-    // ======== jScrollPane1 ========
+    // ======== rawInfoScroll ========
     {
 
       // ---- domainRawInfoTxt ----
       domainRawInfoTxt.setColumns(20);
       domainRawInfoTxt.setRows(5);
-      jScrollPane1.setViewportView(domainRawInfoTxt);
+      rawInfoScroll.setViewportView(domainRawInfoTxt);
     }
 
+    Container contentPane = getContentPane();
     GroupLayout contentPaneLayout = new GroupLayout(contentPane);
     contentPane.setLayout(contentPaneLayout);
     contentPaneLayout.setHorizontalGroup(
@@ -80,7 +90,7 @@ public class DomainRawInfo extends JFrame {
                 contentPaneLayout
                     .createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(jLabel1)
+                    .addComponent(lblDomainName)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                     .addComponent(
                         domainNameTxt,
@@ -88,12 +98,12 @@ public class DomainRawInfo extends JFrame {
                         GroupLayout.DEFAULT_SIZE,
                         GroupLayout.PREFERRED_SIZE)
                     .addContainerGap(335, Short.MAX_VALUE))
-            .addComponent(jLabel2, GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
+            .addComponent(lblTitle, GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
             .addGroup(
                 contentPaneLayout
                     .createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
+                    .addComponent(rawInfoScroll, GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
                     .addContainerGap()));
     contentPaneLayout.setVerticalGroup(
         contentPaneLayout
@@ -102,29 +112,29 @@ public class DomainRawInfo extends JFrame {
                 GroupLayout.Alignment.TRAILING,
                 contentPaneLayout
                     .createSequentialGroup()
-                    .addComponent(jLabel2)
+                    .addComponent(lblTitle)
                     .addGap(8, 8, 8)
                     .addGroup(
                         contentPaneLayout
                             .createParallelGroup(GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
+                            .addComponent(lblDomainName)
                             .addComponent(
                                 domainNameTxt,
                                 GroupLayout.PREFERRED_SIZE,
                                 GroupLayout.DEFAULT_SIZE,
                                 GroupLayout.PREFERRED_SIZE))
                     .addGap(18, 18, 18)
-                    .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
+                    .addComponent(rawInfoScroll, GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
                     .addContainerGap()));
     pack();
     setLocationRelativeTo(getOwner());
   } // </editor-fold>//GEN-END:initComponents
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  private JLabel jLabel1;
+  private JLabel lblDomainName;
   private JTextField domainNameTxt;
-  private JLabel jLabel2;
-  private JScrollPane jScrollPane1;
+  private JLabel lblTitle;
+  private JScrollPane rawInfoScroll;
   private JTextArea domainRawInfoTxt;
   // End of variables declaration//GEN-END:variables
 

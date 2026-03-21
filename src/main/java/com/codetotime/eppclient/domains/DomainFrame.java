@@ -14,12 +14,13 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.domains;
 
-import com.codetotime.eppclient.db.domainsDao;
+import com.codetotime.eppclient.db.DomainsDao;
 import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -37,6 +38,10 @@ import javax.swing.event.ListSelectionListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Frame combining the domain list, domain detail panel, and action toolbar to provide a local view
+ * of cached EPP domain records stored in the embedded database.
+ */
 public class DomainFrame extends JFrame implements ActionListener, ListSelectionListener {
   private static final Logger log = LoggerFactory.getLogger(DomainFrame.class);
 
@@ -46,7 +51,7 @@ public class DomainFrame extends JFrame implements ActionListener, ListSelection
     loadFrameIcon();
     windowAdapter = new WindowCloser();
     this.addWindowListener(windowAdapter);
-    db = new domainsDao();
+    db = new DomainsDao();
     db.connect();
     addressActionPanel.addActionListener(this);
     domainPanel.setEditable(false);
@@ -154,6 +159,7 @@ public class DomainFrame extends JFrame implements ActionListener, ListSelection
     }
   }
 
+  /** {@inheritDoc} */
   public void actionPerformed(ActionEvent e) {
     String actionCommand = e.getActionCommand();
     log.debug("ActionEvent: {}", actionCommand);
@@ -170,6 +176,7 @@ public class DomainFrame extends JFrame implements ActionListener, ListSelection
     }
   }
 
+  /** {@inheritDoc} */
   public void valueChanged(ListSelectionEvent e) {
     if (e.getValueIsAdjusting()) {
       return;
@@ -193,7 +200,7 @@ public class DomainFrame extends JFrame implements ActionListener, ListSelection
   // End of variables declaration//GEN-END:variables
 
   private int selectedEntry = -1;
-  private domainsDao db;
+  private DomainsDao db;
   private WindowAdapter windowAdapter;
 
   class WindowCloser extends WindowAdapter {

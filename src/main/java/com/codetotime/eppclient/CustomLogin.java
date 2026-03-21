@@ -13,34 +13,46 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient;
 
-import com.codetotime.eppclient.config.EPPparams;
+import com.codetotime.eppclient.config.EppParams;
 import it.nic.epp.client.commands.session.Login;
 
+/**
+ * Extends {@link Login} to apply the DNSSec system properties from application parameters before
+ * the EPP session is established.
+ */
 public class CustomLogin extends Login {
 
   static {
-    configureDNSSEC();
+    configureDnssec();
   }
 
+  /** Creates a login command using the default credentials from application parameters. */
   public CustomLogin() {
     super();
   }
 
+  /**
+   * Creates a login command with explicit credentials.
+   *
+   * @param clID the registrar client ID
+   * @param pw the password
+   */
+  @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
   public CustomLogin(String clID, String pw) {
     super(clID, pw);
   }
 
-  private static void configureDNSSEC() {
-    String dnssecEnabled = EPPparams.getParameter("EppClient.implement.DNSSEC");
+  private static void configureDnssec() {
+    String dnssecEnabled = EppParams.getParameter("EppClient.implement.DNSSEC");
 
-    boolean isDNSSECEnabled = Boolean.parseBoolean(dnssecEnabled);
+    boolean isDnssecEnabled = Boolean.parseBoolean(dnssecEnabled);
 
-    System.setProperty("EppClient.implement.secDNS", String.valueOf(isDNSSECEnabled));
-    System.setProperty("EppClient.implement.extsecDNS", String.valueOf(isDNSSECEnabled));
+    System.setProperty("EppClient.implement.secDNS", String.valueOf(isDnssecEnabled));
+    System.setProperty("EppClient.implement.extsecDNS", String.valueOf(isDnssecEnabled));
   }
 }

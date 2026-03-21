@@ -14,12 +14,13 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.domains.transfer;
 
-import com.codetotime.eppclient.uplink.EPPuplink;
+import com.codetotime.eppclient.uplink.EppUplink;
 import it.nic.epp.client.commands.transform.DomainTransfer;
 import it.nic.epp.client.exceptions.EppSchemaException;
 import it.nic.epp.client.responses.HttpBaseResponse;
@@ -36,14 +37,18 @@ import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Frame for submitting EPP domain transfer and trade requests, supporting both single and bulk
+ * modes via a tabbed panel, and dispatching commands through the active EPP connection.
+ */
 public class TransferManagement extends JFrame implements ActionListener {
   private static final Logger log = LoggerFactory.getLogger(TransferManagement.class);
 
   /** Creates new form DomainTransferFrame. */
-  public TransferManagement(EPPuplink EPPuplink) {
+  public TransferManagement(EppUplink eppUplink) {
     initComponents();
 
-    this.EPPuplink = EPPuplink;
+    this.eppUplink = eppUplink;
 
     transferActionPanel.addActionListener(this);
 
@@ -146,7 +151,7 @@ public class TransferManagement extends JFrame implements ActionListener {
         }
 
         log.info("CLIENT transfer request: {}", domainTransfer.toString());
-        HttpBaseResponse response = EPPuplink.sendCommand(domainTransfer);
+        HttpBaseResponse response = eppUplink.sendCommand(domainTransfer);
 
         if (response.isSuccessfully()) {
           if (domain.getIsCancel()) {
@@ -158,7 +163,8 @@ public class TransferManagement extends JFrame implements ActionListener {
           } else {
             JOptionPane.showMessageDialog(
                 this,
-                "The transfer has been successfully requested and is Pending.\n\nYou will receive a message after ACK/NACK",
+                "The transfer has been successfully requested and is Pending.\n\n"
+                    + "You will receive a message after ACK/NACK",
                 "Registry transfer confirmation",
                 JOptionPane.INFORMATION_MESSAGE);
           }
@@ -166,7 +172,8 @@ public class TransferManagement extends JFrame implements ActionListener {
         } else {
           if (JOptionPane.showConfirmDialog(
                   this,
-                  "An error occurred while requesting transfer at the Registry.\n\nDo you want to see the Registry XML response?",
+                  "An error occurred while requesting transfer at the Registry.\n\n"
+                      + "Do you want to see the Registry XML response?",
                   "Registry transfer failure",
                   JOptionPane.YES_NO_OPTION,
                   JOptionPane.WARNING_MESSAGE)
@@ -179,9 +186,13 @@ public class TransferManagement extends JFrame implements ActionListener {
         log.info("SERVER transfer response: {}", response.toString());
 
       } catch (NullPointerException v) {
+        log.error("NullPointerException in requestTransfer", v);
       } catch (XmlException v) {
+        log.error("XmlException in requestTransfer", v);
       } catch (IOException v) {
+        log.error("IOException in requestTransfer", v);
       } catch (EppSchemaException v) {
+        log.error("EppSchemaException in requestTransfer", v);
       }
 
       if (canClose) {
@@ -203,7 +214,7 @@ public class TransferManagement extends JFrame implements ActionListener {
           domainTransfer.setTransferRequest();
 
           log.info("CLIENT bulk transfer request: {}", domainTransfer.toString());
-          HttpBaseResponse response = EPPuplink.sendCommand(domainTransfer);
+          HttpBaseResponse response = eppUplink.sendCommand(domainTransfer);
 
           if (response.isSuccessfully()) {
             JOptionPane.showMessageDialog(
@@ -216,7 +227,8 @@ public class TransferManagement extends JFrame implements ActionListener {
           } else {
             if (JOptionPane.showConfirmDialog(
                     this,
-                    "An error occurred while requesting transfer at the Registry.\n\nDo you want to see the Registry XML response?",
+                    "An error occurred while requesting transfer at the Registry.\n\n"
+                        + "Do you want to see the Registry XML response?",
                     "Registry transfer failure",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.WARNING_MESSAGE)
@@ -227,8 +239,11 @@ public class TransferManagement extends JFrame implements ActionListener {
           log.info("SERVER bulk transfer response: {}", response.toString());
 
         } catch (NullPointerException v) {
+          log.error("NullPointerException in bulk transfer", v);
         } catch (XmlException v) {
+          log.error("XmlException in bulk transfer", v);
         } catch (IOException v) {
+          log.error("IOException in bulk transfer", v);
         }
       }
     }
@@ -238,6 +253,7 @@ public class TransferManagement extends JFrame implements ActionListener {
     this.dispose();
   }
 
+  /** {@inheritDoc} */
   public void actionPerformed(ActionEvent e) {
     String actionCommand = e.getActionCommand();
     log.debug("ActionEvent: {}", actionCommand);
@@ -248,5 +264,5 @@ public class TransferManagement extends JFrame implements ActionListener {
     }
   }
 
-  private EPPuplink EPPuplink;
+  private EppUplink eppUplink;
 }

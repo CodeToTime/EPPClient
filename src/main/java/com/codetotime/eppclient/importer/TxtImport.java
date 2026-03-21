@@ -14,13 +14,14 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.importer;
 
-import com.codetotime.eppclient.main;
-import com.codetotime.eppclient.uplink.EPPuplink;
+import com.codetotime.eppclient.Main;
+import com.codetotime.eppclient.uplink.EppUplink;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.TextArea;
@@ -35,38 +36,41 @@ import javax.swing.JFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/** Frame for importing contacts or domains in bulk from a plain-text file. */
 public class TxtImport extends JFrame {
   private static final Logger log = LoggerFactory.getLogger(TxtImport.class);
 
-  private main mainFrame;
+  private Main mainFrame;
 
   /** Creates new form TxtImport. */
-  public TxtImport(main mainFrame) {
+  public TxtImport(Main mainFrame) {
     initComponents();
 
     this.mainFrame = mainFrame;
-    this.EPPuplink = mainFrame.EPPuplink;
+    this.eppUplink = mainFrame.eppUplink;
   }
 
   @SuppressWarnings("unchecked")
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents() {
-    jFileChooser1 = new JFileChooser();
-    textArea1 = new TextArea();
+    importFileChooser = new JFileChooser();
+    logTextArea = new TextArea();
 
     // ======== this ========
     setTitle("Importazione Domini da file");
     setMinimumSize(new Dimension(600, 500));
+
+    // ---- importFileChooser ----
+    importFileChooser.addActionListener(e -> importFileChooserActionPerformed(e));
+
+    // ---- logTextArea ----
+    logTextArea.setEditable(false);
+    logTextArea.setText(
+        "Questa procedura permette di acquisire nel database locale eventuali domini già"
+            + " presenti sul server EPP del Registro.\nPer poter procedere occorre predisporre"
+            + " un file .txt contenente l'elenco dei domini, uno per riga.\n");
+
     Container contentPane = getContentPane();
-
-    // ---- jFileChooser1 ----
-    jFileChooser1.addActionListener(e -> jFileChooser1ActionPerformed(e));
-
-    // ---- textArea1 ----
-    textArea1.setEditable(false);
-    textArea1.setText(
-        "Questa procedura permette di acquisire nel database locale eventuali domini gi\u00e0 presenti sul server EPP del Registro.\nPer poter procedere occorre predisporre un file .txt contenente l'elenco dei domini, uno per riga.\n");
-
     GroupLayout contentPaneLayout = new GroupLayout(contentPane);
     contentPane.setLayout(contentPaneLayout);
     contentPaneLayout.setHorizontalGroup(
@@ -81,13 +85,13 @@ public class TxtImport extends JFrame {
                         contentPaneLayout
                             .createParallelGroup(GroupLayout.Alignment.TRAILING)
                             .addComponent(
-                                textArea1,
+                                logTextArea,
                                 GroupLayout.Alignment.LEADING,
                                 GroupLayout.DEFAULT_SIZE,
                                 723,
                                 Short.MAX_VALUE)
                             .addComponent(
-                                jFileChooser1,
+                                importFileChooser,
                                 GroupLayout.Alignment.LEADING,
                                 GroupLayout.DEFAULT_SIZE,
                                 723,
@@ -101,43 +105,46 @@ public class TxtImport extends JFrame {
                 contentPaneLayout
                     .createSequentialGroup()
                     .addComponent(
-                        textArea1,
+                        logTextArea,
                         GroupLayout.PREFERRED_SIZE,
                         GroupLayout.DEFAULT_SIZE,
                         GroupLayout.PREFERRED_SIZE)
                     .addGap(20, 20, 20)
-                    .addComponent(jFileChooser1, GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                    .addComponent(importFileChooser, GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
                     .addContainerGap()));
     pack();
     setLocationRelativeTo(getOwner());
   } // </editor-fold>//GEN-END:initComponents
 
-  private void jFileChooser1ActionPerformed(
+  private void importFileChooserActionPerformed(
       java.awt.event.ActionEvent evt) { // GEN-FIRST:event_jFileChooser1ActionPerformed
     if (evt.getActionCommand().equals("ApproveSelection")) {
-      if (jFileChooser1.getSelectedFile() != null) {
-        File file = jFileChooser1.getSelectedFile();
+      if (importFileChooser.getSelectedFile() != null) {
+        File file = importFileChooser.getSelectedFile();
 
         try {
           BufferedReader in = new BufferedReader(new FileReader(file));
           String str;
-          textArea1.setText(textArea1.getText() + "\n======LOG IMPORTAZIONE======");
+          logTextArea.setText(logTextArea.getText() + "\n======LOG IMPORTAZIONE======");
           ImportDomain domainImporter = new ImportDomain(mainFrame, true);
           while ((str = in.readLine()) != null) {
-            textArea1.setText(textArea1.getText() + "\n" + str);
+            logTextArea.setText(logTextArea.getText() + "\n" + str);
             if (domainImporter.execute(str)) {
-              textArea1.setText(textArea1.getText() + " IMPORTATO;");
+              logTextArea.setText(logTextArea.getText() + " IMPORTATO;");
             } else {
-              textArea1.setText(textArea1.getText() + " NON IMPORTATO;");
+              logTextArea.setText(logTextArea.getText() + " NON IMPORTATO;");
             }
           }
-          textArea1.setText(textArea1.getText() + "\n======FINE IMPORTAZIONE======");
+          logTextArea.setText(logTextArea.getText() + "\n======FINE IMPORTAZIONE======");
           in.close();
         } catch (FileNotFoundException e) {
-          textArea1.setText(textArea1.getText() + "\n++++++Impossibile aprire il file++++++");
+          log.error("File not found: {}", file.getAbsolutePath(), e);
+          logTextArea.setText(logTextArea.getText() + "\n++++++Impossibile aprire il file++++++");
         } catch (IOException e) {
-          textArea1.setText(
-              textArea1.getText() + "\n++++++Errore sconosciuto durante l'apertura del file++++++");
+          log.error("IO error during bulk import from file: {}", file.getAbsolutePath(), e);
+          logTextArea.setText(
+              logTextArea.getText()
+                  + "\n++++++Errore sconosciuto durante l'apertura del file++++++");
         }
 
       } else {
@@ -149,14 +156,19 @@ public class TxtImport extends JFrame {
   } // GEN-LAST:event_jFileChooser1ActionPerformed
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  private JFileChooser jFileChooser1;
-  private TextArea textArea1;
+  private JFileChooser importFileChooser;
+  private TextArea logTextArea;
 
   // End of variables declaration//GEN-END:variables
 
-  public void setEPPEnablement(boolean EPPstatus) {
-    jFileChooser1.setEnabled(EPPstatus);
+  /**
+   * Enables or disables the file chooser based on whether the EPP connection is active.
+   *
+   * @param eppStatus {@code true} if the EPP connection is active
+   */
+  public void setEppEnablement(boolean eppStatus) {
+    importFileChooser.setEnabled(eppStatus);
   }
 
-  private EPPuplink EPPuplink;
+  private EppUplink eppUplink;
 }

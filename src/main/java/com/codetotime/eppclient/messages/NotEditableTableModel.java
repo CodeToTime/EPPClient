@@ -18,25 +18,14 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.codetotime.eppclient.contacts;
+package com.codetotime.eppclient.messages;
 
-import java.awt.Component;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JList;
+import javax.swing.table.DefaultTableModel;
 
-/** List cell renderer that displays a contact entry as {@code "contactId name"}. */
-public class ListEntryRenderer extends DefaultListCellRenderer {
-
-  /** Creates a new instance of ListEntryRenderer. */
-  public ListEntryRenderer() {}
-
-  /** {@inheritDoc} */
-  public Component getListCellRendererComponent(
-      JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-    super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-
-    ListEntry entry = (ListEntry) value;
-    this.setText(entry.getContactId() + " " + entry.getContactName());
-    return this;
+/** A table model that does not allow cell editing. */
+class NotEditableTableModel extends DefaultTableModel {
+  @Override
+  public boolean isCellEditable(int column, int row) {
+    return false;
   }
 }

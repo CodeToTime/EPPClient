@@ -14,15 +14,25 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.domains.transfer;
 
 import com.codetotime.eppclient.domains.Domain;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Dimension;
+import javax.swing.GroupLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.LayoutStyle;
 
+/**
+ * Panel for submitting bulk domain transfer requests; accepts a list of {@code domain;authinfo}
+ * lines and displays the results of each transfer attempt.
+ */
 public class BulkTransferPanel extends JPanel {
 
   /** Creates new form AddressPanel. */
@@ -38,25 +48,25 @@ public class BulkTransferPanel extends JPanel {
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents() {
     lblAuthInfo = new JLabel();
-    jScrollPane1 = new JScrollPane();
+    bulkRequestScroll = new JScrollPane();
     bulkRequestField = new JTextArea();
-    jScrollPane2 = new JScrollPane();
+    bulkResultScroll = new JScrollPane();
     bulkResultField = new JTextArea();
 
     // ---- lblAuthInfo ----
     lblAuthInfo.setText("domain;authinfo");
 
-    // ======== jScrollPane1 ========
+    // ======== bulkRequestScroll ========
     {
 
       // ---- bulkRequestField ----
       bulkRequestField.setColumns(30);
       bulkRequestField.setRows(10);
       bulkRequestField.setMinimumSize(new Dimension(484, 274));
-      jScrollPane1.setViewportView(bulkRequestField);
+      bulkRequestScroll.setViewportView(bulkRequestField);
     }
 
-    // ======== jScrollPane2 ========
+    // ======== bulkResultScroll ========
     {
 
       // ---- bulkResultField ----
@@ -64,7 +74,7 @@ public class BulkTransferPanel extends JPanel {
       bulkResultField.setColumns(30);
       bulkResultField.setRows(10);
       bulkResultField.setMinimumSize(new Dimension(484, 274));
-      jScrollPane2.setViewportView(bulkResultField);
+      bulkResultScroll.setViewportView(bulkResultField);
     }
 
     GroupLayout layout = new GroupLayout(this);
@@ -82,12 +92,12 @@ public class BulkTransferPanel extends JPanel {
                         layout
                             .createParallelGroup()
                             .addComponent(
-                                jScrollPane2,
+                                bulkResultScroll,
                                 GroupLayout.PREFERRED_SIZE,
                                 369,
                                 GroupLayout.PREFERRED_SIZE)
                             .addComponent(
-                                jScrollPane1,
+                                bulkRequestScroll,
                                 GroupLayout.PREFERRED_SIZE,
                                 369,
                                 GroupLayout.PREFERRED_SIZE))
@@ -104,13 +114,16 @@ public class BulkTransferPanel extends JPanel {
                             .createParallelGroup()
                             .addComponent(lblAuthInfo)
                             .addComponent(
-                                jScrollPane1,
+                                bulkRequestScroll,
                                 GroupLayout.PREFERRED_SIZE,
                                 201,
                                 GroupLayout.PREFERRED_SIZE))
                     .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                     .addComponent(
-                        jScrollPane2, GroupLayout.PREFERRED_SIZE, 201, GroupLayout.PREFERRED_SIZE)
+                        bulkResultScroll,
+                        GroupLayout.PREFERRED_SIZE,
+                        201,
+                        GroupLayout.PREFERRED_SIZE)
                     .addContainerGap()));
   } // </editor-fold>//GEN-END:initComponents
 
@@ -119,6 +132,11 @@ public class BulkTransferPanel extends JPanel {
     return bulkRequest;
   }
 
+  /**
+   * Populates the panel fields from the given domain object.
+   *
+   * @param domain the domain whose data should be displayed
+   */
   public void setAddress(Domain domain) {
     if (domain != null) {
       //            setDomainName(domain.getDomainName());
@@ -137,6 +155,7 @@ public class BulkTransferPanel extends JPanel {
     return domain;
   }
 
+  /** Clears all input fields and resets the transfer data object. */
   public void clear() {
     //        txtDomainName.setText(null);
     //        txtAuthInfo.setText(null);
@@ -149,9 +168,9 @@ public class BulkTransferPanel extends JPanel {
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private JLabel lblAuthInfo;
-  private JScrollPane jScrollPane1;
+  private JScrollPane bulkRequestScroll;
   private JTextArea bulkRequestField;
-  private JScrollPane jScrollPane2;
+  private JScrollPane bulkResultScroll;
   private JTextArea bulkResultField;
   // End of variables declaration//GEN-END:variables
 

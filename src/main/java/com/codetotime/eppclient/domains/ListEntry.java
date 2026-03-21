@@ -14,11 +14,13 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.domains;
 
+/** A domain list item holding a domain name. */
 public class ListEntry {
 
   /** Creates a new instance of ListEntry. */
@@ -26,6 +28,11 @@ public class ListEntry {
     this("");
   }
 
+  /**
+   * Creates a list entry for the given domain name.
+   *
+   * @param domainName the fully qualified domain name
+   */
   public ListEntry(String domainName) {
     this.domainName = domainName;
     //        this.firstName = firstName;
@@ -40,6 +47,11 @@ public class ListEntry {
     this.domainName = domainName;
   }
 
+  /**
+   * Returns the domain name as the string representation.
+   *
+   * @return the domain name
+   */
   public String toString() {
     String value =
         domainName; // + ": " + contactId; //+ ", " + firstName + " " + middleName + ": " + id;

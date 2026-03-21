@@ -14,21 +14,31 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.contacts;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Container;
+import java.awt.Font;
+import javax.swing.GroupLayout;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.LayoutStyle;
+import javax.swing.SwingConstants;
 
+/** Frame that displays the raw EPP info response for a contact. */
 public class ContactRawInfo extends JFrame {
 
   /** Creates new form DomainRawInfo. */
   public ContactRawInfo(String domainName, String domainRawInfo) {
     initComponents();
 
-    contactIDTxt.setText(domainName);
+    contactIdTxt.setText(domainName);
     contactRawInfoTxt.setText(domainRawInfo);
   }
 
@@ -39,37 +49,37 @@ public class ContactRawInfo extends JFrame {
   @SuppressWarnings("unchecked")
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents() {
-    jLabel1 = new JLabel();
-    contactIDTxt = new JTextField();
-    jLabel2 = new JLabel();
-    jScrollPane1 = new JScrollPane();
+    lblContactId = new JLabel();
+    contactIdTxt = new JTextField();
+    lblTitle = new JLabel();
+    rawInfoScroll = new JScrollPane();
     contactRawInfoTxt = new JTextArea();
 
     // ======== this ========
     setTitle("Contact INFO Output");
-    Container contentPane = getContentPane();
 
-    // ---- jLabel1 ----
-    jLabel1.setText("Contact ID");
+    // ---- lblContactId ----
+    lblContactId.setText("Contact ID");
 
-    // ---- contactIDTxt ----
-    contactIDTxt.setEditable(false);
-    contactIDTxt.setText("jTextField1");
+    // ---- contactIdTxt ----
+    contactIdTxt.setEditable(false);
+    contactIdTxt.setText("jTextField1");
 
-    // ---- jLabel2 ----
-    jLabel2.setFont(new Font("Tahoma", Font.BOLD, 11));
-    jLabel2.setHorizontalAlignment(SwingConstants.CENTER);
-    jLabel2.setText("CONTACT INFO OUTPUT");
+    // ---- lblTitle ----
+    lblTitle.setFont(new Font("Tahoma", Font.BOLD, 11));
+    lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
+    lblTitle.setText("CONTACT INFO OUTPUT");
 
-    // ======== jScrollPane1 ========
+    // ======== rawInfoScroll ========
     {
 
       // ---- contactRawInfoTxt ----
       contactRawInfoTxt.setColumns(20);
       contactRawInfoTxt.setRows(5);
-      jScrollPane1.setViewportView(contactRawInfoTxt);
+      rawInfoScroll.setViewportView(contactRawInfoTxt);
     }
 
+    Container contentPane = getContentPane();
     GroupLayout contentPaneLayout = new GroupLayout(contentPane);
     contentPane.setLayout(contentPaneLayout);
     contentPaneLayout.setHorizontalGroup(
@@ -80,20 +90,20 @@ public class ContactRawInfo extends JFrame {
                 contentPaneLayout
                     .createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(jLabel1)
+                    .addComponent(lblContactId)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                     .addComponent(
-                        contactIDTxt,
+                        contactIdTxt,
                         GroupLayout.PREFERRED_SIZE,
                         GroupLayout.DEFAULT_SIZE,
                         GroupLayout.PREFERRED_SIZE)
                     .addContainerGap(352, Short.MAX_VALUE))
-            .addComponent(jLabel2, GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
+            .addComponent(lblTitle, GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
             .addGroup(
                 contentPaneLayout
                     .createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
+                    .addComponent(rawInfoScroll, GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
                     .addContainerGap()));
     contentPaneLayout.setVerticalGroup(
         contentPaneLayout
@@ -102,29 +112,29 @@ public class ContactRawInfo extends JFrame {
                 GroupLayout.Alignment.TRAILING,
                 contentPaneLayout
                     .createSequentialGroup()
-                    .addComponent(jLabel2)
+                    .addComponent(lblTitle)
                     .addGap(8, 8, 8)
                     .addGroup(
                         contentPaneLayout
                             .createParallelGroup(GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
+                            .addComponent(lblContactId)
                             .addComponent(
-                                contactIDTxt,
+                                contactIdTxt,
                                 GroupLayout.PREFERRED_SIZE,
                                 GroupLayout.DEFAULT_SIZE,
                                 GroupLayout.PREFERRED_SIZE))
                     .addGap(18, 18, 18)
-                    .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
+                    .addComponent(rawInfoScroll, GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
                     .addContainerGap()));
     pack();
     setLocationRelativeTo(getOwner());
   } // </editor-fold>//GEN-END:initComponents
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  private JLabel jLabel1;
-  private JTextField contactIDTxt;
-  private JLabel jLabel2;
-  private JScrollPane jScrollPane1;
+  private JLabel lblContactId;
+  private JTextField contactIdTxt;
+  private JLabel lblTitle;
+  private JScrollPane rawInfoScroll;
   private JTextArea contactRawInfoTxt;
   // End of variables declaration//GEN-END:variables
 

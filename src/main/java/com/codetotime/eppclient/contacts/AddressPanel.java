@@ -14,14 +14,29 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.contacts;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
+/**
+ * Panel for viewing and editing all fields of an EPP contact object, including postal info, Italian
+ * registry-specific fields, status, and consent flags.
+ */
 public class AddressPanel extends JPanel {
 
   /** Creates new form AddressPanel. */
@@ -732,7 +747,7 @@ public class AddressPanel extends JPanel {
 
   private void txtIsRegistrantActionPerformed(
       java.awt.event.ActionEvent evt) { // GEN-FIRST:event_txtIsRegistrantActionPerformed
-    // TODO add your handling code here:
+    // TODO: add your handling code here:
     if (address.getIsRegistrant() && !address.isIsRegistrantChanged() && !getIsNewContact()) {
       if (!txtIsRegistrant.isSelected()) {
         JOptionPane.showMessageDialog(
@@ -1007,6 +1022,11 @@ public class AddressPanel extends JPanel {
     return newStatus;
   }
 
+  /**
+   * Populates all panel fields from the given address object.
+   *
+   * @param address the contact whose data should be displayed
+   */
   public void setAddress(Address address) {
     if (address != null) {
       setContactName(address.getContactName());
@@ -1038,6 +1058,11 @@ public class AddressPanel extends JPanel {
     }
   }
 
+  /**
+   * Reads all panel fields and returns an {@link Address} populated with the current input.
+   *
+   * @return the contact built from the current field values
+   */
   public Address getAddress() {
     getContactName();
     getOrg();
@@ -1064,6 +1089,7 @@ public class AddressPanel extends JPanel {
     return address;
   }
 
+  /** Clears all input fields and resets the internal address object. */
   public void clear() {
     txtContactId.setText(null);
     txtAutoContactId.setSelected(true);
@@ -1090,42 +1116,47 @@ public class AddressPanel extends JPanel {
     txtUoCode.setText(null);
   }
 
-  public void setEditable(boolean bEditable) {
-    txtAutoContactId.setVisible(bEditable && (contactId.equals("")) && getIsNewContact());
-    txtAutoContactId.setEnabled(bEditable && (contactId.equals("")) && getIsNewContact());
+  /**
+   * Enables or disables all input fields.
+   *
+   * @param editable {@code true} to allow editing
+   */
+  public void setEditable(boolean editable) {
+    txtAutoContactId.setVisible(editable && (contactId.equals("")) && getIsNewContact());
+    txtAutoContactId.setEnabled(editable && (contactId.equals("")) && getIsNewContact());
     txtContactId.setEditable(
-        bEditable && !txtAutoContactId.isSelected() && (contactId.equals("")) && getIsNewContact());
+        editable && !txtAutoContactId.isSelected() && (contactId.equals("")) && getIsNewContact());
 
-    // txtName.setEditable((bEditable && !address.getIsRegistrant()) || (bEditable &&
-    // address.isIsRegistrantChanged()) || (bEditable && getIsNewContact()));
+    // txtName.setEditable((editable && !address.getIsRegistrant()) || (editable &&
+    // address.isIsRegistrantChanged()) || (editable && getIsNewContact()));
     txtName.setEditable(
-        (bEditable && (!address.getIsRegistrant() || address.getEntityType() != 1))
-            || (bEditable && address.isIsRegistrantChanged())
-            || (bEditable && getIsNewContact()));
+        (editable && (!address.getIsRegistrant() || address.getEntityType() != 1))
+            || (editable && address.isIsRegistrantChanged())
+            || (editable && getIsNewContact()));
     txtOrg.setEditable(
-        (bEditable && !address.getIsRegistrant())
-            || (bEditable && address.isIsRegistrantChanged())
-            || (bEditable && getIsNewContact()));
-    txtStreet.setEditable(bEditable);
+        (editable && !address.getIsRegistrant())
+            || (editable && address.isIsRegistrantChanged())
+            || (editable && getIsNewContact()));
+    txtStreet.setEditable(editable);
 
-    txtCity.setEditable(bEditable);
-    txtStateOrProvince.setEditable(bEditable);
-    txtPostalCode.setEditable(bEditable);
-    txtCountryCode.setEditable(bEditable);
-    txtVoice.setEditable(bEditable);
-    txtFax.setEditable(bEditable);
-    txtEmail.setEditable(bEditable);
-    txtSchoolCode.setEditable(bEditable);
+    txtCity.setEditable(editable);
+    txtStateOrProvince.setEditable(editable);
+    txtPostalCode.setEditable(editable);
+    txtCountryCode.setEditable(editable);
+    txtVoice.setEditable(editable);
+    txtFax.setEditable(editable);
+    txtEmail.setEditable(editable);
+    txtSchoolCode.setEditable(editable);
 
-    txtConsentForPublishing.setEnabled(bEditable);
+    txtConsentForPublishing.setEnabled(editable);
 
     Boolean isRegistrantFieldEditable =
-        (bEditable && !address.getIsRegistrant())
-            || (bEditable && address.isIsRegistrantChanged() || (bEditable && getIsNewContact()));
+        (editable && !address.getIsRegistrant())
+            || (editable && address.isIsRegistrantChanged() || (editable && getIsNewContact()));
     Boolean registrantFieldsEditableFlag =
-        (bEditable && address.isIsRegistrantChanged() && txtIsRegistrant.isSelected())
-            || (bEditable && txtIsRegistrant.isSelected() && !address.getIsRegistrant())
-            || (bEditable && getIsNewContact() && txtIsRegistrant.isSelected());
+        (editable && address.isIsRegistrantChanged() && txtIsRegistrant.isSelected())
+            || (editable && txtIsRegistrant.isSelected() && !address.getIsRegistrant())
+            || (editable && getIsNewContact() && txtIsRegistrant.isSelected());
 
     txtIsRegistrant.setEnabled(isRegistrantFieldEditable);
 
@@ -1167,7 +1198,7 @@ public class AddressPanel extends JPanel {
       txtUoCode.setEditable(registrantFieldsEditableFlag || address.getIsRegistrant());
     }
 
-    isEditable = bEditable;
+    isEditable = editable;
   }
 
   public boolean isEditable() {

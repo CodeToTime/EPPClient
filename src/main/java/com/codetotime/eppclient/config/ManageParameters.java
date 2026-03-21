@@ -14,14 +14,15 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.config;
 
 import com.codetotime.eppclient.CustomLogin;
 import com.codetotime.eppclient.ErrorHandler;
-import com.codetotime.eppclient.main;
+import com.codetotime.eppclient.Main;
 import it.nic.epp.client.commands.session.Logout;
 import it.nic.epp.client.httpClient.Client;
 import it.nic.epp.client.responses.HttpBaseResponse;
@@ -50,15 +51,16 @@ import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class manageParameters extends JFrame implements WindowListener {
-  private static final Logger log = LoggerFactory.getLogger(manageParameters.class);
+/** Swing form for viewing and editing all application configuration parameters. */
+public class ManageParameters extends JFrame implements WindowListener {
+  private static final Logger log = LoggerFactory.getLogger(ManageParameters.class);
 
-  main mainFrame;
+  Main mainFrame;
   private boolean isKillRequired;
   private boolean killOnClose;
 
   /** Creates new form manageParameters2. */
-  public manageParameters(main mainFrame) {
+  public ManageParameters(Main mainFrame) {
     initComponents();
     this.mainFrame = mainFrame;
     isKillRequired = false;
@@ -74,19 +76,19 @@ public class manageParameters extends JFrame implements WindowListener {
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
 
   private void initComponents() {
-    jLabel1 = new JLabel();
+    lblEppUserName = new JLabel();
     defaultUser = new JTextField();
     defaultPassword = new JTextField();
-    jLabel2 = new JLabel();
-    serverURI = new JTextField();
-    jLabel3 = new JLabel();
+    lblEppPassword = new JLabel();
+    serverUri = new JTextField();
+    lblProxyHost = new JLabel();
     saveButton = new JButton();
     cancelButton = new JButton();
     btnChangePwd = new JButton();
     saveCloseButton = new JButton();
     dbhost = new JTextField();
     lblDbHostname = new JLabel();
-    jLabel5 = new JLabel();
+    lblDbEngine = new JLabel();
     dbengine = new JComboBox<>();
     dbname = new JTextField();
     lblDbName = new JLabel();
@@ -95,22 +97,22 @@ public class manageParameters extends JFrame implements WindowListener {
     lblDbUid = new JLabel();
     lblDbPwd = new JLabel();
     refreshInterval = new JTextField();
-    jLabel4 = new JLabel();
+    lblRefreshInterval = new JLabel();
     emptyDb = new JButton();
-    jLabel6 = new JLabel();
-    jLabel7 = new JLabel();
+    lblEppServerUri = new JLabel();
+    lblProxyPort = new JLabel();
     proxyHost = new JTextField();
     proxyPort = new JTextField();
     contactPrefix = new JTextField();
-    jLabel8 = new JLabel();
+    lblContactPrefix = new JLabel();
     defaultTech = new JTextField();
-    defaultNS = new JTextField();
-    jLabel9 = new JLabel();
-    jLabel10 = new JLabel();
-    jLabel11 = new JLabel();
-    jLabel12 = new JLabel();
-    lblDNSSEC = new JLabel();
-    chkDNSSEC = new JCheckBox();
+    defaultNs = new JTextField();
+    lblDefaultTech = new JLabel();
+    lblDefaultNs = new JLabel();
+    lblTechExample = new JLabel();
+    lblNsExample = new JLabel();
+    lblDnssec = new JLabel();
+    chkDnsSec = new JCheckBox();
 
     // ======== this ========
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -120,10 +122,10 @@ public class manageParameters extends JFrame implements WindowListener {
     Container contentPane = getContentPane();
     contentPane.setLayout(new GridBagLayout());
 
-    // ---- jLabel1 ----
-    jLabel1.setText("eppUserName");
+    // ---- lblEppUserName ----
+    lblEppUserName.setText("eppUserName");
     contentPane.add(
-        jLabel1,
+        lblEppUserName,
         new GridBagConstraints(
             0,
             0,
@@ -173,10 +175,10 @@ public class manageParameters extends JFrame implements WindowListener {
             0,
             0));
 
-    // ---- jLabel2 ----
-    jLabel2.setText("eppPassword");
+    // ---- lblEppPassword ----
+    lblEppPassword.setText("eppPassword");
     contentPane.add(
-        jLabel2,
+        lblEppPassword,
         new GridBagConstraints(
             0,
             1,
@@ -190,11 +192,11 @@ public class manageParameters extends JFrame implements WindowListener {
             0,
             0));
 
-    // ---- serverURI ----
-    serverURI.setMinimumSize(new Dimension(250, 20));
-    serverURI.setPreferredSize(new Dimension(250, 20));
+    // ---- serverUri ----
+    serverUri.setMinimumSize(new Dimension(250, 20));
+    serverUri.setPreferredSize(new Dimension(250, 20));
     contentPane.add(
-        serverURI,
+        serverUri,
         new GridBagConstraints(
             1,
             2,
@@ -208,10 +210,10 @@ public class manageParameters extends JFrame implements WindowListener {
             0,
             0));
 
-    // ---- jLabel3 ----
-    jLabel3.setText("proxyHost");
+    // ---- lblProxyHost ----
+    lblProxyHost.setText("proxyHost");
     contentPane.add(
-        jLabel3,
+        lblProxyHost,
         new GridBagConstraints(
             0,
             3,
@@ -337,10 +339,10 @@ public class manageParameters extends JFrame implements WindowListener {
             0,
             0));
 
-    // ---- jLabel5 ----
-    jLabel5.setText("dbEngine");
+    // ---- lblDbEngine ----
+    lblDbEngine.setText("dbEngine");
     contentPane.add(
-        jLabel5,
+        lblDbEngine,
         new GridBagConstraints(
             0,
             8,
@@ -493,10 +495,10 @@ public class manageParameters extends JFrame implements WindowListener {
             0,
             0));
 
-    // ---- jLabel4 ----
-    jLabel4.setText("refreshInterval (s)");
+    // ---- lblRefreshInterval ----
+    lblRefreshInterval.setText("refreshInterval (s)");
     contentPane.add(
-        jLabel4,
+        lblRefreshInterval,
         new GridBagConstraints(
             0,
             4,
@@ -528,10 +530,10 @@ public class manageParameters extends JFrame implements WindowListener {
             0,
             0));
 
-    // ---- jLabel6 ----
-    jLabel6.setText("eppServerURI");
+    // ---- lblEppServerUri ----
+    lblEppServerUri.setText("eppServerURI");
     contentPane.add(
-        jLabel6,
+        lblEppServerUri,
         new GridBagConstraints(
             0,
             2,
@@ -545,10 +547,10 @@ public class manageParameters extends JFrame implements WindowListener {
             0,
             0));
 
-    // ---- jLabel7 ----
-    jLabel7.setText("proxyPort");
+    // ---- lblProxyPort ----
+    lblProxyPort.setText("proxyPort");
     contentPane.add(
-        jLabel7,
+        lblProxyPort,
         new GridBagConstraints(
             2,
             3,
@@ -614,10 +616,10 @@ public class manageParameters extends JFrame implements WindowListener {
             0,
             0));
 
-    // ---- jLabel8 ----
-    jLabel8.setText("contactPrefix");
+    // ---- lblContactPrefix ----
+    lblContactPrefix.setText("contactPrefix");
     contentPane.add(
-        jLabel8,
+        lblContactPrefix,
         new GridBagConstraints(
             0,
             5,
@@ -649,11 +651,11 @@ public class manageParameters extends JFrame implements WindowListener {
             0,
             0));
 
-    // ---- defaultNS ----
-    defaultNS.setMinimumSize(new Dimension(250, 20));
-    defaultNS.setPreferredSize(new Dimension(250, 20));
+    // ---- defaultNs ----
+    defaultNs.setMinimumSize(new Dimension(250, 20));
+    defaultNs.setPreferredSize(new Dimension(250, 20));
     contentPane.add(
-        defaultNS,
+        defaultNs,
         new GridBagConstraints(
             1,
             7,
@@ -667,10 +669,10 @@ public class manageParameters extends JFrame implements WindowListener {
             0,
             0));
 
-    // ---- jLabel9 ----
-    jLabel9.setText("defaultTech");
+    // ---- lblDefaultTech ----
+    lblDefaultTech.setText("defaultTech");
     contentPane.add(
-        jLabel9,
+        lblDefaultTech,
         new GridBagConstraints(
             0,
             6,
@@ -684,10 +686,10 @@ public class manageParameters extends JFrame implements WindowListener {
             0,
             0));
 
-    // ---- jLabel10 ----
-    jLabel10.setText("defaultNS");
+    // ---- lblDefaultNs ----
+    lblDefaultNs.setText("defaultNS");
     contentPane.add(
-        jLabel10,
+        lblDefaultNs,
         new GridBagConstraints(
             0,
             7,
@@ -701,11 +703,11 @@ public class manageParameters extends JFrame implements WindowListener {
             0,
             0));
 
-    // ---- jLabel11 ----
-    jLabel11.setFont(new Font(Font.DIALOG, Font.PLAIN, 10));
-    jLabel11.setText("(es.: TECH1;TECH2;TECH3)");
+    // ---- lblTechExample ----
+    lblTechExample.setFont(new Font(Font.DIALOG, Font.PLAIN, 10));
+    lblTechExample.setText("(es.: TECH1;TECH2;TECH3)");
     contentPane.add(
-        jLabel11,
+        lblTechExample,
         new GridBagConstraints(
             2,
             6,
@@ -719,11 +721,11 @@ public class manageParameters extends JFrame implements WindowListener {
             0,
             0));
 
-    // ---- jLabel12 ----
-    jLabel12.setFont(new Font(Font.DIALOG, Font.PLAIN, 10));
-    jLabel12.setText("(es.: dns1.example.it;dns2.example.it)");
+    // ---- lblNsExample ----
+    lblNsExample.setFont(new Font(Font.DIALOG, Font.PLAIN, 10));
+    lblNsExample.setText("(es.: dns1.example.it;dns2.example.it)");
     contentPane.add(
-        jLabel12,
+        lblNsExample,
         new GridBagConstraints(
             2,
             7,
@@ -737,10 +739,10 @@ public class manageParameters extends JFrame implements WindowListener {
             0,
             0));
 
-    // ---- lblDNSSEC ----
-    lblDNSSEC.setText("DNSSEC");
+    // ---- lblDnssec ----
+    lblDnssec.setText("DNSSEC");
     contentPane.add(
-        lblDNSSEC,
+        lblDnssec,
         new GridBagConstraints(
             0,
             13,
@@ -754,10 +756,10 @@ public class manageParameters extends JFrame implements WindowListener {
             0,
             0));
 
-    // ---- chkDNSSEC ----
-    chkDNSSEC.setText("Abilita supporto a DNSSEC");
+    // ---- chkDnsSec ----
+    chkDnsSec.setText("Abilita supporto a DNSSEC");
     contentPane.add(
-        chkDNSSEC,
+        chkDnsSec,
         new GridBagConstraints(
             1,
             13,
@@ -800,7 +802,7 @@ public class manageParameters extends JFrame implements WindowListener {
             "The New Password cannot be an empty string.",
             "Password cannot be empty",
             JOptionPane.ERROR_MESSAGE);
-      } else if (EPPparams.getParameter("EppClient.defaultPassword").equals(newPassword)) {
+      } else if (EppParams.getParameter("EppClient.defaultPassword").equals(newPassword)) {
         JOptionPane.showMessageDialog(
             this,
             "The New Password cannot be the same as the Old Password.",
@@ -808,16 +810,16 @@ public class manageParameters extends JFrame implements WindowListener {
             JOptionPane.ERROR_MESSAGE);
       } else {
         try {
-          // sets the serverURI
-          URI serverURI = new URI(EPPparams.getParameter("EppClient.serverURI"));
+          // sets the serverUri
+          URI serverUri = new URI(EppParams.getParameter("EppClient.Epp.serverUri"));
           // creates a new client
-          Client client = new Client(serverURI.toString());
+          Client client = new Client(serverUri.toString());
 
           // creates a login command with a valid account
           CustomLogin login =
               new CustomLogin(
-                  EPPparams.getParameter("EppClient.defaultUser"),
-                  EPPparams.getParameter("EppClient.defaultPassword"));
+                  EppParams.getParameter("EppClient.defaultUser"),
+                  EppParams.getParameter("EppClient.defaultPassword"));
 
           login.setNewPW(newPassword);
 
@@ -833,7 +835,7 @@ public class manageParameters extends JFrame implements WindowListener {
           log.info("SERVER logout: {}", response.toString());
 
           defaultPassword.setText(newPassword);
-          EPPparams.setParameter("EppClient.defaultPassword", defaultPassword.getText());
+          EppParams.setParameter("EppClient.defaultPassword", defaultPassword.getText());
 
           JOptionPane.showMessageDialog(
               this,
@@ -873,19 +875,19 @@ public class manageParameters extends JFrame implements WindowListener {
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
 
-  private JLabel jLabel1;
+  private JLabel lblEppUserName;
   private JTextField defaultUser;
   private JTextField defaultPassword;
-  private JLabel jLabel2;
-  private JTextField serverURI;
-  private JLabel jLabel3;
+  private JLabel lblEppPassword;
+  private JTextField serverUri;
+  private JLabel lblProxyHost;
   private JButton saveButton;
   private JButton cancelButton;
   private JButton btnChangePwd;
   private JButton saveCloseButton;
   private JTextField dbhost;
   private JLabel lblDbHostname;
-  private JLabel jLabel5;
+  private JLabel lblDbEngine;
   private JComboBox<String> dbengine;
   private JTextField dbname;
   private JLabel lblDbName;
@@ -894,95 +896,109 @@ public class manageParameters extends JFrame implements WindowListener {
   private JLabel lblDbUid;
   private JLabel lblDbPwd;
   private JTextField refreshInterval;
-  private JLabel jLabel4;
+  private JLabel lblRefreshInterval;
   private JButton emptyDb;
-  private JLabel jLabel6;
-  private JLabel jLabel7;
+  private JLabel lblEppServerUri;
+  private JLabel lblProxyPort;
   private JTextField proxyHost;
   private JTextField proxyPort;
   private JTextField contactPrefix;
-  private JLabel jLabel8;
+  private JLabel lblContactPrefix;
   private JTextField defaultTech;
-  private JTextField defaultNS;
-  private JLabel jLabel9;
-  private JLabel jLabel10;
-  private JLabel jLabel11;
-  private JLabel jLabel12;
-  private JLabel lblDNSSEC;
-  private JCheckBox chkDNSSEC;
+  private JTextField defaultNs;
+  private JLabel lblDefaultTech;
+  private JLabel lblDefaultNs;
+  private JLabel lblTechExample;
+  private JLabel lblNsExample;
+  private JLabel lblDnssec;
+  private JCheckBox chkDnsSec;
 
   // End of variables declaration//GEN-END:variables
 
-  public void setEPPEnablement(boolean EPPstatus) {
-    // btnChangePwd.setVisible(EPPstatus);
+  /**
+   * Enables or disables EPP-related controls based on connection status.
+   *
+   * @param eppStatus {@code true} if the EPP connection is active
+   */
+  public void setEppEnablement(boolean eppStatus) {
+    // btnChangePwd.setVisible(eppStatus);
   }
 
   private void saveParameters() {
-    EPPparams.setParameter("EppClient.defaultUser", defaultUser.getText());
-    EPPparams.setParameter("EppClient.defaultPassword", defaultPassword.getText());
+    EppParams.setParameter("EppClient.defaultUser", defaultUser.getText());
+    EppParams.setParameter("EppClient.defaultPassword", defaultPassword.getText());
 
-    if (serverURI.getText().contains("https://epp-acc1.nic.it")
-        || serverURI.getText().contains("https://epp-acc2.nic.it")) {
+    if (serverUri.getText().contains("https://epp-acc1.nic.it")
+        || serverUri.getText().contains("https://epp-acc2.nic.it")) {
       JOptionPane.showMessageDialog(
           this,
-          "Please DONT'T enter accreditation test server here!\n\nTo proceed with the .it Registry Accreditation test go to the TEST section.\n\nAs the accreditation procedure requires several operations to be executed in sequence\nentering here an accreditation server hostname will cause the test to fail.",
+          "Please DONT'T enter accreditation test server here!\n\n"
+              + "To proceed with the .it Registry Accreditation test go to the TEST section.\n\n"
+              + "As the accreditation procedure requires several operations to be executed in"
+              + " sequence\n"
+              + "entering here an accreditation server hostname will cause the test to fail.",
           "ACCREDITATION SERVER FOUND",
           JOptionPane.INFORMATION_MESSAGE);
-      serverURI.setText(EPPparams.getParameter("EppClient.serverURI"));
+      serverUri.setText(EppParams.getParameter("EppClient.serverUri"));
     } else {
-      EPPparams.setParameter("EppClient.serverURI", serverURI.getText());
+      EppParams.setParameter("EppClient.serverUri", serverUri.getText());
     }
 
-    EPPparams.setParameter("EppClient.proxyHost", proxyHost.getText());
+    EppParams.setParameter("EppClient.proxyHost", proxyHost.getText());
 
     // Handle proxyPort - save as string, validate if numeric
     String proxyPortValue = proxyPort.getText().trim();
     try {
       Integer.parseInt(proxyPortValue);
     } catch (NumberFormatException ex) {
+      log.debug("Invalid proxy port value: {}", proxyPortValue);
       proxyPortValue = ""; // Treat invalid numeric values as empty string
     }
-    EPPparams.setParameter("EppClient.proxyPort", proxyPortValue);
+    EppParams.setParameter("EppClient.proxyPort", proxyPortValue);
 
-    EPPparams.setParameter("EppClient.contactPrefix", contactPrefix.getText());
-    EPPparams.setParameter("EppClient.defaultTech", defaultTech.getText());
-    EPPparams.setParameter("EppClient.defaultNS", defaultNS.getText());
+    EppParams.setParameter("EppClient.contactPrefix", contactPrefix.getText());
+    EppParams.setParameter("EppClient.defaultTech", defaultTech.getText());
+    EppParams.setParameter("EppClient.defaultNS", defaultNs.getText());
 
     // Handle refreshInterval - save as string, validate if numeric
     String refreshValue = refreshInterval.getText().trim();
     try {
       Integer.parseInt(refreshValue);
     } catch (NumberFormatException ex) {
+      log.debug("Invalid refresh interval value: {}", refreshValue);
       refreshValue = ""; // Treat invalid numeric values as empty string
     }
-    EPPparams.setParameter("EppClient.refreshInterval", refreshValue);
+    EppParams.setParameter("EppClient.refreshInterval", refreshValue);
 
-    EPPparams.setParameter("EppClient.dbengine", Integer.toString(dbengine.getSelectedIndex()));
-    EPPparams.setParameter("EppClient.dbname", dbname.getText());
-    EPPparams.setParameter("EppClient.dbhost", dbhost.getText());
-    EPPparams.setParameter("EppClient.dbuid", dbuid.getText());
-    EPPparams.setParameter("EppClient.dbpwd", dbpwd.getText());
-    EPPparams.setParameter("EppClient.implement.DNSSEC", Boolean.toString(chkDNSSEC.isSelected()));
+    EppParams.setParameter("EppClient.dbengine", Integer.toString(dbengine.getSelectedIndex()));
+    EppParams.setParameter("EppClient.dbname", dbname.getText());
+    EppParams.setParameter("EppClient.dbhost", dbhost.getText());
+    EppParams.setParameter("EppClient.dbuid", dbuid.getText());
+    EppParams.setParameter("EppClient.dbpwd", dbpwd.getText());
+    EppParams.setParameter("EppClient.implement.DNSSEC", Boolean.toString(chkDnsSec.isSelected()));
 
     switch (dbengine.getSelectedIndex()) { // 0: derby, 1: mysql/mariadb, 2: postgresql
       case 0:
-        EPPparams.setParameter("EppClient.dburl", "jdbc:derby:");
-        EPPparams.setParameter("EppClient.dbname", "eppclient");
-        EPPparams.setParameter("EppClient.dbuid", "eppclient");
-        EPPparams.setParameter("EppClient.dbpwd", "clientepp");
+        EppParams.setParameter("EppClient.dburl", "jdbc:derby:");
+        EppParams.setParameter("EppClient.dbname", "eppclient");
+        EppParams.setParameter("EppClient.dbuid", "eppclient");
+        EppParams.setParameter("EppClient.dbpwd", "clientepp");
         break;
       case 1:
-        EPPparams.setParameter(
+        EppParams.setParameter(
             "EppClient.dburl", "jdbc:mariadb://" + dbhost.getText() + "/" + dbname.getText());
         break;
       case 2:
-        EPPparams.setParameter(
+        EppParams.setParameter(
             "EppClient.dburl", "jdbc:postgresql://" + dbhost.getText() + "/" + dbname.getText());
+        break;
       default:
         break;
     }
 
-    if (isKillRequired) killOnClose = true;
+    if (isKillRequired) {
+      killOnClose = true;
+    }
   }
 
   private void dropTables() {
@@ -1027,22 +1043,22 @@ public class manageParameters extends JFrame implements WindowListener {
   public void setVisible(boolean b) {
     super.setVisible(b);
     if (b) {
-      defaultUser.setText(EPPparams.getParameter("EppClient.defaultUser"));
-      defaultPassword.setText(EPPparams.getParameter("EppClient.defaultPassword"));
-      serverURI.setText(EPPparams.getParameter("EppClient.serverURI"));
-      proxyHost.setText(EPPparams.getParameter("EppClient.proxyHost"));
-      proxyPort.setText(EPPparams.getParameter("EppClient.proxyPort"));
-      contactPrefix.setText(EPPparams.getParameter("EppClient.contactPrefix"));
-      defaultTech.setText(EPPparams.getParameter("EppClient.defaultTech"));
-      defaultNS.setText(EPPparams.getParameter("EppClient.defaultNS"));
-      refreshInterval.setText(EPPparams.getParameter("EppClient.refreshInterval"));
-      dbengine.setSelectedIndex(Integer.parseInt(EPPparams.getParameter("EppClient.dbengine")));
-      dbname.setText(EPPparams.getParameter("EppClient.dbname"));
-      dbhost.setText(EPPparams.getParameter("EppClient.dbhost"));
-      dbuid.setText(EPPparams.getParameter("EppClient.dbuid"));
-      dbpwd.setText(EPPparams.getParameter("EppClient.dbpwd"));
-      chkDNSSEC.setSelected(
-          Boolean.parseBoolean(EPPparams.getParameter("EppClient.implement.DNSSEC")));
+      defaultUser.setText(EppParams.getParameter("EppClient.defaultUser"));
+      defaultPassword.setText(EppParams.getParameter("EppClient.defaultPassword"));
+      serverUri.setText(EppParams.getParameter("EppClient.serverUri"));
+      proxyHost.setText(EppParams.getParameter("EppClient.proxyHost"));
+      proxyPort.setText(EppParams.getParameter("EppClient.proxyPort"));
+      contactPrefix.setText(EppParams.getParameter("EppClient.contactPrefix"));
+      defaultTech.setText(EppParams.getParameter("EppClient.defaultTech"));
+      defaultNs.setText(EppParams.getParameter("EppClient.defaultNS"));
+      refreshInterval.setText(EppParams.getParameter("EppClient.refreshInterval"));
+      dbengine.setSelectedIndex(Integer.parseInt(EppParams.getParameter("EppClient.dbengine")));
+      dbname.setText(EppParams.getParameter("EppClient.dbname"));
+      dbhost.setText(EppParams.getParameter("EppClient.dbhost"));
+      dbuid.setText(EppParams.getParameter("EppClient.dbuid"));
+      dbpwd.setText(EppParams.getParameter("EppClient.dbpwd"));
+      chkDnsSec.setSelected(
+          Boolean.parseBoolean(EppParams.getParameter("EppClient.implement.DNSSEC")));
       setVisibleOnDbEngine();
     } else {
       if (killOnClose) {
@@ -1051,18 +1067,25 @@ public class manageParameters extends JFrame implements WindowListener {
     }
   }
 
+  /** {@inheritDoc} */
   public void windowActivated(WindowEvent e) {}
 
+  /** {@inheritDoc} */
   public void windowOpened(WindowEvent e) {}
 
+  /** {@inheritDoc} */
   public void windowClosed(WindowEvent e) {}
 
+  /** {@inheritDoc} */
   public void windowDeactivated(WindowEvent e) {}
 
+  /** {@inheritDoc} */
   public void windowDeiconified(WindowEvent e) {}
 
+  /** {@inheritDoc} */
   public void windowIconified(WindowEvent e) {}
 
+  /** {@inheritDoc} */
   public void windowClosing(WindowEvent e) {
     if (killOnClose) {
       mainFrame.windowClosing(e);

@@ -13,18 +13,31 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.db;
 
-import com.codetotime.eppclient.config.EPPparams;
-import java.io.*;
+import com.codetotime.eppclient.config.EppParams;
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.Statement;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility to export database tables (contacts, domains, messages) to CSV files inside a ZIP
@@ -32,6 +45,7 @@ import java.util.zip.ZipOutputStream;
  * with both Derby and MySQL/MariaDB/PostgreSQL.
  */
 public class DbExporter {
+  private static final Logger log = LoggerFactory.getLogger(DbExporter.class);
 
   /**
    * Export contacts, domains and messages tables to a ZIP file at the given destination. The ZIP
@@ -64,7 +78,7 @@ public class DbExporter {
   /**
    * Export a single table (determined by the provided properties resource name) into a CSV entry in
    * the given zip. Properties files must contain: db.table, db.schema and default
-   * derby.url/derby.driver (will be overridden by EPPparams).
+   * derby.url/derby.driver (will be overridden by EppParams).
    */
   private void exportSingleTableToZipEntry(
       ZipOutputStream zos, String propertiesResourceName, String entryName) throws Exception {
@@ -76,14 +90,14 @@ public class DbExporter {
       }
     }
 
-    // Override with runtime configuration from EPPparams
+    // Override with runtime configuration from EppParams
     props.put("derby.driver", "org.apache.derby.jdbc.EmbeddedDriver");
-    props.put("derby.url", EPPparams.getParameter("EppClient.dburl"));
-    props.put("db.schema", EPPparams.getParameter("EppClient.dbname"));
-    props.put("user", EPPparams.getParameter("EppClient.dbuid"));
-    props.put("password", EPPparams.getParameter("EppClient.dbpwd"));
+    props.put("derby.url", EppParams.getParameter("EppClient.dburl"));
+    props.put("db.schema", EppParams.getParameter("EppClient.dbname"));
+    props.put("user", EppParams.getParameter("EppClient.dbuid"));
+    props.put("password", EppParams.getParameter("EppClient.dbpwd"));
 
-    if (EPPparams.getParameter("EppClient.dburl").contains("postgresql")) {
+    if (EppParams.getParameter("EppClient.dburl").contains("postgresql")) {
       props.put("db.schema", "public");
     }
 
@@ -142,14 +156,18 @@ public class DbExporter {
     int cols = meta.getColumnCount();
     // Header
     for (int i = 1; i <= cols; i++) {
-      if (i > 1) writer.write(delimiter);
+      if (i > 1) {
+        writer.write(delimiter);
+      }
       writer.write(alwaysQuote(meta.getColumnName(i)));
     }
     writer.write("\r\n");
     // Rows
     while (rs.next()) {
       for (int i = 1; i <= cols; i++) {
-        if (i > 1) writer.write(delimiter);
+        if (i > 1) {
+          writer.write(delimiter);
+        }
         Object val = rs.getObject(i);
         writer.write(alwaysQuote(val));
       }
@@ -166,7 +184,7 @@ public class DbExporter {
 
   private static char resolveDelimiter() {
     try {
-      String cfg = EPPparams.getParameter("EppClient.csv.delimiter");
+      String cfg = EppParams.getParameter("EppClient.csv.delimiter");
       if (cfg != null) {
         cfg = cfg.trim().toLowerCase();
         switch (cfg) {
@@ -181,10 +199,14 @@ public class DbExporter {
           case "tsv":
             return '\t';
           default:
-            if (cfg.length() == 1) return cfg.charAt(0);
+            if (cfg.length() == 1) {
+              return cfg.charAt(0);
+            }
+            break;
         }
       }
-    } catch (Exception ignored) {
+    } catch (Exception e) {
+      log.debug("Failed to resolve CSV delimiter, using default: {}", e.getMessage());
     }
     // Default: semicolon (better for many EU Excel/LibreOffice setups)
     return ';';
@@ -207,7 +229,9 @@ public class DbExporter {
   }
 
   private static String buildJdbcUrl(String baseUrl, String dbName) {
-    if (baseUrl == null) return null;
+    if (baseUrl == null) {
+      return null;
+    }
     String lurl = baseUrl.toLowerCase();
     if (lurl.contains("mariadb") || lurl.contains("postgresql")) {
       return baseUrl; // full URL already configured for MySQL/MariaDB/PostgreSQL
@@ -233,7 +257,8 @@ public class DbExporter {
       if (!fileSystemDir.exists()) {
         fileSystemDir.mkdirs();
       }
-    } catch (Exception ignored) {
+    } catch (Exception e) {
+      log.error("Failed to set Derby system directory: {}", e.getMessage(), e);
     }
   }
 }

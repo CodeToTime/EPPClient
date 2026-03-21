@@ -13,17 +13,33 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient;
 
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.border.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Frame;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
+/** Modal dialog showing build-time info: company, VAT number, registrar tag and build date. */
 public class InfoDialog {
 
+  /**
+   * Opens the build info dialog, modal over the given parent frame.
+   *
+   * @param parent the parent frame used to centre the dialog
+   */
   public static void show(Frame parent) {
 
     JDialog dialog = new JDialog(parent, "EPP Client - Informazioni compilazione", true);
@@ -78,9 +94,11 @@ public class InfoDialog {
         + "Il richiedente ha certificato quanto segue:\n\n"
         + "1) Di essere un Registrar accreditato presso il Registro .it (NIC.it).\n"
         + "2) Di essere autorizzato all'utilizzo della libreria EPP del Registro .it.\n"
-        + "3) Di aver verificato il codice del software EPP Client e di accettarlo nello stato in cui viene fornito (\"AS IS\").\n"
+        + "3) Di aver verificato il codice del software EPP Client e di accettarlo nello stato\n"
+        + "in cui viene fornito (\"AS IS\").\n"
         + "----------------------------------------\n"
-        + "Le dichiarazioni sopra riportate sono rese sotto la piena responsabilità del richiedente.\n\n"
+        + "Le dichiarazioni sopra riportate sono rese sotto la piena responsabilità del\n"
+        + "richiedente.\n\n"
         + "Il software è fornito senza garanzie di alcun tipo.";
   }
 }

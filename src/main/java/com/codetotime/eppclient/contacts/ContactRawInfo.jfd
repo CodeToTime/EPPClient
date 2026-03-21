@@ -4,28 +4,28 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq t {space :p::p, comp jLabel1:::p::p, space u:::p, comp contactIDTxt:::p::p, space ::352:x}, comp jLabel2::l::483:x, seq l {space :::p, comp jScrollPane1::::463:x, space :::p}}"
-			"$verticalGroup": "par l {seq t {comp jLabel2:::p::p, space :p:8:p, par b {comp jLabel1::b:p::p, comp contactIDTxt::b:p::p}, space s:p::p, comp jScrollPane1::::203:x, space :p::p}}"
+			"$horizontalGroup": "par l {seq t {space :p::p, comp lblContactId:::p::p, space u:::p, comp contactIdTxt:::p::p, space ::352:x}, comp lblTitle::l::483:x, seq l {space :::p, comp rawInfoScroll::::463:x, space :::p}}"
+			"$verticalGroup": "par l {seq t {comp lblTitle:::p::p, space :p:8:p, par b {comp lblContactId::b:p::p, comp contactIdTxt::b:p::p}, space s:p::p, comp rawInfoScroll::::203:x, space :p::p}}"
 		} ) {
 			name: "this"
 			"title": "Contact INFO Output"
 			add( new FormComponent( "javax.swing.JLabel" ) {
-				name: "jLabel1"
+				name: "lblContactId"
 				"text": "Contact ID"
 			} )
 			add( new FormComponent( "javax.swing.JTextField" ) {
-				name: "contactIDTxt"
+				name: "contactIdTxt"
 				"editable": false
 				"text": "jTextField1"
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
-				name: "jLabel2"
+				name: "lblTitle"
 				"font": new java.awt.Font( "Tahoma", 1, 11 )
 				"horizontalAlignment": 0
 				"text": "CONTACT INFO OUTPUT"
 			} )
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-				name: "jScrollPane1"
+				name: "rawInfoScroll"
 				add( new FormComponent( "javax.swing.JTextArea" ) {
 					name: "contactRawInfoTxt"
 					"columns": 20

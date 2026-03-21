@@ -14,7 +14,8 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.domains;
@@ -23,9 +24,13 @@ import it.nic.epp.client.commands.converters.AbstractHostsConverter.HostIpType;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ipAddressValidator {
+/** Validates an IP address string and returns whether it is IPv4 or IPv6. */
+public class IpAddressValidator {
 
+  private static final Logger log = LoggerFactory.getLogger(IpAddressValidator.class);
   private static Pattern VALID_IPV4_PATTERN = null;
   private static Pattern VALID_IPV6_PATTERN = null;
   private static final String ipv4Pattern =
@@ -37,11 +42,18 @@ public class ipAddressValidator {
       VALID_IPV4_PATTERN = Pattern.compile(ipv4Pattern, Pattern.CASE_INSENSITIVE);
       VALID_IPV6_PATTERN = Pattern.compile(ipv6Pattern, Pattern.CASE_INSENSITIVE);
     } catch (PatternSyntaxException e) {
-      // logger.severe("Unable to compile pattern", e);
+      log.error("Unable to compile IP validation pattern", e);
     }
   }
 
-  public static HostIpType validateIpAddress(String ipAddress) throws invalidIpAddressException {
+  /**
+   * Validates the given IP address and returns its version type.
+   *
+   * @param ipAddress the IP address string to validate
+   * @return {@link HostIpType#V_4} for IPv4 or {@link HostIpType#V_6} for IPv6
+   * @throws InvalidIpAddressException if the address matches neither format
+   */
+  public static HostIpType validateIpAddress(String ipAddress) throws InvalidIpAddressException {
     Matcher m1 = VALID_IPV4_PATTERN.matcher(ipAddress);
     if (m1.matches()) {
       return HostIpType.V_4;
@@ -50,6 +62,6 @@ public class ipAddressValidator {
     if (m2.matches()) {
       return HostIpType.V_6;
     }
-    throw new invalidIpAddressException();
+    throw new InvalidIpAddressException();
   }
 }

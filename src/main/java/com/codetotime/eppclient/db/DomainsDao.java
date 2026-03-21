@@ -14,12 +14,13 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.db;
 
-import com.codetotime.eppclient.config.EPPparams;
+import com.codetotime.eppclient.config.EppParams;
 import com.codetotime.eppclient.domains.Domain;
 import com.codetotime.eppclient.domains.ListEntry;
 import java.io.File;
@@ -40,13 +41,20 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class domainsDao {
-  private static final Logger log = LoggerFactory.getLogger(domainsDao.class);
+/** DAO for persisting and retrieving EPP domain records from the local database. */
+public class DomainsDao {
+  private static final Logger log = LoggerFactory.getLogger(DomainsDao.class);
 
   private static final String BUNDLE_NAME = "com.codetotime.eppclient.db.domains";
 
   private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
+  /**
+   * Returns the string value for the given resource bundle key.
+   *
+   * @param key the property key
+   * @return the value, or {@code !key!} if not found
+   */
   public static String getString(String key) {
     try {
       return RESOURCE_BUNDLE.getString(key);
@@ -56,15 +64,20 @@ public class domainsDao {
   }
 
   /** Creates a new instance of AddressDao. */
-  public domainsDao() {
+  public DomainsDao() {
     this("domains");
   }
 
-  public domainsDao(String addressBookName) {
+  /**
+   * Creates a DAO bound to the given database name.
+   *
+   * @param addressBookName the Derby database name to use
+   */
+  public DomainsDao(String addressBookName) {
     this.dbName = addressBookName;
 
-    setDBSystemDir();
-    dbProperties = loadDBProperties();
+    setDbSystemDir();
+    dbProperties = loadDbProperties();
 
     if (dbProperties.getProperty("derby.url").contains("postgresql")) {
       dbProperties.put("db.schema", "public");
@@ -112,7 +125,9 @@ public class domainsDao {
             + "."
             + dbProperties.getProperty("db.table")
             + " "
-            + "   (DOMAINNAME, REGISTRANT, ADMIN, TECH, NAMESERVER, AUTHINFO, STATUS, EXPIRE, VALIDATIONCODE, ISDNSSEC, DNSSECKEYTAG, DNSSECALG, DNSSECDIGESTTYPE, DNSSECDIGEST) "
+            + "   (DOMAINNAME, REGISTRANT, ADMIN, TECH, NAMESERVER, AUTHINFO, STATUS, EXPIRE,"
+            + " VALIDATIONCODE, ISDNSSEC, DNSSECKEYTAG, DNSSECALG, DNSSECDIGESTTYPE,"
+            + " DNSSECDIGEST) "
             + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     strGetListEntries =
@@ -247,7 +262,9 @@ public class domainsDao {
               .getMetaData()
               .getTables(dbProperties.getProperty("db.schema"), null, "%", null);
       while (rs.next()) {
-        if (rs.getString(3).toLowerCase().equals(tableName.toLowerCase())) tableExists = true;
+        if (rs.getString(3).toLowerCase().equals(tableName.toLowerCase())) {
+          tableExists = true;
+        }
       }
     } catch (SQLException ex) {
       log.error("Error checking table existence", ex);
@@ -259,16 +276,16 @@ public class domainsDao {
   }
 
   private boolean dbExists() {
-    boolean bExists = false;
+    boolean exists = false;
     String dbLocation = getDatabaseLocation();
     File dbFileDir = new File(dbLocation);
     if (dbFileDir.exists()) {
-      bExists = true;
+      exists = true;
     }
-    return bExists;
+    return exists;
   }
 
-  private void setDBSystemDir() {
+  private void setDbSystemDir() {
     // decide on the db system directory
     String userHomeDir = System.getProperty("user.home", ".");
     String systemDir = userHomeDir + "/.eppclient";
@@ -296,14 +313,14 @@ public class domainsDao {
     }
   }
 
-  private Properties loadDBProperties() {
+  private Properties loadDbProperties() {
     InputStream dbPropInputStream = null;
-    dbPropInputStream = domainsDao.class.getResourceAsStream("domains.properties");
+    dbPropInputStream = DomainsDao.class.getResourceAsStream("domains.properties");
     dbProperties = new Properties();
     try {
       dbProperties.load(dbPropInputStream);
 
-      String dbUrl = EPPparams.getParameter("EppClient.dburl");
+      String dbUrl = EppParams.getParameter("EppClient.dburl");
       if (dbUrl.contains("mariadb")) {
         dbProperties.put("derby.driver", "org.mariadb.jdbc.Driver");
       } else if (dbUrl.contains("postgresql")) {
@@ -312,10 +329,10 @@ public class domainsDao {
         dbProperties.put("derby.driver", "org.apache.derby.jdbc.EmbeddedDriver");
       }
       dbProperties.put("derby.url", dbUrl);
-      dbProperties.put("db.schema", EPPparams.getParameter("EppClient.dbname"));
+      dbProperties.put("db.schema", EppParams.getParameter("EppClient.dbname"));
 
-      dbProperties.put("user", EPPparams.getParameter("EppClient.dbuid"));
-      dbProperties.put("password", EPPparams.getParameter("EppClient.dbpwd"));
+      dbProperties.put("user", EppParams.getParameter("EppClient.dbuid"));
+      dbProperties.put("password", EppParams.getParameter("EppClient.dbpwd"));
     } catch (IOException ex) {
       log.error("Error loading database properties", ex);
     }
@@ -323,7 +340,7 @@ public class domainsDao {
   }
 
   private boolean createTables(Connection dbConnection) {
-    boolean bCreatedTables = false;
+    boolean createdTables = false;
     Statement statement = null;
     try {
       statement = dbConnection.createStatement();
@@ -334,46 +351,57 @@ public class domainsDao {
             strCreateAddressTable.replace("create table ", "create table IF NOT EXISTS ");
       }
       statement.execute(createTableSql);
-      bCreatedTables = true;
-      EPPparams.setParameter("EppClient.dblevel", "1");
+      createdTables = true;
+      EppParams.setParameter("EppClient.dblevel", "1");
     } catch (SQLException ex) {
       if (ex.getSQLState().equals("X0Y32") || ex.getMessage().contains("already exists")) {
-        bCreatedTables = true;
+        createdTables = true;
       } else {
         log.error("Error creating tables", ex);
       }
     }
 
-    return bCreatedTables;
+    return createdTables;
   }
 
+  /**
+   * Drops all domain tables from the database.
+   *
+   * @return {@code true} if the tables were dropped successfully
+   */
   public boolean dropTables() {
-    boolean bDroppedTables = false;
+    boolean droppedTables = false;
     try {
       stmtDropDomainTable.clearParameters();
       stmtDropDomainTable.execute();
-      bDroppedTables = true;
+      droppedTables = true;
     } catch (SQLException ex) {
       log.error("Error dropping tables", ex);
     }
-    return bDroppedTables;
+    return droppedTables;
   }
 
   private boolean createDatabase() {
-    boolean bCreated = false;
+    boolean created = false;
     Connection dbConnection = null;
 
     String dbUrl = getDatabaseUrl();
     dbProperties.put("create", "true");
     try {
       dbConnection = DriverManager.getConnection(dbUrl, dbProperties);
-      bCreated = createTables(dbConnection);
+      created = createTables(dbConnection);
     } catch (SQLException ex) {
+      log.error("Error creating database", ex);
     }
     dbProperties.remove("create");
-    return bCreated;
+    return created;
   }
 
+  /**
+   * Opens a connection to the database, creating it if it does not exist.
+   *
+   * @return {@code true} if the connection was established successfully
+   */
   public boolean connect() {
     String dbUrl = getDatabaseUrl();
     try {
@@ -398,6 +426,7 @@ public class domainsDao {
     return System.getProperty("user.home");
   }
 
+  /** Closes the database connection. */
   public void disconnect() {
     if (isConnected) {
       String dbUrl = getDatabaseUrl();
@@ -405,22 +434,41 @@ public class domainsDao {
       try {
         DriverManager.getConnection(dbUrl, dbProperties);
       } catch (SQLException ex) {
+        log.debug("Database shutdown: {}", ex.getMessage());
       }
       isConnected = false;
     }
   }
 
+  /**
+   * Returns the filesystem path of the Derby database directory.
+   *
+   * @return the absolute database path
+   */
   public String getDatabaseLocation() {
     String dbLocation = System.getProperty("derby.system.home") + "/" + dbName;
     return dbLocation;
   }
 
+  /**
+   * Returns the JDBC URL for the Derby database.
+   *
+   * @return the JDBC connection URL
+   */
   public String getDatabaseUrl() {
     String dbUrl = dbProperties.getProperty("derby.url");
-    if (!dbUrl.contains("mariadb") && !dbUrl.contains("postgresql")) dbUrl += dbName;
+    if (!dbUrl.contains("mariadb") && !dbUrl.contains("postgresql")) {
+      dbUrl += dbName;
+    }
     return dbUrl;
   }
 
+  /**
+   * Inserts a new domain record into the database.
+   *
+   * @param record the domain to save
+   * @return the domain name used as the record key
+   */
   public String saveRecord(Domain record) {
     try {
       stmtSaveNewRecord.clearParameters();
@@ -432,7 +480,9 @@ public class domainsDao {
       String[] newAdmins = record.getAdmin();
       if (newAdmins != null) {
         for (int adminIndex = 0; adminIndex < newAdmins.length; adminIndex++) {
-          if (newAdmin.length() > 0) newAdmin = newAdmin + ";";
+          if (newAdmin.length() > 0) {
+            newAdmin = newAdmin + ";";
+          }
           newAdmin = newAdmin + newAdmins[adminIndex];
         }
       }
@@ -442,7 +492,9 @@ public class domainsDao {
       String[] newTechs = record.getTech();
       if (newTechs != null) {
         for (int techIndex = 0; techIndex < newTechs.length; techIndex++) {
-          if (newTech.length() > 0) newTech = newTech + ";";
+          if (newTech.length() > 0) {
+            newTech = newTech + ";";
+          }
           newTech = newTech + newTechs[techIndex];
         }
       }
@@ -452,7 +504,9 @@ public class domainsDao {
       String[] newNameServers = record.getNameServer();
       if (newNameServers != null) {
         for (int nameServerIndex = 0; nameServerIndex < newNameServers.length; nameServerIndex++) {
-          if (newNameServer.length() > 0) newNameServer = newNameServer + ";";
+          if (newNameServer.length() > 0) {
+            newNameServer = newNameServer + ";";
+          }
           newNameServer = newNameServer + newNameServers[nameServerIndex];
         }
       }
@@ -461,11 +515,14 @@ public class domainsDao {
       stmtSaveNewRecord.setString(6, record.getAuthInfo());
 
       String newStatus = "";
-      if (record.getNewStatusV() != null)
+      if (record.getNewStatusV() != null) {
         for (int statusIndex = 0; statusIndex < record.getNewStatusV().size(); statusIndex++) {
-          if (newStatus.length() > 0) newStatus = newStatus + ",";
+          if (newStatus.length() > 0) {
+            newStatus = newStatus + ",";
+          }
           newStatus += record.getNewStatusV().get(statusIndex);
         }
+      }
 
       /*            int[] newStatuses = record.getNewStatus();
       if (newStatuses != null) {
@@ -483,9 +540,9 @@ public class domainsDao {
       }
       stmtSaveNewRecord.setString(9, record.getValidationCode());
       if (dbProperties.getProperty("derby.url").contains("postgresql")) {
-        stmtSaveNewRecord.setShort(10, (short) (record.isDNSSec() ? 1 : 0));
+        stmtSaveNewRecord.setShort(10, (short) (record.isDnsSec() ? 1 : 0));
       } else {
-        stmtSaveNewRecord.setInt(10, record.isDNSSec() ? 1 : 0);
+        stmtSaveNewRecord.setInt(10, record.isDnsSec() ? 1 : 0);
       }
       stmtSaveNewRecord.setString(11, record.getKeyTag());
       stmtSaveNewRecord.setInt(12, record.getAlg());
@@ -499,8 +556,14 @@ public class domainsDao {
     return record.getDomainName();
   }
 
+  /**
+   * Updates an existing domain record in the database.
+   *
+   * @param record the domain with updated fields
+   * @return {@code true} if the record was updated successfully
+   */
   public boolean editRecord(Domain record) {
-    boolean bEdited = false;
+    boolean edited = false;
     try {
       stmtUpdateExistingRecord.clearParameters();
 
@@ -510,7 +573,9 @@ public class domainsDao {
       String[] newAdmins = record.getAdmin();
       if (newAdmins != null) {
         for (int adminIndex = 0; adminIndex < newAdmins.length; adminIndex++) {
-          if (newAdmin.length() > 0) newAdmin = newAdmin + ";";
+          if (newAdmin.length() > 0) {
+            newAdmin = newAdmin + ";";
+          }
           newAdmin = newAdmin + newAdmins[adminIndex];
         }
       }
@@ -520,7 +585,9 @@ public class domainsDao {
       String[] newTechs = record.getTech();
       if (newTechs != null) {
         for (int techIndex = 0; techIndex < newTechs.length; techIndex++) {
-          if (newTech.length() > 0) newTech = newTech + ";";
+          if (newTech.length() > 0) {
+            newTech = newTech + ";";
+          }
           newTech = newTech + newTechs[techIndex];
         }
       }
@@ -530,7 +597,9 @@ public class domainsDao {
       String[] newNameServers = record.getNameServer();
       if (newNameServers != null) {
         for (int nameServerIndex = 0; nameServerIndex < newNameServers.length; nameServerIndex++) {
-          if (newNameServer.length() > 0) newNameServer = newNameServer + ";";
+          if (newNameServer.length() > 0) {
+            newNameServer = newNameServer + ";";
+          }
           newNameServer = newNameServer + newNameServers[nameServerIndex];
         }
       }
@@ -540,7 +609,9 @@ public class domainsDao {
 
       String newStatus = "";
       for (int statusIndex = 0; statusIndex < record.getNewStatusV().size(); statusIndex++) {
-        if (newStatus.length() > 0) newStatus = newStatus + ",";
+        if (newStatus.length() > 0) {
+          newStatus = newStatus + ",";
+        }
         newStatus += record.getNewStatusV().get(statusIndex);
       }
 
@@ -562,9 +633,9 @@ public class domainsDao {
       stmtUpdateExistingRecord.setString(8, record.getValidationCode());
 
       if (dbProperties.getProperty("derby.url").contains("postgresql")) {
-        stmtUpdateExistingRecord.setShort(9, (short) (record.isDNSSec() ? 1 : 0));
+        stmtUpdateExistingRecord.setShort(9, (short) (record.isDnsSec() ? 1 : 0));
       } else {
-        stmtUpdateExistingRecord.setInt(9, record.isDNSSec() ? 1 : 0);
+        stmtUpdateExistingRecord.setInt(9, record.isDnsSec() ? 1 : 0);
       }
       stmtUpdateExistingRecord.setString(10, record.getKeyTag());
       stmtUpdateExistingRecord.setInt(11, record.getAlg());
@@ -572,32 +643,49 @@ public class domainsDao {
       stmtUpdateExistingRecord.setString(13, record.getDigest());
       stmtUpdateExistingRecord.setString(14, record.getDomainName());
       stmtUpdateExistingRecord.executeUpdate();
-      bEdited = true;
+      edited = true;
     } catch (SQLException sqle) {
       log.error("Error editing domain record", sqle);
     }
-    return bEdited;
+    return edited;
   }
 
+  /**
+   * Deletes the domain with the given name from the database.
+   *
+   * @param domainName the domain name to delete
+   * @return {@code true} if the record was deleted successfully
+   */
   public boolean deleteRecord(String domainName) {
-    boolean bDeleted = false;
+    boolean deleted = false;
     try {
       stmtDeleteAddress.clearParameters();
       stmtDeleteAddress.setString(1, domainName);
       stmtDeleteAddress.executeUpdate();
-      bDeleted = true;
+      deleted = true;
     } catch (SQLException sqle) {
       log.error("Error deleting domain record", sqle);
     }
 
-    return bDeleted;
+    return deleted;
   }
 
+  /**
+   * Deletes the given domain record from the database.
+   *
+   * @param record the domain to delete
+   * @return {@code true} if the record was deleted successfully
+   */
   public boolean deleteRecord(Domain record) {
     String domainName = record.getDomainName();
     return deleteRecord(domainName);
   }
 
+  /**
+   * Returns all domain entries from the database as a list of {@link ListEntry} objects.
+   *
+   * @return the list of domain entries
+   */
   public List<ListEntry> getListEntries() {
     List<ListEntry> listEntries = new ArrayList<ListEntry>();
     Statement queryStatement = null;
@@ -621,6 +709,12 @@ public class domainsDao {
     return listEntries;
   }
 
+  /**
+   * Retrieves the domain with the given name from the database.
+   *
+   * @param domainName the domain name to look up
+   * @return the matching {@link Domain}, or {@code null} if not found
+   */
   public Domain getDomain(String domainName) {
     Domain address = null;
     try {
@@ -628,8 +722,6 @@ public class domainsDao {
       stmtGetAddress.setString(1, domainName);
       ResultSet result = stmtGetAddress.executeQuery();
       if (result.next()) {
-        String registrant = result.getString("REGISTRANT");
-
         String[] oldAdmin;
         if (result.getString("ADMIN") != null) {
           if (result.getString("ADMIN").length() > 0) {
@@ -682,8 +774,8 @@ public class domainsDao {
         Vector oldStatusV = new Vector();
         if (result.getString("STATUS") != null) {
           if (result.getString("STATUS").length() > 0) {
-            for (String oldStatusTA : result.getString("STATUS").split(",")) {
-              oldStatusV.add(Integer.parseInt(oldStatusTA));
+            for (String oldStatusTa : result.getString("STATUS").split(",")) {
+              oldStatusV.add(Integer.parseInt(oldStatusTa));
             }
             /*                        String[] oldStatuses = result.getString("STATUS").split(",");
             oldStatus = new int[oldStatuses.length];
@@ -708,6 +800,8 @@ public class domainsDao {
         int dnsSecAlg = result.getInt("DNSSECALG");
         int dnsSecDigestType = result.getInt("DNSSECDIGESTTYPE");
         String dnsSecDigest = result.getString("DNSSECDIGEST");
+
+        String registrant = result.getString("REGISTRANT");
         address =
             new Domain(
                 domainName,

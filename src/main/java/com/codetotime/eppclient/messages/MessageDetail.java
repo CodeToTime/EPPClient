@@ -14,16 +14,17 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.messages;
 
-import com.codetotime.eppclient.config.EPPparams;
-import com.codetotime.eppclient.db.messagesDao;
+import com.codetotime.eppclient.Main;
+import com.codetotime.eppclient.config.EppParams;
+import com.codetotime.eppclient.db.MessagesDao;
 import com.codetotime.eppclient.importer.ImportDomain;
-import com.codetotime.eppclient.main;
-import com.codetotime.eppclient.uplink.EPPuplink;
+import com.codetotime.eppclient.uplink.EppUplink;
 import it.nic.epp.client.commands.query.Poll;
 import it.nic.epp.client.commands.transform.DomainTransfer;
 import it.nic.epp.client.exceptions.EppSchemaException;
@@ -49,25 +50,29 @@ import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Frame showing the full detail and raw XML of a selected EPP poll message, with an option to
+ * acknowledge it.
+ */
 public class MessageDetail extends JFrame {
 
-  private EPPuplink EPPuplink;
+  private EppUplink eppUplink;
   private Logger log;
   private Message message;
-  private messagesDao db;
+  private MessagesDao db;
   private MessageManagement parentFrame;
-  private main mainFrame;
+  private Main mainFrame;
 
   it.nic.epp.client.responses.CommandResponse response = null;
   PollingResponseResData resData;
   PollingResponseExt extData;
 
   /** Creates new form MessageDetail. */
-  public MessageDetail(main mainFrame, MessageManagement parentFrame, Message messageIn) {
+  public MessageDetail(Main mainFrame, MessageManagement parentFrame, Message messageIn) {
     initComponents();
 
     this.mainFrame = mainFrame;
-    this.EPPuplink = mainFrame.EPPuplink;
+    this.eppUplink = mainFrame.eppUplink;
     this.parentFrame = parentFrame;
     this.db = mainFrame.messagesDao;
 
@@ -85,7 +90,7 @@ public class MessageDetail extends JFrame {
     try {
       response = new it.nic.epp.client.responses.CommandResponse(message.getXml());
     } catch (XmlException e) {
-      log.error("XmlException in constructor", e);
+      log.error("XmlException in constructor for message ID {}", message.getMsgId(), e);
     }
 
     resData = (PollingResponseResData) response.getResponseResData();
@@ -107,60 +112,58 @@ public class MessageDetail extends JFrame {
   @SuppressWarnings("unchecked")
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents() {
-    jLabel1 = new JLabel();
+    lblMsgId = new JLabel();
     msgIdTxt = new JTextField();
-    jLabel2 = new JLabel();
-    jLabel3 = new JLabel();
-    jScrollPane1 = new JScrollPane();
+    lblMessage = new JLabel();
+    lblRawMessage = new JLabel();
+    rawMessageScroll = new JScrollPane();
     rawMessageTxt = new JTextArea();
-    jLabel4 = new JLabel();
+    lblDateTime = new JLabel();
     datetimeTxt = new JTextField();
     btnAck = new JButton();
     actionTab = new JTabbedPane();
-    jPanel4 = new JPanel();
-    jScrollPane3 = new JScrollPane();
+    genericPanel = new JPanel();
+    genericScroll = new JScrollPane();
     txtGeneric = new JTextArea();
-    jPanel1 = new JPanel();
+    transferPanel = new JPanel();
     btnTransfer = new JButton();
-    jScrollPane2 = new JScrollPane();
+    transferScroll = new JScrollPane();
     txtTransfer = new JTextArea();
-    jPanel3 = new JPanel();
-    jScrollPane5 = new JScrollPane();
+    otherPanel = new JPanel();
+    otherScroll = new JScrollPane();
     txtOther = new JTextArea();
     btnOther = new JButton();
-    jScrollPane4 = new JScrollPane();
+    messageScroll = new JScrollPane();
     messageTxt = new JTextArea();
-    jPanel2 = new JPanel();
 
     // ======== this ========
     setTitle("Dettaglio MESSAGGIO");
-    Container contentPane = getContentPane();
 
-    // ---- jLabel1 ----
-    jLabel1.setText("Message ID:");
+    // ---- lblMsgId ----
+    lblMsgId.setText("Message ID:");
 
     // ---- msgIdTxt ----
     msgIdTxt.setEditable(false);
     msgIdTxt.setText("jTextField1");
 
-    // ---- jLabel2 ----
-    jLabel2.setText("Message:");
+    // ---- lblMessage ----
+    lblMessage.setText("Message:");
 
-    // ---- jLabel3 ----
-    jLabel3.setText("Raw Message:");
+    // ---- lblRawMessage ----
+    lblRawMessage.setText("Raw Message:");
 
-    // ======== jScrollPane1 ========
+    // ======== rawMessageScroll ========
     {
 
       // ---- rawMessageTxt ----
       rawMessageTxt.setColumns(20);
       rawMessageTxt.setEditable(false);
       rawMessageTxt.setRows(5);
-      jScrollPane1.setViewportView(rawMessageTxt);
+      rawMessageScroll.setViewportView(rawMessageTxt);
     }
 
-    // ---- jLabel4 ----
-    jLabel4.setText("Date/Time:");
+    // ---- lblDateTime ----
+    lblDateTime.setText("Date/Time:");
 
     // ---- datetimeTxt ----
     datetimeTxt.setEditable(false);
@@ -172,17 +175,9 @@ public class MessageDetail extends JFrame {
     // ======== actionTab ========
     {
 
-      // ======== jPanel4 ========
+      // ======== genericPanel ========
       {
-        jPanel4.addPropertyChangeListener(
-            new java.beans.PropertyChangeListener() {
-              @Override
-              public void propertyChange(java.beans.PropertyChangeEvent e) {
-                if ("borde\u0072".equals(e.getPropertyName())) throw new RuntimeException();
-              }
-            });
-
-        // ======== jScrollPane3 ========
+        // ======== genericScroll ========
         {
 
           // ---- txtGeneric ----
@@ -193,37 +188,37 @@ public class MessageDetail extends JFrame {
           txtGeneric.setText(
               "This is a generic message, therefore no specific action panel has been enabled.");
           txtGeneric.setWrapStyleWord(true);
-          jScrollPane3.setViewportView(txtGeneric);
+          genericScroll.setViewportView(txtGeneric);
         }
 
-        GroupLayout jPanel4Layout = new GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout
+        GroupLayout genericPanelLayout = new GroupLayout(genericPanel);
+        genericPanel.setLayout(genericPanelLayout);
+        genericPanelLayout.setHorizontalGroup(
+            genericPanelLayout
                 .createParallelGroup()
                 .addGroup(
-                    jPanel4Layout
+                    genericPanelLayout
                         .createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane3, GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+                        .addComponent(genericScroll, GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
                         .addContainerGap()));
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout
+        genericPanelLayout.setVerticalGroup(
+            genericPanelLayout
                 .createParallelGroup()
                 .addGroup(
-                    jPanel4Layout
+                    genericPanelLayout
                         .createSequentialGroup()
                         .addContainerGap()
                         .addComponent(
-                            jScrollPane3,
+                            genericScroll,
                             GroupLayout.PREFERRED_SIZE,
                             GroupLayout.DEFAULT_SIZE,
                             GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(57, Short.MAX_VALUE)));
       }
-      actionTab.addTab("Generic", jPanel4);
+      actionTab.addTab("Generic", genericPanel);
 
-      // ======== jPanel1 ========
+      // ======== transferPanel ========
       {
 
         // ---- btnTransfer ----
@@ -235,7 +230,7 @@ public class MessageDetail extends JFrame {
               }
             });
 
-        // ======== jScrollPane2 ========
+        // ======== transferScroll ========
         {
 
           // ---- txtTransfer ----
@@ -244,34 +239,34 @@ public class MessageDetail extends JFrame {
           txtTransfer.setLineWrap(true);
           txtTransfer.setRows(7);
           txtTransfer.setWrapStyleWord(true);
-          jScrollPane2.setViewportView(txtTransfer);
+          transferScroll.setViewportView(txtTransfer);
         }
 
-        GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout
+        GroupLayout transferPanelLayout = new GroupLayout(transferPanel);
+        transferPanel.setLayout(transferPanelLayout);
+        transferPanelLayout.setHorizontalGroup(
+            transferPanelLayout
                 .createParallelGroup()
                 .addGroup(
-                    jPanel1Layout
+                    transferPanelLayout
                         .createSequentialGroup()
                         .addContainerGap()
                         .addGroup(
-                            jPanel1Layout
+                            transferPanelLayout
                                 .createParallelGroup()
                                 .addComponent(
-                                    jScrollPane2, GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+                                    transferScroll, GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
                                 .addComponent(btnTransfer, GroupLayout.Alignment.TRAILING))
                         .addContainerGap()));
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout
+        transferPanelLayout.setVerticalGroup(
+            transferPanelLayout
                 .createParallelGroup()
                 .addGroup(
-                    jPanel1Layout
+                    transferPanelLayout
                         .createSequentialGroup()
                         .addContainerGap()
                         .addComponent(
-                            jScrollPane2,
+                            transferScroll,
                             GroupLayout.PREFERRED_SIZE,
                             GroupLayout.DEFAULT_SIZE,
                             GroupLayout.PREFERRED_SIZE)
@@ -279,12 +274,12 @@ public class MessageDetail extends JFrame {
                         .addComponent(btnTransfer)
                         .addContainerGap(41, Short.MAX_VALUE)));
       }
-      actionTab.addTab("Transfer", jPanel1);
+      actionTab.addTab("Transfer", transferPanel);
 
-      // ======== jPanel3 ========
+      // ======== otherPanel ========
       {
 
-        // ======== jScrollPane5 ========
+        // ======== otherScroll ========
         {
 
           // ---- txtOther ----
@@ -293,7 +288,7 @@ public class MessageDetail extends JFrame {
           txtOther.setLineWrap(true);
           txtOther.setRows(7);
           txtOther.setWrapStyleWord(true);
-          jScrollPane5.setViewportView(txtOther);
+          otherScroll.setViewportView(txtOther);
         }
 
         // ---- btnOther ----
@@ -305,31 +300,31 @@ public class MessageDetail extends JFrame {
               }
             });
 
-        GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout
+        GroupLayout otherPanelLayout = new GroupLayout(otherPanel);
+        otherPanel.setLayout(otherPanelLayout);
+        otherPanelLayout.setHorizontalGroup(
+            otherPanelLayout
                 .createParallelGroup()
                 .addGroup(
-                    jPanel3Layout
+                    otherPanelLayout
                         .createSequentialGroup()
                         .addContainerGap()
                         .addGroup(
-                            jPanel3Layout
+                            otherPanelLayout
                                 .createParallelGroup()
                                 .addComponent(
-                                    jScrollPane5, GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+                                    otherScroll, GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
                                 .addComponent(btnOther, GroupLayout.Alignment.TRAILING))
                         .addContainerGap()));
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout
+        otherPanelLayout.setVerticalGroup(
+            otherPanelLayout
                 .createParallelGroup()
                 .addGroup(
-                    jPanel3Layout
+                    otherPanelLayout
                         .createSequentialGroup()
                         .addContainerGap()
                         .addComponent(
-                            jScrollPane5,
+                            otherScroll,
                             GroupLayout.PREFERRED_SIZE,
                             GroupLayout.DEFAULT_SIZE,
                             GroupLayout.PREFERRED_SIZE)
@@ -337,10 +332,10 @@ public class MessageDetail extends JFrame {
                         .addComponent(btnOther)
                         .addContainerGap(41, Short.MAX_VALUE)));
       }
-      actionTab.addTab("other...", jPanel3);
+      actionTab.addTab("other...", otherPanel);
     }
 
-    // ======== jScrollPane4 ========
+    // ======== messageScroll ========
     {
 
       // ---- messageTxt ----
@@ -349,9 +344,10 @@ public class MessageDetail extends JFrame {
       messageTxt.setLineWrap(true);
       messageTxt.setRows(2);
       messageTxt.setWrapStyleWord(true);
-      jScrollPane4.setViewportView(messageTxt);
+      messageScroll.setViewportView(messageTxt);
     }
 
+    Container contentPane = getContentPane();
     GroupLayout contentPaneLayout = new GroupLayout(contentPane);
     contentPane.setLayout(contentPaneLayout);
     contentPaneLayout.setHorizontalGroup(
@@ -379,8 +375,8 @@ public class MessageDetail extends JFrame {
                                     .addGroup(
                                         contentPaneLayout
                                             .createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                            .addComponent(jLabel1)
-                                            .addComponent(jLabel2))
+                                            .addComponent(lblMsgId)
+                                            .addComponent(lblMessage))
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(
                                         msgIdTxt,
@@ -388,7 +384,7 @@ public class MessageDetail extends JFrame {
                                         GroupLayout.DEFAULT_SIZE,
                                         GroupLayout.PREFERRED_SIZE)
                                     .addGap(18, 18, 18)
-                                    .addComponent(jLabel4)
+                                    .addComponent(lblDateTime)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(
                                         datetimeTxt,
@@ -400,18 +396,18 @@ public class MessageDetail extends JFrame {
                                 contentPaneLayout
                                     .createSequentialGroup()
                                     .addGap(20, 20, 20)
-                                    .addComponent(jLabel3)
+                                    .addComponent(lblRawMessage)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                     .addGroup(
                                         contentPaneLayout
                                             .createParallelGroup()
                                             .addComponent(
-                                                jScrollPane4,
+                                                messageScroll,
                                                 GroupLayout.DEFAULT_SIZE,
                                                 390,
                                                 Short.MAX_VALUE)
                                             .addComponent(
-                                                jScrollPane1,
+                                                rawMessageScroll,
                                                 GroupLayout.DEFAULT_SIZE,
                                                 390,
                                                 Short.MAX_VALUE)))
@@ -431,13 +427,13 @@ public class MessageDetail extends JFrame {
                     .addGroup(
                         contentPaneLayout
                             .createParallelGroup(GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
+                            .addComponent(lblMsgId)
                             .addComponent(
                                 msgIdTxt,
                                 GroupLayout.PREFERRED_SIZE,
                                 GroupLayout.DEFAULT_SIZE,
                                 GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4)
+                            .addComponent(lblDateTime)
                             .addComponent(
                                 datetimeTxt,
                                 GroupLayout.PREFERRED_SIZE,
@@ -447,9 +443,9 @@ public class MessageDetail extends JFrame {
                     .addGroup(
                         contentPaneLayout
                             .createParallelGroup()
-                            .addComponent(jLabel2)
+                            .addComponent(lblMessage)
                             .addComponent(
-                                jScrollPane4,
+                                messageScroll,
                                 GroupLayout.PREFERRED_SIZE,
                                 50,
                                 GroupLayout.PREFERRED_SIZE))
@@ -457,9 +453,9 @@ public class MessageDetail extends JFrame {
                     .addGroup(
                         contentPaneLayout
                             .createParallelGroup()
-                            .addComponent(jLabel3)
+                            .addComponent(lblRawMessage)
                             .addComponent(
-                                jScrollPane1, GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE))
+                                rawMessageScroll, GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE))
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(btnAck)
                     .addGap(11, 11, 11)
@@ -468,24 +464,6 @@ public class MessageDetail extends JFrame {
                     .addContainerGap()));
     pack();
     setLocationRelativeTo(getOwner());
-
-    // ======== jPanel2 ========
-    {
-      jPanel2.addPropertyChangeListener(
-          new java.beans.PropertyChangeListener() {
-            @Override
-            public void propertyChange(java.beans.PropertyChangeEvent e) {
-              if ("bord\u0065r".equals(e.getPropertyName())) throw new RuntimeException();
-            }
-          });
-
-      GroupLayout jPanel2Layout = new GroupLayout(jPanel2);
-      jPanel2.setLayout(jPanel2Layout);
-      jPanel2Layout.setHorizontalGroup(
-          jPanel2Layout.createParallelGroup().addGap(0, 100, Short.MAX_VALUE));
-      jPanel2Layout.setVerticalGroup(
-          jPanel2Layout.createParallelGroup().addGap(0, 100, Short.MAX_VALUE));
-    }
   } // </editor-fold>//GEN-END:initComponents
 
   private void btnAckActionPerformed(
@@ -511,20 +489,21 @@ public class MessageDetail extends JFrame {
     }
 
     if (doOp) {
-      if (resData.getTranferMsgReID().equals(EPPparams.getParameter("EppClient.defaultUser"))) {
+      if (resData.getTranferMsgReID().equals(EppParams.getParameter("EppClient.defaultUser"))) {
         // We requested this transfer
         txtTransfer.setText(
             "The transfer of the domain name "
                 + resData.getTranferMsgName()
                 + " to Registrar "
-                + EPPparams.getParameter("EppClient.defaultUser")
+                + EppParams.getParameter("EppClient.defaultUser")
                 + " has been ");
         if (resData.getTranferMsgTrStatus().equals("clientApproved")) {
           ImportDomain transferredDomain = new ImportDomain(mainFrame, true);
           if (transferredDomain.execute(resData.getTranferMsgName())) {
             txtTransfer.setText(
                 txtTransfer.getText()
-                    + "\nThe domain name has been successfully added to the client local database.");
+                    + "\nThe domain name has been successfully added to the client local"
+                    + " database.");
             message.setActioned(true);
             db.editRecord(message);
             if (!message.getAck()) {
@@ -539,7 +518,8 @@ public class MessageDetail extends JFrame {
           } else {
             txtTransfer.setText(
                 txtTransfer.getText()
-                    + "\nAn error occurred while importing the domain name to the client local database.");
+                    + "\nAn error occurred while importing the domain name to the client"
+                    + " local database.");
           }
         }
 
@@ -562,7 +542,7 @@ public class MessageDetail extends JFrame {
               domainTransfer.setTransferApprove();
               log.debug("Transfer approve: {}", domainTransfer);
               try {
-                response = EPPuplink.sendCommand(domainTransfer);
+                response = eppUplink.sendCommand(domainTransfer);
               } catch (XmlException e) {
                 log.error("XmlException in btnTransferMouseReleased", e);
               } catch (IOException e) {
@@ -587,7 +567,8 @@ public class MessageDetail extends JFrame {
               } else {
                 txtTransfer.setText(
                     txtTransfer.getText()
-                        + "\n============\nAn error occurred while Acknowledging the transfer. This messages has NOT been Acked.");
+                        + "\n============\nAn error occurred while Acknowledging the transfer."
+                        + " This messages has NOT been Acked.");
               }
               break;
             case 1:
@@ -595,7 +576,7 @@ public class MessageDetail extends JFrame {
               domainTransfer.setTransferReject();
               log.debug("Transfer reject: {}", domainTransfer);
               try {
-                response = EPPuplink.sendCommand(domainTransfer);
+                response = eppUplink.sendCommand(domainTransfer);
               } catch (XmlException e) {
                 log.error("XmlException in btnTransferMouseReleased reject", e);
               } catch (IOException e) {
@@ -620,11 +601,14 @@ public class MessageDetail extends JFrame {
               } else {
                 txtTransfer.setText(
                     txtTransfer.getText()
-                        + "\n============\nAn error occurred while Rejecting the transfer. This messages has NOT been Acked.");
+                        + "\n============\nAn error occurred while Rejecting the transfer."
+                        + " This messages has NOT been Acked.");
               }
               break;
             case 2:
               JOptionPane.showMessageDialog(this, "Doing nothing!");
+              break;
+            default:
               break;
           }
         } else if (resData.getTranferMsgTrStatus().equals("clientApproved")
@@ -632,7 +616,8 @@ public class MessageDetail extends JFrame {
           mainFrame.domainsDao.deleteRecord(resData.getTranferMsgName());
           txtTransfer.setText(
               txtTransfer.getText()
-                  + "\n============\nThe domain name has been successfully deleted from the client local database.");
+                  + "\n============\nThe domain name has been successfully deleted from"
+                  + " the client local database.");
           message.setActioned(true);
           db.editRecord(message);
           if (!message.getAck()) {
@@ -671,7 +656,8 @@ public class MessageDetail extends JFrame {
         mainFrame.domainsDao.deleteRecord(extData.getSimpleMsgDomains()[0]);
         txtOther.setText(
             txtOther.getText()
-                + "\n============\nThe domain name has been successfully deleted from the client local database.");
+                + "\n============\nThe domain name has been successfully deleted from"
+                + " the client local database.");
         message.setActioned(true);
         db.editRecord(message);
         if (!message.getAck()) {
@@ -687,7 +673,8 @@ public class MessageDetail extends JFrame {
         if (syncDomain.execute(extData.getChgStatusMsgName())) {
           txtOther.setText(
               txtOther.getText()
-                  + "\nThe domain name has been successfully updated on the client local database.");
+                  + "\nThe domain name has been successfully updated on the client local"
+                  + " database.");
           message.setActioned(true);
           db.editRecord(message);
           if (!message.getAck()) {
@@ -707,9 +694,14 @@ public class MessageDetail extends JFrame {
     return message.getMsgId();
   }
 
-  public void setEPPEnablement(boolean EPPstatus) {
-    btnAck.setVisible(EPPstatus);
-    btnTransfer.setVisible(EPPstatus);
+  /**
+   * Shows or hides the acknowledge button based on whether the EPP connection is active.
+   *
+   * @param eppStatus {@code true} if the EPP connection is active
+   */
+  public void setEppEnablement(boolean eppStatus) {
+    btnAck.setVisible(eppStatus);
+    btnTransfer.setVisible(eppStatus);
   }
 
   private void switchAck() {
@@ -731,13 +723,13 @@ public class MessageDetail extends JFrame {
         actionTab.setEnabledAt(1, true);
         actionTab.setSelectedIndex(1);
 
-        if (resData.getTranferMsgReID().equals(EPPparams.getParameter("EppClient.defaultUser"))) {
+        if (resData.getTranferMsgReID().equals(EppParams.getParameter("EppClient.defaultUser"))) {
           // We requested this transfer
           txtTransfer.setText(
               "The transfer of the domain name "
                   + resData.getTranferMsgName()
                   + " to Registrar "
-                  + EPPparams.getParameter("EppClient.defaultUser")
+                  + EppParams.getParameter("EppClient.defaultUser")
                   + " has been ");
           if (resData.getTranferMsgTrStatus().equals("clientRejected")) {
             txtTransfer.setText(txtTransfer.getText() + "REJECTED by the Losing Registrar.");
@@ -746,7 +738,9 @@ public class MessageDetail extends JFrame {
           } else if (resData.getTranferMsgTrStatus().equals("clientApproved")) {
             txtTransfer.setText(
                 txtTransfer.getText()
-                    + "APPROVED by the Losing Registrar, the Domain Name has been added to your account on the Registry. Please click the button below to save it on the client local database.");
+                    + "APPROVED by the Losing Registrar, the Domain Name has been added to your"
+                    + " account on the Registry. Please click the button below to save it"
+                    + " on the client local database.");
             btnTransfer.setText("Save to local db");
             btnTransfer.setEnabled(true);
           } else {
@@ -763,10 +757,11 @@ public class MessageDetail extends JFrame {
                 "There is a new request to transfer the domain name "
                     + resData.getTranferMsgName()
                     + " to Registrar "
-                    + EPPparams.getParameter("EppClient.defaultUser")
+                    + EppParams.getParameter("EppClient.defaultUser")
                     + " to Registrar "
                     + resData.getTranferMsgReID()
-                    + ". Please click the button below to ACK o REJ the Transfer (will also ACK the message).");
+                    + ". Please click the button below to ACK o REJ the Transfer (will also ACK"
+                    + " the message).");
             btnTransfer.setText("Acknowledge/Reject Transfer");
             btnTransfer.setEnabled(true);
           } else if (resData.getTranferMsgTrStatus().equals("clientApproved")
@@ -776,7 +771,8 @@ public class MessageDetail extends JFrame {
                     + resData.getTranferMsgName()
                     + " has been successfully transferred to Registrar "
                     + resData.getTranferMsgReID()
-                    + ". Please click the button below to delete-it from the client local database.");
+                    + ". Please click the button below to delete-it from the client local"
+                    + " database.");
             btnTransfer.setText("Delete from local db");
             btnTransfer.setEnabled(true);
           } else {
@@ -795,7 +791,8 @@ public class MessageDetail extends JFrame {
       txtOther.setText(
           "The domain name "
               + extData.getSimpleMsgDomains()[0]
-              + " has been deleted. Please click the button below to delete-it from the client local database.");
+              + " has been deleted. Please click the button below to delete-it from the"
+              + " client local database.");
       btnOther.setText("Delete from local db");
       btnOther.setEnabled(true);
 
@@ -807,12 +804,19 @@ public class MessageDetail extends JFrame {
       txtOther.setText(
           "The domain name "
               + extData.getChgStatusMsgName()
-              + " autoRenewPeriod is expired. Please click the button below to update the expiration date stored in the local database.");
+              + " autoRenewPeriod is expired. Please click the button below to update the"
+              + " expiration date stored in the local database.");
       btnOther.setText("Update expiration date on local db");
       btnOther.setEnabled(true);
     }
   }
 
+  /**
+   * Sends an EPP poll acknowledgement for the given message ID.
+   *
+   * @param msgQid the message queue ID to acknowledge
+   * @return {@code true} if the acknowledgement was accepted by the registry
+   */
   protected boolean ackMessage(String msgQid) {
     boolean ackStatus = false;
     HttpBaseResponse response = null;
@@ -820,18 +824,19 @@ public class MessageDetail extends JFrame {
       Poll pollCmd = new Poll();
       pollCmd.setAck(msgQid);
       log.debug("ACK: {}", pollCmd);
-      response = EPPuplink.sendCommand(pollCmd);
+      response = eppUplink.sendCommand(pollCmd);
       if (response.isSuccessfully()) {
         ackStatus = true;
         message.setAck(true);
         db.editRecord(message);
         parentFrame.updateTableContent();
         switchAck();
-        EPPuplink.doPoll();
+        eppUplink.doPoll();
       } else {
         if (JOptionPane.showConfirmDialog(
                 this,
-                "An error occurred while aknowledging a message.\n\nDo you want to see the Registry XML response?",
+                "An error occurred while aknowledging a message.\n\n"
+                    + "Do you want to see the Registry XML response?",
                 "Registry adknowledgment failure",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE)
@@ -851,30 +856,29 @@ public class MessageDetail extends JFrame {
   }
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  private JLabel jLabel1;
+  private JLabel lblMsgId;
   private JTextField msgIdTxt;
-  private JLabel jLabel2;
-  private JLabel jLabel3;
-  private JScrollPane jScrollPane1;
+  private JLabel lblMessage;
+  private JLabel lblRawMessage;
+  private JScrollPane rawMessageScroll;
   private JTextArea rawMessageTxt;
-  private JLabel jLabel4;
+  private JLabel lblDateTime;
   private JTextField datetimeTxt;
   private JButton btnAck;
   private JTabbedPane actionTab;
-  private JPanel jPanel4;
-  private JScrollPane jScrollPane3;
+  private JPanel genericPanel;
+  private JScrollPane genericScroll;
   private JTextArea txtGeneric;
-  private JPanel jPanel1;
+  private JPanel transferPanel;
   private JButton btnTransfer;
-  private JScrollPane jScrollPane2;
+  private JScrollPane transferScroll;
   private JTextArea txtTransfer;
-  private JPanel jPanel3;
-  private JScrollPane jScrollPane5;
+  private JPanel otherPanel;
+  private JScrollPane otherScroll;
   private JTextArea txtOther;
   private JButton btnOther;
-  private JScrollPane jScrollPane4;
+  private JScrollPane messageScroll;
   private JTextArea messageTxt;
-  private JPanel jPanel2;
   // End of variables declaration//GEN-END:variables
 
 }

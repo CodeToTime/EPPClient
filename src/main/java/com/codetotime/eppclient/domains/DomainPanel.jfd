@@ -123,7 +123,7 @@ new FormModel {
 				"gridy": 1
 			} )
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-				name: "jScrollPane1"
+				name: "statusScroll"
 				add( new FormComponent( "javax.swing.JList" ) {
 					name: "txtStatus"
 					"model": new javax.swing.DefaultListModel {
@@ -145,7 +145,7 @@ new FormModel {
 				"insets": new java.awt.Insets( 5, 5, 5, 5 )
 			} )
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-				name: "jScrollPane2"
+				name: "nameServerScroll"
 				add( new FormComponent( "javax.swing.JList" ) {
 					name: "txtNameServer"
 					"fixedCellWidth": 198
@@ -188,7 +188,7 @@ new FormModel {
 				"insets": new java.awt.Insets( 5, 5, 5, 5 )
 			} )
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-				name: "jScrollPane3"
+				name: "techScroll"
 				add( new FormComponent( "javax.swing.JList" ) {
 					name: "txtTech"
 					"fixedCellWidth": 198
@@ -257,7 +257,7 @@ new FormModel {
 				"insets": new java.awt.Insets( 5, 5, 5, 5 )
 			} )
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-				name: "jScrollPane4"
+				name: "adminScroll"
 				add( new FormComponent( "javax.swing.JList" ) {
 					name: "txtAdmin"
 					"fixedCellWidth": 198
@@ -484,9 +484,9 @@ new FormModel {
 					"weightx": 1.0
 					"weighty": 1.0
 				} )
-				add( new FormComponent( "javax.swing.JCheckBox" ) {
-					name: "chkDNSSEC"
-					"text": "Abilita DNSSEC"
+ 			add( new FormComponent( "javax.swing.JCheckBox" ) {
+ 				name: "chkDnsSec"
+ 				"text": "Abilita DNSSEC"
 					"verticalTextPosition": 3
 				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 					"gridx": 1

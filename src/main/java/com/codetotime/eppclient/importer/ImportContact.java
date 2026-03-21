@@ -14,15 +14,16 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with EPPClient. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with EPPClient.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.codetotime.eppclient.importer;
 
+import com.codetotime.eppclient.Main;
 import com.codetotime.eppclient.contacts.Address;
-import com.codetotime.eppclient.db.contactsDao;
-import com.codetotime.eppclient.main;
-import com.codetotime.eppclient.uplink.EPPuplink;
+import com.codetotime.eppclient.db.ContactsDao;
+import com.codetotime.eppclient.uplink.EppUplink;
 import it.nic.epp.client.commands.query.ContactInfo;
 import it.nic.epp.client.responses.HttpBaseResponse;
 import it.nic.epp.client.responses.ext.ContactInfoResponseExt;
@@ -32,15 +33,27 @@ import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/** Imports a single EPP contact from the registry and saves it to the local database. */
 public class ImportContact {
   private static final Logger log = LoggerFactory.getLogger(ImportContact.class);
 
-  public ImportContact(main mainFrame, String contactId) {
-    this.EPPuplink = mainFrame.EPPuplink;
+  /**
+   * Creates an import task for the given contact ID.
+   *
+   * @param mainFrame the application Main frame providing the EPP connection
+   * @param contactId the EPP contact handle to import
+   */
+  public ImportContact(Main mainFrame, String contactId) {
+    this.eppUplink = mainFrame.eppUplink;
     this.contactdb = mainFrame.contactsDao;
     this.contactId = contactId;
   }
 
+  /**
+   * Fetches the contact info from the registry and stores it in the local database.
+   *
+   * @return {@code true} if the contact was imported successfully
+   */
   public boolean execute() {
     boolean importStatus = false;
 
@@ -50,131 +63,139 @@ public class ImportContact {
     contactInfo.setId(contactId);
 
     try {
-      HttpBaseResponse response = EPPuplink.sendCommand(contactInfo);
+      HttpBaseResponse response = eppUplink.sendCommand(contactInfo);
       if (response.isSuccessfully()) {
         contactInfoResData = (ContactInfoResponseResData) response.getResponseResData();
         contactInfoExt = (ContactInfoResponseExt) response.getResponseExtension();
-        Address RegistrantContact = new Address();
+        Address registrantContact = new Address();
 
-        /*                contactInfoResData.getName(), contactInfoResData.getOrg(), "", contactInfoResData.getCity(), contactInfoResData.getSp(), contactInfoResData.getPc(),
-            contactInfoResData.getCc(), contactInfoResData.getVoice(), contactInfoResData.getFax(), contactInfoResData.getEmail(), contactInfoExt.getConsentForPublishing(), contactInfoExt.isRegistrant(),
-            contactInfoExt.getNationalityCode(), contactInfoExt.getEntityType(), contactInfoExt.getRegCode(), null, contactInfoResData.getId()
+        /*  contactInfoResData.getName(), contactInfoResData.getOrg(), "",
+            contactInfoResData.getCity(), contactInfoResData.getSp(), contactInfoResData.getPc(),
+            contactInfoResData.getCc(), contactInfoResData.getVoice(), contactInfoResData.getFax(),
+            contactInfoResData.getEmail(), contactInfoExt.getConsentForPublishing(),
+            contactInfoExt.isRegistrant(), contactInfoExt.getNationalityCode(),
+            contactInfoExt.getEntityType(), contactInfoExt.getRegCode(), null,
+            contactInfoResData.getId()
 
-
-        RegistrantContact = new Address(contactInfoResData.getName(), contactInfoResData.getOrg(), contactInfoResData.getStreet(0), contactInfoResData.getCity(), contactInfoResData.getSp(), contactInfoResData.getPc(),
-            contactInfoResData.getCc(), contactInfoResData.getVoice(), contactInfoResData.getFax(), contactInfoResData.getEmail(), contactInfoExt.getConsentForPublishing(), contactInfoExt.isRegistrant(),
-            contactInfoExt.getNationalityCode(), contactInfoExt.getEntityType(), contactInfoExt.getRegCode(), null, contactInfoResData.getId());*/
+        registrantContact = new Address(contactInfoResData.getName(), contactInfoResData.getOrg(),
+            contactInfoResData.getStreet(0), contactInfoResData.getCity(),
+            contactInfoResData.getSp(), contactInfoResData.getPc(), contactInfoResData.getCc(),
+            contactInfoResData.getVoice(), contactInfoResData.getFax(),
+            contactInfoResData.getEmail(), contactInfoExt.getConsentForPublishing(),
+            contactInfoExt.isRegistrant(), contactInfoExt.getNationalityCode(),
+            contactInfoExt.getEntityType(), contactInfoExt.getRegCode(), null,
+            contactInfoResData.getId());*/
 
         try {
-          RegistrantContact.setContactName(contactInfoResData.getName());
+          registrantContact.setContactName(contactInfoResData.getName());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field Name not available for contact {}", contactId);
         }
 
         try {
-          RegistrantContact.setOrg(contactInfoResData.getOrg());
+          registrantContact.setOrg(contactInfoResData.getOrg());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field Org not available for contact {}", contactId);
         }
 
         try {
-          RegistrantContact.setStreet(contactInfoResData.getStreet(0));
+          registrantContact.setStreet(contactInfoResData.getStreet(0));
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field Street not available for contact {}", contactId);
         }
 
         try {
-          RegistrantContact.setCity(contactInfoResData.getCity());
+          registrantContact.setCity(contactInfoResData.getCity());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field City not available for contact {}", contactId);
         }
 
         try {
-          RegistrantContact.setStateOrProvince(contactInfoResData.getSp());
+          registrantContact.setStateOrProvince(contactInfoResData.getSp());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field StateOrProvince not available for contact {}", contactId);
         }
 
         try {
-          RegistrantContact.setPostalCode(contactInfoResData.getPc());
+          registrantContact.setPostalCode(contactInfoResData.getPc());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field PostalCode not available for contact {}", contactId);
         }
 
         try {
-          RegistrantContact.setCountryCode(contactInfoResData.getCc());
+          registrantContact.setCountryCode(contactInfoResData.getCc());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field CountryCode not available for contact {}", contactId);
         }
 
         try {
-          RegistrantContact.setVoice(contactInfoResData.getVoice());
+          registrantContact.setVoice(contactInfoResData.getVoice());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field Voice not available for contact {}", contactId);
         }
 
         try {
-          RegistrantContact.setFax(contactInfoResData.getFax());
+          registrantContact.setFax(contactInfoResData.getFax());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field Fax not available for contact {}", contactId);
         }
 
         try {
-          RegistrantContact.setEmail(contactInfoResData.getEmail());
+          registrantContact.setEmail(contactInfoResData.getEmail());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field Email not available for contact {}", contactId);
         }
 
         try {
-          RegistrantContact.setSchoolCode(contactInfoExt.getSchoolCode());
+          registrantContact.setSchoolCode(contactInfoExt.getSchoolCode());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field SchoolCode not available for contact {}", contactId);
         }
 
         try {
-          RegistrantContact.setConsentForPublishing(contactInfoExt.getConsentForPublishing());
+          registrantContact.setConsentForPublishing(contactInfoExt.getConsentForPublishing());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field ConsentForPublishing not available for contact {}", contactId);
         }
 
         try {
-          RegistrantContact.setIsRegistrant(contactInfoExt.isRegistrant());
+          registrantContact.setIsRegistrant(contactInfoExt.isRegistrant());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field IsRegistrant not available for contact {}", contactId);
         }
 
         try {
-          RegistrantContact.setNationalityCode(contactInfoExt.getNationalityCode());
+          registrantContact.setNationalityCode(contactInfoExt.getNationalityCode());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field NationalityCode not available for contact {}", contactId);
         }
 
         try {
-          RegistrantContact.setEntityType(contactInfoExt.getEntityType());
+          registrantContact.setEntityType(contactInfoExt.getEntityType());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field EntityType not available for contact {}", contactId);
         }
 
         try {
-          RegistrantContact.setRegCode(contactInfoExt.getRegCode());
+          registrantContact.setRegCode(contactInfoExt.getRegCode());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field RegCode not available for contact {}", contactId);
         }
 
         try {
-          RegistrantContact.setContactId(contactInfoResData.getId());
+          registrantContact.setContactId(contactInfoResData.getId());
         } catch (NullPointerException e) {
-          // discard field;
+          log.debug("Field ContactId not available for contact {}", contactId);
         }
 
         if (contactdb.getAddress(contactId) == null) {
-          contactdb.saveRecord(RegistrantContact);
+          contactdb.saveRecord(registrantContact);
         } else {
-          contactdb.editRecord(RegistrantContact);
+          contactdb.editRecord(registrantContact);
         }
 
         importStatus = true;
-        RegistrantContact = null;
+        registrantContact = null;
       }
     } catch (XmlException v) {
       log.error("XmlException in execute", v);
@@ -185,7 +206,7 @@ public class ImportContact {
     return importStatus;
   }
 
-  private EPPuplink EPPuplink;
-  private contactsDao contactdb;
+  private EppUplink eppUplink;
+  private ContactsDao contactdb;
   private String contactId;
 }

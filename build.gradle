@@ -5,7 +5,7 @@ plugins {
     id 'java'
     id 'application'
     id 'com.gradleup.shadow' version '9.3.1'
-    id "pl.allegro.tech.build.axion-release" version "1.20.1"
+    id 'pl.allegro.tech.build.axion-release' version '1.20.1'
     id 'com.diffplug.spotless' version '8.3.0'
     id 'checkstyle'
 }
@@ -49,7 +49,7 @@ test {
 }
 
 application {
-    mainClass = 'com.codetotime.eppclient.main'
+    mainClass = 'com.codetotime.eppclient.Main'
 }
 
 // ShadowJar configuration (fat jar)
@@ -82,6 +82,10 @@ tasks.register('generateBuildInfo') {
         def outputFile = file("$outputDir/BuildInfo.java")
         outputFile.text = """package com.codetotime.eppclient;
 
+/**
+ * Build-time metadata injected by Gradle: version string, build date, and registrar-specific fields
+ * (company, VAT number, tag, order).
+ */
 public class BuildInfo {
   public static final String BUILD_VERSION = "$buildVersion";
   public static final String BUILD_DATE = "$date";
