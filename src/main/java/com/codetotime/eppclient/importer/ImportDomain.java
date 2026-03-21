@@ -20,6 +20,8 @@
 
 package com.codetotime.eppclient.importer;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import com.codetotime.eppclient.Main;
 import com.codetotime.eppclient.db.ContactsDao;
 import com.codetotime.eppclient.db.DomainsDao;
@@ -68,9 +70,10 @@ public class ImportDomain {
 
     try {
 
-      log.debug("CLIENT: {}", domainInfo);
+      log.debug("Importing domain: {}", domainName);
+      log.trace("EPP > domainInfo", kv("raw_xml", domainInfo.xmlText()));
       HttpBaseResponse response = eppUplink.sendCommand(domainInfo);
-      log.debug("SERVER: {}", response);
+      log.trace("EPP < domainInfo", kv("raw_xml", response.toString()));
 
       if (response.isSuccessfully()) {
         DomainInfoResponseResData domainInfoResData =

@@ -20,6 +20,8 @@
 
 package com.codetotime.eppclient.contacts;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import com.codetotime.eppclient.Main;
 import com.codetotime.eppclient.db.ContactsDao;
 import com.codetotime.eppclient.importer.ImportContact;
@@ -222,11 +224,12 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
 
       try {
         // Delete the contact. The contact must not be linked with any domain name
+        log.info("Deleting contact: {}", contactId);
         ContactDelete contactDelete = new ContactDelete();
         contactDelete.setId(contactId);
-        log.debug("CLIENT: {}", contactDelete);
+        log.trace("EPP > contactDelete", kv("raw_xml", contactDelete.xmlText()));
         HttpBaseResponse response = eppUplink.sendCommand(contactDelete);
-        log.debug("SERVER: {}", response);
+        log.trace("EPP < contactDelete", kv("raw_xml", response.toString()));
 
         if (response.isSuccessfully()) {
           //                    db = new ContactsDao();
@@ -290,14 +293,17 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
       String contactId = address.getContactId();
 
       if (address.getIsNewContact()) {
+        log.info("Creating contact: {}", contactId);
         if (address.getAutoContactId()) {
           while (true) {
             addressPanel.setContactId(address.getRandomContactId());
             ContactCheck contactCheck = new ContactCheck();
             contactCheck.addId(address.getContactId());
             try {
+              log.trace(
+                  "EPP > contactCheck (id availability)", kv("raw_xml", contactCheck.xmlText()));
               HttpBaseResponse response = eppUplink.sendCommand(contactCheck);
-              log.debug("SERVER: {}", response);
+              log.trace("EPP < contactCheck (id availability)", kv("raw_xml", response.toString()));
               if (response.isSuccessfully()) {
                 ContactCheckResponseResData resData =
                     (ContactCheckResponseResData) response.getResponseResData();
@@ -350,9 +356,9 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
                 address.getNationalityCode(), address.getEntityType(), address.getRegCode());
           }
 
-          log.debug("CLIENT: {}", contactCreate);
+          log.trace("EPP > contactCreate", kv("raw_xml", contactCreate.xmlText()));
           HttpBaseResponse response = eppUplink.sendCommand(contactCreate);
-          log.debug("SERVER: {}", response);
+          log.trace("EPP < contactCreate", kv("raw_xml", response.toString()));
 
           if (response.isSuccessfully()) {
             //                        db = new ContactsDao();
@@ -391,12 +397,13 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
         }
 
       } else {
-
+        log.info("Updating contact: {}", contactId);
         try {
           ContactInfo contactInfo = new ContactInfo();
           contactInfo.setId(address.getContactId());
+          log.trace("EPP > contactInfo (pre-update)", kv("raw_xml", contactInfo.xmlText()));
           HttpBaseResponse response = eppUplink.sendCommand(contactInfo);
-          log.debug("ContactInfo PRIMA: {}", response);
+          log.trace("EPP < contactInfo (pre-update)", kv("raw_xml", response.toString()));
           ContactInfoResponseResData contactInfoResData =
               (ContactInfoResponseResData) response.getResponseResData();
           ContactInfoResponseExt contactInfoExt =
@@ -446,9 +453,11 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
             }
 
             if (updateMigrated) {
-              log.debug("CLIENT: {}", contactUpdate);
+              log.trace(
+                  "EPP > contactUpdate (migrated fields)", kv("raw_xml", contactUpdate.xmlText()));
               response = eppUplink.sendCommand(contactUpdate);
-              log.debug("SERVER: {}", response);
+              log.trace(
+                  "EPP < contactUpdate (migrated fields)", kv("raw_xml", response.toString()));
 
               if (!response.isSuccessfully()) {
                 migratedUpdateOk = false;
@@ -490,9 +499,9 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
 
             contactUpdate.setExtConsForPub(address.getConsentForPublishing());
 
-            log.debug("CLIENT: {}", contactUpdate);
+            log.trace("EPP > contactUpdate", kv("raw_xml", contactUpdate.xmlText()));
             response = eppUplink.sendCommand(contactUpdate);
-            log.debug("SERVER: {}", response);
+            log.trace("EPP < contactUpdate", kv("raw_xml", response.toString()));
 
             if (response.isSuccessfully()) {
               db.editRecord(address);
@@ -544,9 +553,10 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
         contactCheck.addId(contactId);
       }
 
-      log.debug("CLIENT: {}", contactCheck);
+      log.debug("Checking contact availability: {}", contactIds);
+      log.trace("EPP > contactCheck", kv("raw_xml", contactCheck.xmlText()));
       HttpBaseResponse response = eppUplink.sendCommand(contactCheck);
-      log.debug("SERVER: {}", response);
+      log.trace("EPP < contactCheck", kv("raw_xml", response.toString()));
 
       if (response.isSuccessfully()) {
         String msgAvailabilityResult = "";
@@ -594,9 +604,10 @@ public class ContactsManagement extends JFrame implements ActionListener, ListSe
 
       try {
         ContactInfo contactInfo = new ContactInfo(contactId);
-        log.debug("CLIENT: {}", contactInfo);
+        log.debug("Fetching raw info for contact: {}", contactId);
+        log.trace("EPP > contactInfo", kv("raw_xml", contactInfo.xmlText()));
         HttpBaseResponse response = eppUplink.sendCommand(contactInfo);
-        log.debug("SERVER: {}", response);
+        log.trace("EPP < contactInfo", kv("raw_xml", response.toString()));
 
         if (response.isSuccessfully()) {
           ContactRawInfo contactRawInfo = new ContactRawInfo(contactId, response.toString());

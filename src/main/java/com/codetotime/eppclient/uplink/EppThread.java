@@ -20,6 +20,8 @@
 
 package com.codetotime.eppclient.uplink;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import com.codetotime.eppclient.CustomLogin;
 import com.codetotime.eppclient.ErrorHandler;
 import com.codetotime.eppclient.Main;
@@ -75,9 +77,9 @@ class EppThread extends Thread {
 
       //            logger.logmessage("HELLO: " + client.sendHello().toString());
 
-      log.info("CLIENT login request: *REQUEST*");
+      log.info("Sending EPP login (request omitted for security)");
       response = client.sendCommand(login);
-      log.info("SERVER login response: *RESPONSE*");
+      log.trace("EPP < login", kv("raw_xml", response.toString()));
       if (response.isSuccessfully()) {
         eppClosable = false;
         mainFrame.setActiveEpp(1);
@@ -155,9 +157,10 @@ class EppThread extends Thread {
         try {
           if (!eppClosable) {
             Logout logout = new Logout();
-            log.info("CLIENT logout command: {}", logout.toString());
+            log.info("Sending EPP logout");
+            log.trace("EPP > logout", kv("raw_xml", logout.xmlText()));
             response = client.sendCommand(logout);
-            log.info("SERVER logout response: {}", response.toString());
+            log.trace("EPP < logout", kv("raw_xml", response.toString()));
             if (response.isSuccessfully()) {
               eppClosable = true;
               mainFrame.setActiveEpp(0);
@@ -218,13 +221,13 @@ class EppThread extends Thread {
         ErrorHandler.logError(log, ex);
       }
 
+      log.trace("EPP > poll", kv("raw_xml", pollCmd.xmlText()));
       HttpBaseResponse response = this.sendCommand(pollCmd);
       if (response == null) {
         log.warn("Poll command returned null response - connection may have been interrupted");
         return false;
       }
-      log.info("CLIENT poll: {}", pollCmd.toString());
-      log.info("SERVER poll response: {}", response.toString());
+      log.trace("EPP < poll", kv("raw_xml", response.toString()));
       if (response.isSuccessfully()) {
         mainFrame.setMsgQ(Integer.toString(response.getMsgQCount()));
         if (response.getMsgQCount() > 0) {
@@ -258,9 +261,9 @@ class EppThread extends Thread {
             try {
               pollCmd.setAck(response.getMsgQId());
 
+              log.trace("EPP > poll (ack)", kv("raw_xml", pollCmd.xmlText()));
               HttpBaseResponse ackResponse = this.sendCommand(pollCmd);
-              log.info("CLIENT poll ack: {}", pollCmd.toString());
-              log.info("SERVER poll ack response: {}", ackResponse.toString());
+              log.trace("EPP < poll (ack)", kv("raw_xml", ackResponse.toString()));
               if (ackResponse.isSuccessfully()) {
                 Message message = mainFrame.messagesDao.getMessage(response.getMsgQId());
                 message.setAck(true);

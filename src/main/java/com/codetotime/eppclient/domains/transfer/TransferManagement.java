@@ -20,6 +20,8 @@
 
 package com.codetotime.eppclient.domains.transfer;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import com.codetotime.eppclient.uplink.EppUplink;
 import it.nic.epp.client.commands.transform.DomainTransfer;
 import it.nic.epp.client.exceptions.EppSchemaException;
@@ -150,7 +152,8 @@ public class TransferManagement extends JFrame implements ActionListener {
           }
         }
 
-        log.info("CLIENT transfer request: {}", domainTransfer.toString());
+        log.info("Requesting domain transfer: {}", domain.getDomainName());
+        log.trace("EPP > domainTransfer", kv("raw_xml", domainTransfer.xmlText()));
         HttpBaseResponse response = eppUplink.sendCommand(domainTransfer);
 
         if (response.isSuccessfully()) {
@@ -183,7 +186,7 @@ public class TransferManagement extends JFrame implements ActionListener {
           canClose = false;
         }
 
-        log.info("SERVER transfer response: {}", response.toString());
+        log.trace("EPP < domainTransfer", kv("raw_xml", response.toString()));
 
       } catch (NullPointerException v) {
         log.error("NullPointerException in requestTransfer", v);
@@ -213,7 +216,8 @@ public class TransferManagement extends JFrame implements ActionListener {
           domainTransfer.setAuthInfo(bulkRequestEntries[1]);
           domainTransfer.setTransferRequest();
 
-          log.info("CLIENT bulk transfer request: {}", domainTransfer.toString());
+          log.info("Requesting bulk domain transfer for: {}", bulkRequestEntries[0]);
+          log.trace("EPP > domainTransfer (bulk)", kv("raw_xml", domainTransfer.xmlText()));
           HttpBaseResponse response = eppUplink.sendCommand(domainTransfer);
 
           if (response.isSuccessfully()) {
@@ -236,7 +240,7 @@ public class TransferManagement extends JFrame implements ActionListener {
               JOptionPane.showMessageDialog(this, response.toString());
             }
           }
-          log.info("SERVER bulk transfer response: {}", response.toString());
+          log.trace("EPP < domainTransfer (bulk)", kv("raw_xml", response.toString()));
 
         } catch (NullPointerException v) {
           log.error("NullPointerException in bulk transfer", v);

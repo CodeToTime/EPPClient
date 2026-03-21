@@ -20,6 +20,8 @@
 
 package com.codetotime.eppclient.domains;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import com.codetotime.eppclient.Main;
 import com.codetotime.eppclient.db.DomainsDao;
 import com.codetotime.eppclient.domains.transfer.TransferManagement;
@@ -242,10 +244,11 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
       if (!domainName.equals("")) {
 
         try {
+          log.info("Deleting domain: {}", domainName);
           DomainDelete domainDelete = new DomainDelete(domainName);
-          log.debug("CLIENT: {}", domainDelete);
+          log.trace("EPP > domainDelete", kv("raw_xml", domainDelete.xmlText()));
           HttpBaseResponse response = eppUplink.sendCommand(domainDelete);
-          log.debug("SERVER: {}", response);
+          log.trace("EPP < domainDelete", kv("raw_xml", response.toString()));
 
           if (response.isSuccessfully()) {
             Domain domain = domainPanel.getAddress();
@@ -304,6 +307,7 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
       String domainName = domain.getDomainName();
 
       if (domain.getOpType() == 1) {
+        log.info("Creating domain: {}", domainName);
         try {
           DomainCreate domainCreate = new DomainCreate(domain.getDomainName());
           domainCreate.setRegistrant(domain.getRegistrant());
@@ -349,9 +353,9 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                 (short) domain.getDigestType(),
                 parseHex(domain.getDigest()));
           }
-          log.debug("CLIENT: {}", domainCreate);
+          log.trace("EPP > domainCreate", kv("raw_xml", domainCreate.xmlText()));
           HttpBaseResponse response = eppUplink.sendCommand(domainCreate);
-          log.debug("SERVER: {}", response);
+          log.trace("EPP < domainCreate", kv("raw_xml", response.toString()));
 
           if (response.isSuccessfully()) {
             DomainCreateResponseResData domainCreateResData =
@@ -387,13 +391,14 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
         }
 
       } else {
-
+        log.info("Updating domain: {}", domainName);
         try {
           DomainInfo domainInfo = new DomainInfo();
           domainInfo.setName(domain.getDomainName());
+          log.trace("EPP > domainInfo (pre-update)", kv("raw_xml", domainInfo.xmlText()));
           HttpBaseResponse response = eppUplink.sendCommand(domainInfo);
+          log.trace("EPP < domainInfo (pre-update)", kv("raw_xml", response.toString()));
           if (response.isSuccessfully()) {
-            log.debug("DomainInfo PRIMA: {}", response);
             DomainInfoResponseResData domainInfoResData =
                 (DomainInfoResponseResData) response.getResponseResData();
 
@@ -452,9 +457,11 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
               // if changing Registrant make a custom update request
               domainUpdate.setRegistrant(domain.getRegistrant());
 
-              log.debug("CLIENT: {}", domainUpdate);
+              log.trace(
+                  "EPP > domainUpdate (registrant change)", kv("raw_xml", domainUpdate.xmlText()));
               response = eppUplink.sendCommand(domainUpdate);
-              log.debug("SERVER: {}", response);
+              log.trace(
+                  "EPP < domainUpdate (registrant change)", kv("raw_xml", response.toString()));
 
               domainUpdate = new DomainUpdate(domain.getDomainName());
             }
@@ -705,15 +712,18 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                 }
               }
 
-              log.debug("CLIENT: {}", domainUpdate);
+              log.trace("EPP > domainUpdate", kv("raw_xml", domainUpdate.xmlText()));
               response = eppUplink.sendCommand(domainUpdate);
-              log.debug("SERVER: {}", response);
+              log.trace("EPP < domainUpdate", kv("raw_xml", response.toString()));
 
               if (response.isSuccessfully()
                   || (response.getResultCode() == 2003 && response.getReasonCode() == 9019)) {
 
+                log.trace(
+                    "EPP > domainInfo (post-update refresh)", kv("raw_xml", domainInfo.xmlText()));
                 response = eppUplink.sendCommand(domainInfo);
-                log.debug("DomainInfo DOPO: {}", response);
+                log.trace(
+                    "EPP < domainInfo (post-update refresh)", kv("raw_xml", response.toString()));
 
                 domainInfoResData = (DomainInfoResponseResData) response.getResponseResData();
                 domain.setExpire(domainInfoResData.getExDate().getTime());
@@ -825,10 +835,11 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
     if (!domainName.equals("")) {
 
       try {
+        log.debug("Fetching raw info for domain: {}", domainName);
         DomainInfo domainInfo = new DomainInfo(domainName);
-        log.debug("CLIENT: {}", domainInfo);
+        log.trace("EPP > domainInfo", kv("raw_xml", domainInfo.xmlText()));
         HttpBaseResponse response = eppUplink.sendCommand(domainInfo);
-        log.debug("SERVER: {}", response);
+        log.trace("EPP < domainInfo", kv("raw_xml", response.toString()));
 
         if (response.isSuccessfully()) {
           DomainRawInfo domainRawInfo = new DomainRawInfo(domainName, response.toString());
@@ -988,13 +999,15 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
                 null,
                 "");
     try {
+      log.debug("Checking domain availability: {}", domains);
       DomainCheck domainCheck = new DomainCheck();
       for (String domainName : domains.split(";")) {
         domainCheck.addName(domainName);
       }
 
+      log.trace("EPP > domainCheck", kv("raw_xml", domainCheck.xmlText()));
       HttpBaseResponse response = eppUplink.sendCommand(domainCheck);
-      log.debug("SERVER: {}", response);
+      log.trace("EPP < domainCheck", kv("raw_xml", response.toString()));
 
       if (response.isSuccessfully()) {
         String msgAvailabilityResult = "";
@@ -1056,9 +1069,10 @@ public class DomainsManagement extends JFrame implements ActionListener, ListSel
 
       try {
 
-        log.debug("CLIENT: {}", domainUpdate);
+        log.info("Restoring domain from RGP: {}", domainName);
+        log.trace("EPP > domainUpdate (RGP restore)", kv("raw_xml", domainUpdate.xmlText()));
         HttpBaseResponse response = eppUplink.sendCommand(domainUpdate);
-        log.debug("SERVER: {}", response);
+        log.trace("EPP < domainUpdate (RGP restore)", kv("raw_xml", response.toString()));
         if (response.isSuccessfully()) {
           ImportDomain syncDomain = new ImportDomain(mainFrame, true);
           if (syncDomain.execute(domainName)) {

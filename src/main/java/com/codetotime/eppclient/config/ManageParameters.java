@@ -20,6 +20,8 @@
 
 package com.codetotime.eppclient.config;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import com.codetotime.eppclient.CustomLogin;
 import com.codetotime.eppclient.ErrorHandler;
 import com.codetotime.eppclient.Main;
@@ -812,8 +814,6 @@ public class ManageParameters extends JFrame implements WindowListener {
         try {
           // sets the serverUri
           URI serverUri = new URI(EppParams.getParameter("EppClient.Epp.serverUri"));
-          // creates a new client
-          Client client = new Client(serverUri.toString());
 
           // creates a login command with a valid account
           CustomLogin login =
@@ -823,16 +823,20 @@ public class ManageParameters extends JFrame implements WindowListener {
 
           login.setNewPW(newPassword);
 
+          // creates a new client
+          Client client = new Client(serverUri.toString());
+
           // send the login command
-          log.info("CLIENT: *LOGIN w/CHANGE PWD COMMAND OMITTED*");
+          log.info("Changing EPP password");
+          log.debug("EPP > login (password change request omitted for security)");
           HttpBaseResponse response = client.sendCommand(login);
-          log.info("SERVER: {}", response.toString());
+          log.trace("EPP < login", kv("raw_xml", response.toString()));
 
           // send the logout command with verbose interaction
           Logout logout = new Logout();
-          log.info("CLIENT: {}", logout.toString());
+          log.trace("EPP > logout", kv("raw_xml", logout.xmlText()));
           response = client.sendCommand(logout);
-          log.info("SERVER logout: {}", response.toString());
+          log.trace("EPP < logout", kv("raw_xml", response.toString()));
 
           defaultPassword.setText(newPassword);
           EppParams.setParameter("EppClient.defaultPassword", defaultPassword.getText());
