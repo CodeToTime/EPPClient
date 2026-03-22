@@ -79,12 +79,9 @@ public class EppParams {
           if (decryptedValue != null && !decryptedValue.isEmpty()) {
             parameterValue = decryptedValue;
             log.debug("Successfully decrypted parameter: {}", key);
-          } else {
-            log.warn("Decrypted value is empty for key {}, falling back to resource bundle", key);
-            throw new Exception("Decrypted value is empty");
           }
         } catch (Exception decryptEx) {
-          log.warn(
+          log.debug(
               "Decryption failed for key {}, falling back to resource bundle: {}",
               key,
               decryptEx.getMessage());
@@ -94,10 +91,12 @@ public class EppParams {
 
       // Final check: if parameterValue is still empty, use resource bundle
       if (parameterValue.isEmpty()) {
-        log.debug("Parameter value is empty for key {}, loading from resource bundle", key);
         try {
           parameterValue = RESOURCE_BUNDLE.getString(key);
-          log.debug("Loaded parameter from resource bundle: {}", key);
+          log.warn(
+              "Decrypted value is empty for key {}, falling back to resource bundle: \"{}\"",
+              key,
+              parameterValue);
           // Save the fallback value to preferences
           setParameter(key, parameterValue);
         } catch (MissingResourceException e) {
