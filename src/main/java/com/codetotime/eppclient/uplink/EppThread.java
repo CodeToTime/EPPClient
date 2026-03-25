@@ -146,7 +146,29 @@ class EppThread extends Thread {
         }
       }
     } catch (IOException v) {
-      ErrorHandler.error(log, v, "Errore di Connessione", mainFrame);
+      // Check for connection errors that might indicate whitelist issues
+      String errorMessage = v.getMessage();
+      if (errorMessage != null
+          && (errorMessage.contains("Connection refused")
+              || errorMessage.contains("Connect to")
+              || errorMessage.contains("Connection timed out")
+              || errorMessage.contains("ConnectException"))) {
+        log.error("IOException connecting to EPP server - Connection issue: {}", v.getMessage());
+        JOptionPane.showMessageDialog(
+            mainFrame,
+            "Impossibile connettersi al server EPP.\n\n"
+                + "Possibili cause:\n"
+                + "- L'indirizzo IP non è nella whitelist del Registro\n"
+                + "- Il firewall blocca la connessione\n"
+                + "- Il server EPP non è raggiungibile\n\n"
+                + "Verificare che l'indirizzo IP sia abilitato presso il Registro.\n\n"
+                + "Per ricevere assistenza, attivare il livello di logging DEBUG "
+                + "utilizzando l’opzione -Deppclient.logLevel=DEBUG",
+            "Errore di Connessione",
+            JOptionPane.ERROR_MESSAGE);
+      } else {
+        ErrorHandler.error(log, v, "Errore di Connessione", mainFrame);
+      }
     } catch (URISyntaxException v) {
       ErrorHandler.error(log, v, "Errore di Configurazione", mainFrame);
     } catch (XmlException v) {
